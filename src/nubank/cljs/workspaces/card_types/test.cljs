@@ -256,8 +256,17 @@
 (defn print-code [s]
   (highlight/highlight {::highlight/source (try-pprint s)}))
 
+(defn normalize-actual [{:keys [expected actual] :as props}]
+  (if (and (= 3 (count expected))
+           (= '= (first expected)))
+    (let [[_ expected actual] (second actual)]
+      (assoc props
+        :expected expected
+        :actual actual))
+    props))
+
 (fp/defsc TestResult
-  [this {:keys [actual expected type testing-contexts message]}]
+  [this {:keys [actual expected type testing-contexts message] :as props}]
   {:initial-state (fn [_]
                     {})
    :query         [:actual :expected :type :testing-contexts :message]
@@ -274,11 +283,12 @@
     (dom/div :.test-result {:style {:borderLeft (str "5px solid " color)}}
       (mapv #(dom/div {:key (str (hash %))} %) testing-contexts)
       (if (and message (not (seq testing-contexts)))
-        (dom/div message)
+        (dom/div (str message))
         (if (and (= :pass type) (not (seq testing-contexts)))
           (dom/div (pr-str expected))))
       (if (not= :pass type)
-        (let [[extra missing] (clojure.data/diff expected actual)
+        (let [{:keys [expected actual]} (normalize-actual props)
+              [extra missing] (clojure.data/diff expected actual)
               error? (instance? js/Error actual)]
           (dom/div :.diff
             (dom/div :.compare-header "Expected")
