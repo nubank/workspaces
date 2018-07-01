@@ -224,7 +224,7 @@
                                   :overflow      "auto"
                                   :border-radius "4px"
                                   :box-shadow    uc/box-shadow}]]
-   :css-include       [highlight/Highlight]
+   :css-include       [highlight/Highlight modal/Modal]
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)
                               node (gobj/get this "cardNode")]

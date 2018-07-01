@@ -51,7 +51,7 @@
                                               (- (gobj/get container "offsetHeight")))))))))
 
 (defn dom-props [props]
-  (into {} (filter (comp namespace first)) props))
+  (into {} (remove (comp namespace first)) props))
 
 (fp/defsc VerticalCursor
   [this

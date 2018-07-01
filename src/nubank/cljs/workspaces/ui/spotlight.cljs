@@ -69,6 +69,7 @@
                        [:.search
                         {:background  "#cccbcd"
                          :border      "0"
+                         :box-sizing  "border-box"
                          :color       "#000"
                          :font-family uc/font-helvetica
                          :font-size   "32px"
