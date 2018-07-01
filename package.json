@@ -14,10 +14,10 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-cljs-test": "^0.1.0",
     "karma-firefox-launcher": "^0.1.7",
-    "react": "^15.6.2",
-    "react-dom": "^15.6.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "react-grid-layout": "^0.16.6",
-    "react-test-renderer": "^15.6.2",
+    "react-test-renderer": "^16.4.1",
     "shadow-cljs": "^2.4.12"
   },
   "scripts": {
