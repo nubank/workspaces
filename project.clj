@@ -1,4 +1,4 @@
-(defproject workspaces "0.1.0-SNAPSHOT"
+(defproject nubank/workspaces "0.1.0-SNAPSHOT"
   :description "Work environments for development of web apps."
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
