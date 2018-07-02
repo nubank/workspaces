@@ -259,7 +259,7 @@
 (defn normalize-actual [{:keys [expected actual] :as props}]
   (if (and (= 3 (count expected))
            (= '= (first expected)))
-    (let [[_ expected actual] (second actual)]
+    (let [[_ actual expected] (second actual)]
       (assoc props
         :expected expected
         :actual actual))
