@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.ui.grid-layout
+(ns nubank.workspaces.ui.grid-layout
   (:require [fulcro.client.primitives :as fp]
             [fulcro.client.localized-dom :as dom]
             [garden.selectors :as gs]

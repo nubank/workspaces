@@ -1,22 +1,22 @@
-(ns nubank.cljs.workspaces.card-types.test
+(ns nubank.workspaces.card-types.test
   (:require
     [cljs.core.async :as async :refer [go chan go-loop put! close! <!]]
     [cljs.test]
     [cljs.reader :refer [read-string]]
     [cljsjs.react.dom]
     [fulcro.client.localized-dom :as dom]
-    [nubank.cljs.workspaces.card-types.react :as ct.react]
-    [nubank.cljs.workspaces.lib.fulcro-portal :as f.portal]
-    [nubank.cljs.workspaces.data :as data]
-    [nubank.cljs.workspaces.model :as wsm]
-    [nubank.cljs.workspaces.ui.core :as uc]
+    [nubank.workspaces.card-types.react :as ct.react]
+    [nubank.workspaces.lib.fulcro-portal :as f.portal]
+    [nubank.workspaces.data :as data]
+    [nubank.workspaces.model :as wsm]
+    [nubank.workspaces.ui.core :as uc]
     [fulcro.client.primitives :as fp]
     [fulcro.client.mutations :as fm]
     [fulcro-css.css :as css]
-    [nubank.cljs.workspaces.lib.fulcro-portal :as f.portal]
-    [nubank.cljs.workspaces.card-types.fulcro :as ct.fulcro]
-    [nubank.cljs.workspaces.ui :as ui]
-    [nubank.cljs.workspaces.ui.highlight :as highlight]))
+    [nubank.workspaces.lib.fulcro-portal :as f.portal]
+    [nubank.workspaces.card-types.fulcro :as ct.fulcro]
+    [nubank.workspaces.ui :as ui]
+    [nubank.workspaces.ui.highlight :as highlight]))
 
 (defonce test-context* (atom []))
 

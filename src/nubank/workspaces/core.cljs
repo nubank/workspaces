@@ -1,12 +1,12 @@
-(ns nubank.cljs.workspaces.core
-  (:require-macros nubank.cljs.workspaces.core)
+(ns nubank.workspaces.core
+  (:require-macros nubank.workspaces.core)
   (:require [fulcro.client :as fulcro]
             [fulcro.client.primitives :as fp]
-            [nubank.cljs.workspaces.card-types.test :refer [test-card test-ns-card]]
-            [nubank.cljs.workspaces.ui :as ui]
-            [nubank.cljs.workspaces.data :as data]
-            [nubank.cljs.workspaces.model :as wsm]
-            [nubank.cljs.workspaces.lib.local-storage :as local-storage]))
+            [nubank.workspaces.card-types.test :refer [test-card test-ns-card]]
+            [nubank.workspaces.ui :as ui]
+            [nubank.workspaces.data :as data]
+            [nubank.workspaces.model :as wsm]
+            [nubank.workspaces.lib.local-storage :as local-storage]))
 
 (defn init-card [card-id card]
   (let [card (assoc card ::wsm/card-id card-id)]

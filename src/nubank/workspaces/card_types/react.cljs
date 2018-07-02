@@ -1,10 +1,10 @@
-(ns nubank.cljs.workspaces.card-types.react
-  (:require-macros [nubank.cljs.workspaces.card-types.react])
-  (:require [nubank.cljs.workspaces.model :as wsm]
-            [nubank.cljs.workspaces.card-types.util :as ct.util]
+(ns nubank.workspaces.card-types.react
+  (:require-macros [nubank.workspaces.card-types.react])
+  (:require [nubank.workspaces.model :as wsm]
+            [nubank.workspaces.card-types.util :as ct.util]
             [cljsjs.react.dom]
-            [nubank.cljs.workspaces.data :as data]
-            [nubank.cljs.workspaces.ui :as ui]))
+            [nubank.workspaces.data :as data]
+            [nubank.workspaces.ui :as ui]))
 
 (defn render-at [c node]
   (let [comp (if (fn? c) (c) c)]

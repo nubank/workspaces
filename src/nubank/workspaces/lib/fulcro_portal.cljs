@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.lib.fulcro-portal
+(ns nubank.workspaces.lib.fulcro-portal
   (:require [cljs.spec.alpha :as s]
             [fulcro-css.css :as css]
             [fulcro.client :as fulcro]

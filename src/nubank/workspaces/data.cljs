@@ -1,6 +1,6 @@
-(ns nubank.cljs.workspaces.data
+(ns nubank.workspaces.data
   (:require [fulcro.client :as fulcro]
-            [nubank.cljs.workspaces.ui.events :as events]))
+            [nubank.workspaces.ui.events :as events]))
 
 (defonce app* (atom (fulcro/new-fulcro-client
                       :shared

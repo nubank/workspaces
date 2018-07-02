@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.ui.events
+(ns nubank.workspaces.ui.events
   (:require [cljs.spec.alpha :as s]
             [clojure.string :as str]
             [goog.object :as gobj]

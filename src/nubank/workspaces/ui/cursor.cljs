@@ -1,7 +1,7 @@
-(ns nubank.cljs.workspaces.ui.cursor
+(ns nubank.workspaces.ui.cursor
   (:require [fulcro.client.primitives :as fp]
             [fulcro.client.localized-dom :as dom]
-            [nubank.cljs.workspaces.ui.events :as dom-events]
+            [nubank.workspaces.ui.events :as dom-events]
             [goog.object :as gobj]))
 
 (defn get-nth [i s]

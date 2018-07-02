@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.ui
+(ns nubank.workspaces.ui
   (:require [clojure.set :as set]
             [cognitect.transit :as t]
             [fulcro-css.css :as css]
@@ -6,15 +6,15 @@
             [fulcro.client.mutations :as fm]
             [fulcro.client.primitives :as fp]
             [goog.object :as gobj]
-            [nubank.cljs.workspaces.data :as data]
-            [nubank.cljs.workspaces.lib.local-storage :as local-storage]
-            [nubank.cljs.workspaces.model :as wsm]
-            [nubank.cljs.workspaces.ui.core :as uc]
-            [nubank.cljs.workspaces.ui.events :as events]
-            [nubank.cljs.workspaces.ui.grid-layout :as grid]
-            [nubank.cljs.workspaces.ui.spotlight :as spotlight]
-            [nubank.cljs.workspaces.ui.modal :as modal]
-            [nubank.cljs.workspaces.ui.highlight :as highlight]))
+            [nubank.workspaces.data :as data]
+            [nubank.workspaces.lib.local-storage :as local-storage]
+            [nubank.workspaces.model :as wsm]
+            [nubank.workspaces.ui.core :as uc]
+            [nubank.workspaces.ui.events :as events]
+            [nubank.workspaces.ui.grid-layout :as grid]
+            [nubank.workspaces.ui.spotlight :as spotlight]
+            [nubank.workspaces.ui.modal :as modal]
+            [nubank.workspaces.ui.highlight :as highlight]))
 
 (defn card-title [card-id]
   (name card-id))

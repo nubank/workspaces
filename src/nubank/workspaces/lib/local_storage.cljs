@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.lib.local-storage
+(ns nubank.workspaces.lib.local-storage
   (:refer-clojure :exclude [get set!])
   (:require [cljs.reader :refer [read-string]]
             [cognitect.transit :as t]))

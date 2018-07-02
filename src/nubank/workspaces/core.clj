@@ -1,6 +1,6 @@
-(ns nubank.cljs.workspaces.core
+(ns nubank.workspaces.core
   (:require [cljs.test]
-            [nubank.cljs.workspaces.model :as wsm]))
+            [nubank.workspaces.model :as wsm]))
 
 (defmacro defcard
   ([sym & settings]

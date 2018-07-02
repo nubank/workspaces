@@ -1,10 +1,10 @@
-(ns nubank.cljs.workspaces.ui.modal
+(ns nubank.workspaces.ui.modal
   (:require [goog.dom :as gdom]
             [goog.object :as gobj]
             [goog.style :as style]
             [fulcro.client.localized-dom :as dom]
             [fulcro.client.primitives :as fp]
-            [nubank.cljs.workspaces.ui.events :as events]))
+            [nubank.workspaces.ui.events :as events]))
 
 (defn render-subtree-into-container [parent c node]
   (js/ReactDOM.unstable_renderSubtreeIntoContainer parent c node))

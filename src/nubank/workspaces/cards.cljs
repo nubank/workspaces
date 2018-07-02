@@ -1,14 +1,14 @@
-(ns nubank.cljs.workspaces.cards
-  (:require [nubank.cljs.workspaces.core :as ws]
-            [nubank.cljs.workspaces.model :as wsm]
-            [nubank.cljs.workspaces.card-types.fulcro :as ct.fulcro]
-            [nubank.cljs.workspaces.lib.fulcro-portal :as f.portal]
-            [nubank.cljs.workspaces.ui.spotlight :as spotlight]
-            [nubank.cljs.workspaces.ui.highlight :as highlight]
+(ns nubank.workspaces.cards
+  (:require [nubank.workspaces.core :as ws]
+            [nubank.workspaces.model :as wsm]
+            [nubank.workspaces.card-types.fulcro :as ct.fulcro]
+            [nubank.workspaces.lib.fulcro-portal :as f.portal]
+            [nubank.workspaces.ui.spotlight :as spotlight]
+            [nubank.workspaces.ui.highlight :as highlight]
             [cljs.test :refer [is testing]]
             [fulcro.client.primitives :as fp]
-            [nubank.cljs.workspaces.ui :as ui]
-            [nubank.cljs.workspaces.card-types.react :as ct.react]))
+            [nubank.workspaces.ui :as ui]
+            [nubank.workspaces.card-types.react :as ct.react]))
 
 (def options
   '[{::spotlight/type ::spotlight/test,
@@ -532,7 +532,7 @@
   {::wsm/align      {:flex "1"}
    ::wsm/card-width 5 ::wsm/card-height 12}
   (ct.react/react-card
-    (highlight/highlight {::highlight/source   "(ws/defcard\n purchases-charges\n {:nubank.cljs.workspaces.model/card-width 7,\n  :nubank.cljs.workspaces.model/card-height 11}\n cards/widget-card-config\n (cards/fulcro-card\n  chargeback/PurchaseCharges\n  {:nubank.shuffle.workspaces.card-types/gen-env gen-env,\n   :nubank.shuffle.workspaces.card-types/load true}))"
+    (highlight/highlight {::highlight/source   "(ws/defcard\n purchases-charges\n {:nubank.workspaces.model/card-width 7,\n  :nubank.workspaces.model/card-height 11}\n cards/widget-card-config\n (cards/fulcro-card\n  chargeback/PurchaseCharges\n  {:nubank.shuffle.workspaces.card-types/gen-env gen-env,\n   :nubank.shuffle.workspaces.card-types/load true}))"
                           ::highlight/language "clojure"})))
 
 (ws/deftest test-build-grid

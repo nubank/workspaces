@@ -1,15 +1,15 @@
-(ns nubank.cljs.workspaces.card-types.fulcro
+(ns nubank.workspaces.card-types.fulcro
   (:require [fulcro.client.dom :as dom]
             [fulcro.client.primitives :as fp]
             [fulcro.inspect.client :as fi.client]
             [goog.functions :as gfun]
-            [nubank.cljs.workspaces.lib.fulcro-portal :as f.portal]
-            [nubank.cljs.workspaces.card-types.util :as ct.util]
-            [nubank.cljs.workspaces.data :as data]
-            [nubank.cljs.workspaces.model :as wsm]
-            [nubank.cljs.workspaces.ui :as ui]
+            [nubank.workspaces.lib.fulcro-portal :as f.portal]
+            [nubank.workspaces.card-types.util :as ct.util]
+            [nubank.workspaces.data :as data]
+            [nubank.workspaces.model :as wsm]
+            [nubank.workspaces.ui :as ui]
             [cljs.spec.alpha :as s]
-            [nubank.cljs.workspaces.ui.core :as uc]))
+            [nubank.workspaces.ui.core :as uc]))
 
 (defn inspector-set-app [card-id]
   (let [{::keys [app*]} (data/active-card card-id)

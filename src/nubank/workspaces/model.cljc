@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.model
+(ns nubank.workspaces.model
   (:require [clojure.spec.alpha :as s]))
 
 (s/def ::card-id symbol?)

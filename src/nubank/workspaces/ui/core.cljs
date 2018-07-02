@@ -1,5 +1,5 @@
-(ns nubank.cljs.workspaces.ui.core
-  (:require [nubank.cljs.workspaces.model :as wsm]
+(ns nubank.workspaces.ui.core
+  (:require [nubank.workspaces.model :as wsm]
             [fulcro.client.localized-dom :as dom]
             [fulcro.client.primitives :as fp]))
 

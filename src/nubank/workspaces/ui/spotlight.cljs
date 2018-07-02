@@ -1,11 +1,11 @@
-(ns nubank.cljs.workspaces.ui.spotlight
-  (:require [nubank.cljs.workspaces.ui.cursor :as cursor]
+(ns nubank.workspaces.ui.spotlight
+  (:require [nubank.workspaces.ui.cursor :as cursor]
             [fulcro.client.localized-dom :as dom]
             [goog.object :as gobj]
-            [nubank.cljs.workspaces.ui.events :as dom-events]
+            [nubank.workspaces.ui.events :as dom-events]
             [fulcro.client.mutations :as fm]
             [fulcro.client.primitives :as fp]
-            [nubank.cljs.workspaces.ui.core :as uc]))
+            [nubank.workspaces.ui.core :as uc]))
 
 (def max-results 50)
 

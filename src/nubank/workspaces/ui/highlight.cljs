@@ -1,4 +1,4 @@
-(ns nubank.cljs.workspaces.ui.highlight
+(ns nubank.workspaces.ui.highlight
   (:require [fulcro.client.primitives :as fp]
             [fulcro.client.localized-dom :as dom]
             ["highlight.js" :as hljs]))

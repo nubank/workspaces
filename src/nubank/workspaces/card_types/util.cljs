@@ -1,9 +1,9 @@
-(ns nubank.cljs.workspaces.card-types.util
+(ns nubank.workspaces.card-types.util
   (:require [goog.object :as gobj]
             [goog.dom :as gdom]
             [goog.style :as gstyle]
-            [nubank.cljs.workspaces.model :as wsm]
-            [nubank.cljs.workspaces.data :as data]))
+            [nubank.workspaces.model :as wsm]
+            [nubank.workspaces.data :as data]))
 
 (def predef-alignments
   {::wsm/align-top         {}
