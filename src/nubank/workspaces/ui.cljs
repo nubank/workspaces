@@ -438,13 +438,14 @@
   (dom/div :.container$workspaces-workspace-container
     (dom/div :.tools
       (dom/div :.breakpoint (str breakpoint))
-      (dom/select {:value    "-"
-                   :onChange (fn [e]
-                               (fp/transact! this [`(copy-breakpoint-layout ~{::source-breakpoint (.. e -target -value)})])
-                               (gobj/set (.-target e) "selectedIndex" 0))}
-        (dom/option {:value "-"} "Copy layout")
-        (for [{:keys [id]} grid/breakpoints]
-          (dom/option {:key id :value id} id)))
+      (if-not workspace-static?
+        (dom/select {:value    "-"
+                     :onChange (fn [e]
+                                 (fp/transact! this [`(copy-breakpoint-layout ~{::source-breakpoint (.. e -target -value)})])
+                                 (gobj/set (.-target e) "selectedIndex" 0))}
+          (dom/option {:value "-"} "Copy layout")
+          (for [{:keys [id]} grid/breakpoints]
+            (dom/option {:key id :value id} id))))
       (uc/button {:onClick #(refresh-cards (active-workspace-cards (fp/get-reconciler this)) false)} "Refresh cards")
       (uc/button {:onClick #(fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"]
                               [`(create-workspace ~{::workspace-title (str workspace-title " copy")
