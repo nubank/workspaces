@@ -1,4 +1,4 @@
-(ns nubank.workspaces.cards
+(ns nubank.workspaces.workspaces.cards
   (:require [nubank.workspaces.core :as ws]
             [nubank.workspaces.model :as wsm]
             [nubank.workspaces.card-types.fulcro :as ct.fulcro]

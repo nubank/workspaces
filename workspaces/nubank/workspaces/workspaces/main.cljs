@@ -1,6 +1,6 @@
 (ns nubank.workspaces.workspaces.main
   (:require [nubank.workspaces.core :as ws]
-            [nubank.workspaces.cards]))
+            [nubank.workspaces.workspaces.cards]))
 
 (defonce init (ws/mount))
 
