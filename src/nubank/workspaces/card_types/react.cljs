@@ -22,7 +22,8 @@
 
      ::wsm/refresh
      (fn [node]
-       (render-at component node))
+       (if-let [comp (render-at component node)]
+         (.forceUpdate comp)))
 
      ::wsm/render
      (fn [node]

@@ -8,7 +8,8 @@
             [cljs.test :refer [is testing]]
             [fulcro.client.primitives :as fp]
             [nubank.workspaces.ui :as ui]
-            [nubank.workspaces.card-types.react :as ct.react]))
+            [nubank.workspaces.card-types.react :as ct.react]
+            [fulcro.client.localized-dom :as dom]))
 
 (def options
   '[{::spotlight/type ::spotlight/test,
@@ -535,6 +536,22 @@
     (highlight/highlight {::highlight/source   "(ws/defcard\n purchases-charges\n {:nubank.workspaces.model/card-width 7,\n  :nubank.workspaces.model/card-height 11}\n cards/widget-card-config\n (cards/fulcro-card\n  chargeback/PurchaseCharges\n  {:nubank.shuffle.workspaces.card-types/gen-env gen-env,\n   :nubank.shuffle.workspaces.card-types/load true}))"
                           ::highlight/language "clojure"})))
 
+(defn child-component [props]
+  (dom/div "Inside changed"))
+
+(fp/defsc MyComponent [this _]
+  {}
+  (dom/div {} "Hello World Now it goes"
+    (dom/create-element child-component)))
+
+(def my-component (fp/factory MyComponent))
+
+(ws/defcard my-component-card
+  {::wsm/align      {:flex "1"}
+   ::wsm/card-width 2 ::wsm/card-height 6}
+  (ct.react/react-card
+    (my-component {})))
+
 (ws/deftest test-build-grid
   (is (= (ui/build-grid [(ui/block 2 2 0 0)])
          {[0 0] (ui/block 2 2 0 0)
@@ -551,3 +568,6 @@
 
   (is (= (ui/smart-item-position 8 (ui/block 4 15 0 0) [(ui/block 5 12 0 0)])
          (ui/block 4 15 0 12))))
+
+(ws/defworkspace sample
+  "[\"^ \",\"c10\",[[\"^ \",\"i\",\"~$nubank.workspaces.cards/highlight-card\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"minH\",2],[\"^ \",\"i\",\"~$nubank.workspaces.cards/spotlight-card\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"~$nubank.workspaces.cards/test-build-grid\",\"w\",2,\"h\",4,\"x\",0,\"y\",12,\"^1\",2],[\"^ \",\"i\",\"~$nubank.workspaces.cards/test-smart-item-position\",\"w\",2,\"h\",4,\"x\",2,\"y\",12,\"^1\",2]],\"c8\",[[\"^ \",\"w\",3,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",6],[\"^ \",\"w\",4,\"x\",4,\"i\",\"^2\",\"y\",0,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",0,\"i\",\"^3\",\"y\",12,\"^1\",2,\"h\",4],[\"^ \",\"w\",3,\"x\",0,\"i\",\"^4\",\"y\",6,\"^1\",2,\"h\",6]],\"c16\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c14\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c2\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",2,\"h\",17,\"x\",0,\"y\",12,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",0,\"y\",29,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",0,\"y\",33,\"^1\",2]],\"c12\",[[\"^ \",\"w\",5,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",12],[\"^ \",\"w\",4,\"x\",5,\"i\",\"^2\",\"y\",0,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",0,\"i\",\"^3\",\"y\",12,\"^1\",2,\"h\",7],[\"^ \",\"w\",3,\"x\",2,\"i\",\"^4\",\"y\",12,\"^1\",2,\"h\",8]],\"c4\",[[\"^ \",\"w\",4,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",12],[\"^ \",\"w\",4,\"x\",0,\"i\",\"^2\",\"y\",12,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",0,\"i\",\"^3\",\"y\",29,\"^1\",2,\"h\",4],[\"^ \",\"w\",2,\"x\",2,\"i\",\"^4\",\"y\",29,\"^1\",2,\"h\",4]],\"c18\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c20\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c6\",[[\"^ \",\"w\",5,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",12],[\"^ \",\"w\",4,\"x\",0,\"i\",\"^2\",\"y\",12,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",4,\"i\",\"^3\",\"y\",12,\"^1\",2,\"h\",4],[\"^ \",\"w\",2,\"x\",4,\"i\",\"^4\",\"y\",16,\"^1\",2,\"h\",4]]]")
