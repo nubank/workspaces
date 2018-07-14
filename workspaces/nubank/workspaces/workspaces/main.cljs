@@ -3,5 +3,3 @@
             [nubank.workspaces.workspaces.cards]))
 
 (defonce init (ws/mount))
-
-
