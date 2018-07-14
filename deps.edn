@@ -8,7 +8,9 @@
   fulcrologic/fulcro        {:mvn/version "2.5.11"}
   binaryage/devtools        {:mvn/version "0.9.9"}
   org.clojure/test.check    {:mvn/version "0.10.0-alpha3"}
-  camel-snake-kebab         {:mvn/version "0.4.0"}}
+  camel-snake-kebab         {:mvn/version "0.4.0"}
+  cljsjs/react-grid-layout  {:mvn/version "0.16.6-0"}
+  cljsjs/highlight          {:mvn/version "9.12.0-2"}}
 
  :aliases
  {:dev
