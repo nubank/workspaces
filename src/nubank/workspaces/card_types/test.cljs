@@ -332,7 +332,7 @@
 
         (test-success? test-results)
         (do
-          (header-color uc/color-green-dark)
+          (header-color uc/color-mint-green)
           (mapv test-result summary))
 
         :else
@@ -449,7 +449,7 @@
                                (map :test-results)
                                (filter seq)
                                (every? test-success?))
-                        uc/color-green-dark
+                        uc/color-mint-green
                         uc/color-red-dark))
 
         running?

@@ -3,7 +3,8 @@
             [fulcro.client.localized-dom :as dom]
             [garden.selectors :as gs]
             [goog.object :as gobj]
-            ["react-grid-layout" :as ReactGridLayout :refer [WidthProvider Responsive]]))
+            ["react-grid-layout" :as ReactGridLayout :refer [WidthProvider Responsive]]
+            [nubank.workspaces.ui.core :as uc]))
 
 (def column-size 120)
 (def max-columns 20)
@@ -68,8 +69,8 @@
                              [:&:after
                               {:content       "\"\""
                                :position      "absolute"
-                               :right         "3px"
-                               :bottom        "3px"
+                               :right         "5px"
+                               :bottom        "5px"
                                :width         "5px"
                                :height        "5px"
                                :border-right  "2px solid rgba(0, 0, 0, 0.4)"
@@ -92,7 +93,7 @@
                          :cursor              "se-resize"}]
 
                        (grid-item-css {:background    "#fff"
-                                       :border-radius "4px"
+                                       :border-radius uc/card-border-radius
                                        :display       "flex"})]
    :css-include       []
    :componentDidMount (fn []

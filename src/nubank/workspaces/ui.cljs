@@ -167,63 +167,87 @@
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id ::wsm/card-header-style ::show-source?
                        {[::workspace-root "singleton"] [::settings]}]
-   :css               [[:.container {:display        "flex"
+   :css               [[:.container {:background     uc/color-white
+                                     :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
+                                     :border-radius  uc/card-border-radius
+                                     :display        "flex"
                                      :flex-direction "column"
                                      :flex           "1"
                                      :max-width      "100%"}]
-                       [:.header {:background    uc/color-dark-grey
-                                  :border-radius "4px 4px 0 0"
-                                  :color         "#f1f1f1"
-                                  :cursor        "grab"
-                                  :padding       "4px 5px"}
-                        {:cursor "-webkit-grab"}
-                        {:cursor "-moz-grab"}]
+
                        [:$cljs-workflow-static-workflow
                         [:.header {:cursor "default"}]]
-                       [:.header-title {:display "flex"}]
-                       [:.toolbar {:align-items     "center"
-                                   :background      uc/color-dark-grey
-                                   :display         "flex"
-                                   :font-family     uc/font-helvetica
-                                   :justify-content "flex-end"
-                                   :margin          "3px -5px -4px"
-                                   :padding         "4px"}
+
+                       [:.header
+                        uc/font-os12sb
+                        {:background    uc/color-mystic
+                         :border-radius (str uc/card-border-radius " " uc/card-border-radius " 0 0")
+                         :color         uc/color-limed-spruce
+                         :cursor        "grab"}
+                        {:cursor "-webkit-grab"}
+                        {:cursor "-moz-grab"}]
+
+                       [:.header-title
+                        {:align-items "center"
+                         :display     "flex"
+                         :padding     "6px 10px"
+                         :box-sizing  "border-box"}]
+
+                       [:.card-title
+                        {:flex          "1"
+                         :overflow      "hidden"
+                         :text-overflow "ellipsis"
+                         :white-space   "nowrap"}]
+
+                       [:.card-actions
+                        {:display        "grid"
+                         :grid-auto-flow "column"
+                         :align-items    "center"
+                         :grid-gap       "5px"}
+
+                        [:.close {:cursor      "pointer"
+                                  :font-size   "23px"
+                                  :line-height "1em"}]
+
+                        [:button {:visibility "hidden"}]]
+
+                       [:.toolbar
+                        {:align-items     "center"
+                         :background      uc/color-geyser
+                         :display         "flex"
+                         :justify-content "flex-end"
+                         :padding         "6px"}
                         [:button {:margin-left "5px"}]]
+
                        [:$react-draggable-dragging
                         [:.header
                          {:cursor "grabbing"}
                          {:cursor "-webkit-grabbing"}
                          {:cursor "-moz-grabbing"}]]
-                       [:.card-title {:flex          "1"
-                                      :font-size     "12px"
-                                      :font-family   uc/font-helvetica
-                                      :overflow      "hidden"
-                                      :text-overflow "ellipsis"
-                                      :white-space   "nowrap"}]
-                       [:.card-actions {:display     "flex"
-                                        :align-items "center"
-                                        :font-size   "12px"
-                                        :font-family "monospace"}
-                        [:.close {:cursor "pointer"}]
-                        [:button {:visibility   "hidden"
-                                  :margin-right "5px"}]]
+
                        [:$cljs-workspaces-extended-views
                         [:.card-actions:hover
                          [:button {:visibility "visible"}]]]
+
                        [:$cljs-workflow-static-workflow
                         [:.card-actions {:display "none"}]]
-                       [:.card {:display         "flex"
-                                :flex            "1"
-                                :align-items     "center"
-                                :justify-content "center"
-                                :overflow        "auto"
-                                :padding         "10px"}]
-                       [:.source {:background    "#fff"
-                                  :max-width     "80vw"
-                                  :max-height    "80vh"
-                                  :overflow      "auto"
-                                  :border-radius "4px"
-                                  :box-shadow    uc/box-shadow}]]
+
+                       [:.card
+                        {:display         "flex"
+                         :flex            "1"
+                         :align-items     "center"
+                         :justify-content "center"
+                         :overflow        "auto"
+                         :padding         "10px"}]
+
+                       [:.source
+                        {:background    "#fff"
+                         :max-width     "80vw"
+                         :max-height    "80vh"
+                         :overflow      "auto"
+                         :padding       "0 12px"
+                         :border-radius uc/card-border-radius
+                         :box-shadow    uc/box-shadow}]]
    :css-include       [highlight/Highlight modal/Modal]
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)

@@ -3,16 +3,30 @@
             [fulcro.client.localized-dom :as dom]
             [fulcro.client.primitives :as fp]))
 
+(def color-white "#fff")
 (def color-light-grey "#b1b1b1")
 (def color-dark-grey "#404040")
+(def color-mystic "#d9e2e9")
+(def color-limed-spruce "#323c47")
+(def color-geyser "#cdd7e0")
+(def color-fiord "#4b5b6d")
 
 (def color-red-dark "#ca2c29")
 (def color-red-light "#f37976")
 (def color-green-dark "#187d11")
+(def color-mint-green "#8efd86")
 (def color-green-light "#61d658")
 (def color-yellow "#dea54e")
 
+(def card-border-radius "6px")
+
 (def font-helvetica "Helvetica Neue,Arial,Helvetica,sans-serif")
+(def font-open-sans "'Open Sans', sans-serif")
+
+(def font-os12sb
+  {:font-size   "12px"
+   :font-family font-open-sans
+   :font-weight "600"})
 
 (defn header-color [card bg]
   ((::wsm/set-card-header-style card) {:background bg})
@@ -30,23 +44,23 @@
 
 (fp/defsc Button
   [this props]
-  {:css [[:.button {:background-color "#fff"
-                    :border           "none"
-                    :border-radius    "2px"
-                    :color            "#333"
-                    :cursor           "pointer"
-                    :display          "inline-block"
-                    :font-family      "Verdana, sans-serif"
-                    :font-size        "11px"
-                    :padding          "0px 5px"
-                    :line-height      "1.5"
-                    :margin-bottom    "0"
-                    :font-weight      "400"
-                    :text-align       "center"
-                    :white-space      "nowrap"
-                    :vertical-align   "middle"
-                    :user-select      "none"
-                    :outline          "none"}
+  {:css [[:.button
+          font-os12sb
+          {:background-color color-fiord
+           :border           "none"
+           :border-radius    "2px"
+           :color            color-white
+           :cursor           "pointer"
+           :display          "inline-block"
+           :padding          "2px 8px"
+           :line-height      "1.5"
+           :margin-bottom    "0"
+           :text-align       "center"
+           :white-space      "nowrap"
+           :vertical-align   "middle"
+           :user-select      "none"
+           :outline          "none"}
+          #_
           [:&:hover {:background-color "#e6e6e6"
                      :border-color     "#adadad"
                      :color            "#333"}]]]}
