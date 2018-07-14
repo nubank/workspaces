@@ -12,7 +12,7 @@
                                           :http-root          "resources/public"
                                           :http-port          3689
                                           :http-resource-root "."}
-                       :modules          {:main {:entries [nubank.cljs.workspaces.workspaces.main]}}}
+                       :modules          {:main {:entries [nubank.workspaces.workspaces.main]}}}
 
           :ci         {:target    :karma
                        :ns-regexp "-ws$"
