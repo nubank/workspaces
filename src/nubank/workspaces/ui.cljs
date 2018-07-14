@@ -205,9 +205,7 @@
                          :align-items    "center"
                          :grid-gap       "5px"}
 
-                        [:.close {:cursor      "pointer"
-                                  :font-size   "23px"
-                                  :line-height "1em"}]
+                        [:.close uc/close-icon-css]
 
                         [:button {:visibility "hidden"}]]
 
@@ -534,49 +532,51 @@
                    [:.tabs {:display    "flex"
                             :flex-wrap  "nowrap"
                             :overflow-x "auto"}]
-                   [:.tab {:border        "1px solid #404040"
-                           :border-bottom "none"
-                           :border-radius "3px 3px 0 0"
-                           :cursor        "pointer"
-                           :display       "flex"
-                           :flex          "0 0 auto"
-                           :align-items   "center"
-                           :margin-bottom "-2px"
-                           :margin-right  "6px"
-                           :font-family   uc/font-helvetica
-                           :font-size     "14px"
-                           :overflow      "hidden"
-                           :padding       "3px 5px 5px"
-                           :z-index       "1"}
-                    [:&.active-tab {:background uc/color-dark-grey
-                                    :color      "#fff"}
-                     [:.workspace-title {:color "#fff"}]]]
+                   [:.tab
+                    uc/font-os12sb
+                    {:background    uc/color-iron
+                     :border-bottom "none"
+                     :border-radius "6px 6px 0 0"
+                     :color         uc/color-limed-spruce
+                     :cursor        "pointer"
+                     :display       "flex"
+                     :flex          "0 0 auto"
+                     :align-items   "center"
+                     :margin-right  "1px"
+                     :margin-bottom "-2px"
+                     :overflow      "hidden"
+                     :padding       "7px 12px 9px"
+                     :z-index       "1"}
+                    [:&.active-tab {:background uc/color-white}]]
                    [:.active {:border     "1px solid #404040"
                               :display    "flex"
                               :flex       "1"
                               :min-height "0"}]
+                   [:.new-tab {:font-size "23px"
+                               :line-height "1em"}]
                    [:.welcome {:background      uc/color-dark-grey
                                :color           "#fff"
                                :flex            "1"
                                :display         "flex"
                                :align-items     "center"
                                :justify-content "center"}]
-                   [:.workspace-title {:flex          "1"
-                                       :background    "transparent"
-                                       :border        "1px solid transparent"
-                                       :box-shadow    "0 0 2px 0 transparent"
-                                       :cursor        "pointer"
-                                       :font-family   uc/font-helvetica
-                                       :font-size     "14px"
-                                       :text-overflow "ellipsis"}
+                   [:.workspace-title
+                    uc/font-os12sb
+                    {:flex          "1"
+                     :background    "transparent"
+                     :border        "1px solid transparent"
+                     :box-shadow    "0 0 2px 0 transparent"
+                     :cursor        "pointer"
+                     :text-overflow "ellipsis"}
                     [:&:focus {:background "#fff"
                                :border     "1px solid #0079bf"
                                :box-shadow "0 0 2px 0 #0284c6"
                                :outline    "0"
                                :color      "#000 !important"
                                :cursor     "text"}]]
-                   [:.workspace-close {:cursor      "pointer"
-                                       :margin-left "10px"}]]
+                   [:.workspace-close
+                    uc/close-icon-css
+                    {:margin-left "10px"}]]
    :css-include   [Workspace]}
   (let [update-title
         (fn [new-title workspace-id]
@@ -607,7 +607,7 @@
                                                           (.blur (.-target %)))}))
             (dom/div :.workspace-close {:onClick #(fp/transact! this [`(close-workspace {::workspace-id ~workspace-id})])}
               "×")))
-        (dom/div :.tab {:onClick #(fp/transact! this [`(create-workspace {})])}
+        (dom/div :.tab.new-tab {:onClick #(fp/transact! this [`(create-workspace {})])}
           "+"))
       (dom/div :.active
         (if active-workspace
@@ -723,7 +723,7 @@
                                  :height     "100vh"
                                  :padding    "10px"}]
                    [:.menu {:padding-right "10px"
-                            :font-family   uc/font-helvetica
+                            :font-family   uc/font-open-sans
                             :flex-shrink   "0"
                             :overflow      "auto"
                             :min-width     "300px"}]

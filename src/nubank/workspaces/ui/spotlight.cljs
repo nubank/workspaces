@@ -77,12 +77,15 @@
                          :padding     "10px"
                          :width       "100%"}]
                        [:.options
-                        {:font-family uc/font-helvetica
+                        {:font-family uc/font-open-sans
                          :margin-top  "10px"}]
                        [:.option
-                        {:cursor    "pointer"
-                         :font-size "18px"
-                         :padding   "2px 3px"}]
+                        {:cursor        "pointer"
+                         :font-size     "16px"
+                         :padding       "2px 3px"
+                         :white-space   "nowrap"
+                         :overflow      "hidden"
+                         :text-overflow "ellipsis"}]
                        [:.option-selected
                         {:background "#582074"
                          :color      "#fff"}]]

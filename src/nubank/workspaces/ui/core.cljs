@@ -10,6 +10,7 @@
 (def color-limed-spruce "#323c47")
 (def color-geyser "#cdd7e0")
 (def color-fiord "#4b5b6d")
+(def color-iron "#e7e8e9")
 
 (def color-red-dark "#ca2c29")
 (def color-red-light "#f37976")
@@ -41,6 +42,11 @@
 
 (def box-shadow-2 "rgba(0, 0, 0, 0.15) 0px 1px 4px,
                    rgba(0, 0, 0, 0.15) 0px 1px 1px")
+
+(def close-icon-css
+  {:cursor      "pointer"
+   :font-size   "23px"
+   :line-height "1em"})
 
 (fp/defsc Button
   [this props]
