@@ -18,4 +18,8 @@
    ["test" "workspaces"]
 
    :extra-deps
-   {fulcrologic/fulcro-inspect {:mvn/version "2.2.0-beta8"}}}}}
+   {fulcrologic/fulcro-inspect {:mvn/version "2.2.1"}}}
+
+  :shadow
+  {:extra-paths
+   ["src-shadow-cljsjs"]}}}
