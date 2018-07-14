@@ -7,8 +7,8 @@
                        :asset-path       "/js/workspaces"
                        :compiler-options {:closure-output-charset "US-ASCII"}
                        :devtools         {:preloads           [devtools.preload fulcro.inspect.preload]
-                                          :before-load        nubank.cljs.workspaces.core/before-load
-                                          :after-load         nubank.cljs.workspaces.core/after-load
+                                          :before-load        nubank.workspaces.core/before-load
+                                          :after-load         nubank.workspaces.core/after-load
                                           :http-root          "resources/public"
                                           :http-port          3689
                                           :http-resource-root "."}
