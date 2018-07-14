@@ -29,8 +29,8 @@
     (swap! data/workspace-definitions* assoc workspace-id
       workspace)))
 
-(defn init-test [sym forms]
-  (init-card sym (test-card sym forms))
+(defn init-test [sym forms card-form]
+  (init-card sym (assoc (test-card sym forms) ::wsm/card-form card-form))
   (let [test-ns (symbol (namespace sym))]
     (if-not (contains? @data/card-definitions* test-ns)
       (init-card test-ns (test-ns-card test-ns)))))

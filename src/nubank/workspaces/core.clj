@@ -26,7 +26,8 @@
   (let [fqsym  (if (namespace sym)
                  sym
                  (symbol (name (ns-name *ns*)) (name sym)))
-        forms' (mapv (fn [exp] `(fn [] ~exp)) forms)]
+        forms' (mapv (fn [exp] `(fn [] ~exp)) forms)
+        card-form &form]
     `(do
-       (init-test '~fqsym ~forms')
+       (init-test '~fqsym ~forms' '~card-form)
        (cljs.test/deftest ~sym ~@forms))))

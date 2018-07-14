@@ -235,13 +235,6 @@
   (let [{::wsm/keys [render-toolbar]} (data/active-card card-id)
         {::wsm/keys [card-form test?]} (data/card-definition card-id)]
     (dom/div :.container
-      (if show-source?
-        (modal/modal {::modal/on-close #(fm/set-value! this ::show-source? false)}
-          (dom/div :.source
-            (highlight/highlight
-              {::highlight/source
-               (with-out-str
-                 (cljs.pprint/pprint card-form))}))))
       (dom/div :.header$workspaces-cljs-card-drag-handle {:style (merge card-header-style
                                                                         (if (get-in props [[::workspace-root "singleton"] ::settings ::hide-card-header?])
                                                                           {:display "none"}))}
@@ -259,7 +252,14 @@
           (dom/div :.toolbar (render-toolbar))))
       (dom/div :.card (merge-with merge
                         (::wsm/node-props (data/card-definition card-id))
-                        {:ref #(gobj/set this "cardNode" %)})))))
+                        {:ref #(gobj/set this "cardNode" %)}))
+      (if show-source?
+        (modal/modal {::modal/on-close #(fm/set-value! this ::show-source? false)}
+          (dom/div :.source
+            (highlight/highlight
+              {::highlight/source
+               (with-out-str
+                 (cljs.pprint/pprint card-form))})))))))
 
 (def workspace-card (fp/factory WorkspaceCard {:keyfn ::wsm/card-id}))
 
