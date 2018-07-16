@@ -122,28 +122,95 @@ To define cards you use the `ws/defcard` macro, here is an example to create a R
     (element "div" {} "Hello World")))
 ```
 
-## Sharing workspaces
+You can use this to mount any React component, for a [re-frame](https://github.com/Day8/re-frame/) for example, you can
+use `(reagent/as-element [re-frame-root])` as the content.
+
+### Stateful React cards
+
+Usually libraries like Fulcro or Re-frame will manage the state and trigger render in
+the proper times, but if you wanna do something with raw React, you can provide an
+atom to be the app state, and the card will watch that atom and triggers a root render
+everytime it changes.
+
+```clojure
+(ws/defcard counter-example-card
+  (let [counter (atom 0)]
+    (ct.react/react-card
+      counter
+      (element "div" {}
+        (str "Count: " @counter)
+        (element "button" {:onClick #(swap! counter inc)} "+")))))
+```
+
+### Fulcro cards
+
+Workspaces is built with [Fulcro](http://fulcro.fulcrologic.com/) and has some extra support for it. Using the `fulcro-card`
+you can easely mount a Fulcro component with the entire app, here is an example:
+
+```clojure
+(ns myapp.workspaces.fulcro-demo-cards
+  (:require [fulcro.client.primitives :as fp]
+            [fulcro.client.localized-dom :as dom]
+            [nubank.workspaces.core :as ws]
+            [nubank.workspaces.card-types.fulcro :as ct.fulcro]
+            [nubank.workspaces.lib.fulcro-portal :as f.portal]
+            [fulcro.client.mutations :as fm]))
+
+(fp/defsc FulcroDemo
+  [this {:keys [counter]}]
+  {:initial-state (fn [_] {:counter 0})
+   :ident         (fn [] [::id "singleton"])
+   :query         [:counter]}
+  (dom/div
+    (str "Fulcro counter demo [" counter "]")
+    (dom/button {:onClick #(fm/set-value! this :counter (inc counter))} "+")))
+
+(ws/defcard fulcro-demo-card
+  (ct.fulcro/fulcro-card
+    {::f.portal/root FulcroDemo}))
+```
+
+By default the Fulcro card will wrap your component will a thin root, by having always
+having components with idents you can leverage generic mutations, this is recommended
+over making a special Root. But if you want to send your own root, you can set the
+`::f.porta/wrap-root? false`. Here are more options available:
+
+* `::f.portal/wrap-root?` (default: `true`) Wraps component into a light root
+* `::f.portal/app` (default: `{}`) This is the app configuration, same options you could send to `fulcro/new-fulcro-client`
+
+### Test cards
+
+Workspaces has default integration with `cljs.test`, but you have to start the tests
+using `ws/deftest` instead of `cljs.test/deftest`. The `ws/deftest` will also emit a
+`cljs.test/deftest` call, so you can use the same for running on CI. Example test card:
+
+```clojure
+(ws/deftest sample-test
+  (is (= 1 1)))
+```
+
+### Namespace test cards
+
+When you create test cards using `ws/deftest`, a card will be automatically created to
+run on the test on that namespace, just click on the test namespace name on the index
+to load the card.
+
+### Card anathomy [TODO]
+
+## Using Workspaces [TODO]
+
+## Sharing workspaces [TODO]
 
 ## Keyboard shortcuts
 
 Here is a list of available shortcuts, all of then use `alt+shift` followed by a key:
 
-* `alt+shift+a`: Add new card (open spotlight for card picking)
+* `alt+shift+a`: Add card to current workspace (open spotlight for card picking)
 * `alt+shift+i`: Toggle index view
 * `alt+shift+h`: Toggle card headers
 * `alt+shift+n`: Create new local workspace
 * `alt+shift+w`: Close current workspace
 
-## Developing custom card types
+## Styling [TODO]
 
-## Differences from devcards
-
-I have appreciate Bruces work from the first day in Devcards, I loved the idea of creating
-the user interfaces in small blocks that can be re-accessed at any time. That said I wanted
-to have more control over which cards/tests I wanna see in any given time on the screen,
-I have this idea that I should be able to any number of cards from any number of different
-namespaces, positioning then in the screen as fit to take max advantage of screen space.
-
-Also I wanted the tool to have extensibility at its core, as your user interface grows
-you start needing more and more specialized tools, and I wanted a system where the user
-can provide those tools at card level.
+## Developing custom card types [TODO]
