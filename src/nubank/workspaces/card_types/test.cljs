@@ -1,5 +1,6 @@
 (ns nubank.workspaces.card-types.test
   (:require
+    [clojure.data]
     [cljs.core.async :as async :refer [go chan go-loop put! close! <!]]
     [cljs.test]
     [cljs.reader :refer [read-string]]
