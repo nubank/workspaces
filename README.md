@@ -124,6 +124,16 @@ To define cards you use the `ws/defcard` macro, here is an example to create a R
 
 ## Sharing workspaces
 
+## Keyboard shortcuts
+
+Here is a list of available shortcuts, all of then use `alt+shift` followed by a key:
+
+* `alt+shift+a`: Add new card (open spotlight for card picking)
+* `alt+shift+i`: Toggle index view
+* `alt+shift+h`: Toggle card headers
+* `alt+shift+n`: Create new local workspace
+* `alt+shift+w`: Close current workspace
+
 ## Developing custom card types
 
 ## Differences from devcards
