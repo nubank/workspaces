@@ -3,6 +3,7 @@
   (:require [nubank.workspaces.model :as wsm]
             [nubank.workspaces.card-types.util :as ct.util]
             [cljsjs.react.dom]
+            [goog.object :as gobj]
             [nubank.workspaces.data :as data]
             [nubank.workspaces.ui :as ui]))
 
@@ -23,7 +24,8 @@
      ::wsm/refresh
      (fn [node]
        (if-let [comp (render-at component node)]
-         (.forceUpdate comp)))
+         (if (gobj/get comp "forceUpdate")
+           (.forceUpdate comp))))
 
      ::wsm/render
      (fn [node]
