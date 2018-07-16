@@ -95,7 +95,10 @@
            app* (gobj/get this "app")]
        (if-not persistence-key (dispose-app @app*))
        (reset! app* nil)
-       (js/ReactDOM.unmountComponentAtNode (dom/node this))))}
+       (js/ReactDOM.unmountComponentAtNode (dom/node this))))
+
+   :shouldComponentUpdate
+   (fn [_ _] false)}
 
   (dom/div))
 
