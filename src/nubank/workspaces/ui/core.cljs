@@ -54,7 +54,7 @@
           font-os12sb
           {:background-color color-fiord
            :border           "none"
-           :border-radius    "2px"
+           :border-radius    "3px"
            :color            color-white
            :cursor           "pointer"
            :display          "inline-block"

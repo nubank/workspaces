@@ -448,8 +448,8 @@
                        [:.grid {:flex       "1"
                                 :overflow-y "scroll"
                                 :overflow-x "hidden"}]
-                       [:.tools {:background  uc/color-dark-grey
-                                 :color       "#fff"
+                       [:.tools {:background  uc/color-white
+                                 :color       uc/color-limed-spruce
                                  :padding     "5px 9px"
                                  :display     "flex"
                                  :align-items "center"}
@@ -530,13 +530,13 @@
                                  :flex           "1"
                                  :flex-direction "column"
                                  :max-width      "100%"}]
-                   [:.tabs {:display    "flex"
-                            :flex-wrap  "nowrap"
+                   [:.tabs {:display   "flex"
+                            :flex-wrap "nowrap"
                             :overflow-x "auto"}]
                    [:.tab
                     uc/font-os12sb
                     {:background    uc/color-iron
-                     :border-bottom "none"
+                     :border        (str "1px solid " uc/color-geyser)
                      :border-radius "6px 6px 0 0"
                      :color         uc/color-limed-spruce
                      :cursor        "pointer"
@@ -544,16 +544,17 @@
                      :flex          "0 0 auto"
                      :align-items   "center"
                      :margin-right  "1px"
-                     :margin-bottom "-2px"
+                     :margin-bottom "-1px"
                      :overflow      "hidden"
                      :padding       "7px 12px 9px"
                      :z-index       "1"}
-                    [:&.active-tab {:background uc/color-white}]]
-                   [:.active {:border     "1px solid #404040"
+                    [:&.active-tab {:background    uc/color-white
+                                    :border-bottom (str "1px solid " uc/color-white)}]]
+                   [:.active {:border     (str "1px solid " uc/color-geyser)
                               :display    "flex"
                               :flex       "1"
                               :min-height "0"}]
-                   [:.new-tab {:font-size "23px"
+                   [:.new-tab {:font-size   "23px"
                                :line-height "1em"}]
                    [:.welcome {:background      uc/color-dark-grey
                                :color           "#fff"
