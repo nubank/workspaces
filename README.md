@@ -322,7 +322,27 @@ a description of what each does:
 * Export: Export current workspace layouts to data (logged into browser console)
 * Delete: Delete current workspace
 
-## Sharing workspaces [TODO]
+### Sharing workspaces
+
+A lot of times your workspaces will be disposable, just pull a few components, work
+and throw away. But other times you like to create more durable ones, like a kitchen
+sink of all your components buildings blocks, or maybe a setup that works nice for a
+specific task. You a lot of effort to make it look good on many different responsive
+breakpoints. So would be a pain if every user of the system had to redo the task to
+organize those types of workspaces.
+
+To solve that, you can use the `Export` button on the workspace toolbar. It outputs
+the workspace layout as a transit data on the console. You can copy that, and use
+to store that workspace setup on the code, making it available to any other person
+using this workspace setup.
+
+```clojure
+(ws/defworkspace ui-block
+  "[\"^ \",\"c10\",[[\"^ \",\"i\",\"~$fulcro.incubator.workspaces.ui.reakit-ws/reakit-base\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"minH\",2]],\"c8\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c16\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c14\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c2\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c12\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c4\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c18\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c20\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]],\"c6\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",4,\"x\",0,\"y\",0,\"^1\",2]]]"))
+```
+
+When you open a shared workspace, you can't change it, it's static, but you can duplicate
+it and change the copy as you please.
 
 ## Keyboard shortcuts
 
@@ -333,7 +353,5 @@ Here is a list of available shortcuts, all of then use `alt+shift` followed by a
 * `alt+shift+h`: Toggle card headers
 * `alt+shift+n`: Create new local workspace
 * `alt+shift+w`: Close current workspace
-
-## Styling [TODO]
 
 ## Developing custom card types [TODO]
