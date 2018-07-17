@@ -42,8 +42,12 @@
    :css-include   [ui/WorkspacesRoot]}
   (ui/workspaces-root root))
 
-(defn mount []
-  (swap! data/app* fulcro/mount Root (js/document.querySelector "#app")))
+(defn mount
+  "Mount the workspaces enviroment, by default it will try to mount at #app node.
+  Use the selector string to pass a querySelector string to pick the mount node."
+  ([] (mount "#app"))
+  ([selector]
+   (swap! data/app* fulcro/mount Root (js/document.querySelector selector))))
 
 (defn before-load []
   (reset! data/card-definitions-snap* @data/card-definitions*))
