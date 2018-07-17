@@ -214,18 +214,22 @@
                          :align-items "center"}
 
                         [:&:hover
-                         [:.more {:display "grid"}]]]
+                         [:.more {:display "block"}]]]
 
                        [:.more
-                        {:background uc/color-mystic
-                         :position   "absolute"
-                         :display    "none"
-                         :right      "0"
-                         :top        "100%"
-                         :margin-top "-10px"
-                         :padding    "15px 10px 10px"
-                         :grid-gap   "6px"
-                         :z-index    "999"}]
+                        {:position    "absolute"
+                         :display     "none"
+                         :right       "0"
+                         :top         "100%"
+                         :margin-top  "-10px"
+                         :padding-top "10px"
+                         :z-index     "999"}]
+
+                       [:.more-actions
+                        {:display    "grid"
+                         :background uc/color-mystic
+                         :padding    "5px 10px 10px"
+                         :grid-gap   "6px"}]
 
                        [:.toolbar
                         {:align-items     "center"
@@ -285,11 +289,12 @@
             (dom/div :.more-container
               (uc/more-icon {})
               (dom/div :.more
-                (if card-form
-                  (uc/button {:onClick #(fm/set-value! this ::show-source? true)}
-                    "Source"))
-                (if-not test?
-                  (uc/button {:onClick export-size} "Size"))))
+                (dom/div :.more-actions
+                  (if card-form
+                    (uc/button {:onClick #(fm/set-value! this ::show-source? true)}
+                      "Source"))
+                  (if-not test?
+                    (uc/button {:onClick export-size} "Size")))))
             (dom/div :.close {:onClick #(fp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
         (if render-toolbar
           (dom/div :.toolbar (render-toolbar))))
