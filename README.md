@@ -315,12 +315,12 @@ Each column size has 120~140px, varies depending on page width.
 When you have an open workspace, there is a toolbar with some action buttons, here is
 a description of what each does:
 
-* Copy layout: actually a select here, use this to copy the layout from a different responsive breakpoint
-* Refresh cards: triggers a refresh on every card on this active workspace
-* Duplicate: creates a copy of current workspace
-* Unify layouts: makes every breakpoint have the same layout as the current active one
-* Export: Export current workspace layouts to data (logged into browser console)
-* Delete: Delete current workspace
+* `Copy layout`: actually a select here, use this to copy the layout from a different responsive breakpoint
+* `Refresh cards`: triggers a refresh on every card on this active workspace
+* `Duplicate`: creates a copy of current workspace
+* `Unify layouts`: makes every breakpoint have the same layout as the current active one
+* `Export`: Export current workspace layouts to data (logged into browser console)
+* `Delete`: Delete current workspace
 
 ### Sharing workspaces
 

@@ -161,12 +161,13 @@
 (fp/defsc WorkspaceCard
   [this
    {::wsm/keys [card-id card-header-style]
-    ::keys     [show-source?]
+    ::keys     [show-source? show-more?]
     :as        props}
    {::keys [export-size]}]
   {:initial-state     (fn [data] data)
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id ::wsm/card-header-style ::show-source?
+                       ::show-more?
                        {[::workspace-root "singleton"] [::settings]}]
    :css               [[:.container {:background     uc/color-white
                                      :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
@@ -192,7 +193,8 @@
                         {:align-items "center"
                          :display     "flex"
                          :padding     "6px 10px"
-                         :box-sizing  "border-box"}]
+                         :box-sizing  "border-box"
+                         :position    "relative"}]
 
                        [:.card-title
                         {:flex          "1"
@@ -207,8 +209,19 @@
                          :grid-gap       "5px"}
 
                         [:.close uc/close-icon-css]
+                        [:.more-icon {:cursor "pointer"}]
 
-                        [:button {:visibility "hidden"}]]
+                        #_[:button {:visibility "hidden"}]]
+
+                       [:.more
+                        {:background uc/color-mystic
+                         :position   "absolute"
+                         :right      "0"
+                         :top        "100%"
+                         :padding    "10px"
+                         :display    "grid"
+                         :grid-gap   "6px"
+                         :z-index    "999"}]
 
                        [:.toolbar
                         {:align-items     "center"
@@ -262,14 +275,18 @@
                                                                         (if (get-in props [[::workspace-root "singleton"] ::settings ::hide-card-header?])
                                                                           {:display "none"}))}
         (dom/div :.header-title
+          (if show-more?
+            (dom/div :.more
+              (if card-form
+                (uc/button {:onClick #(fm/set-value! this ::show-source? true)}
+                  "Source"))
+              (if-not test?
+                (uc/button {:onClick export-size} "Size"))))
           (dom/div :.card-title {:title (str card-id)}
             (card-title card-id))
           (dom/div :.card-actions
-            (if card-form
-              (uc/button {:onClick #(fm/set-value! this ::show-source? true)}
-                "Source"))
-            (if-not test?
-              (uc/button {:onClick export-size} "Size"))
+            (uc/more-icon {:classes [:.more-icon]
+                           :onClick #(fm/toggle! this ::show-more?)})
             (dom/div :.close {:onClick #(fp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
         (if render-toolbar
           (dom/div :.toolbar (render-toolbar))))
@@ -530,8 +547,8 @@
                                  :flex           "1"
                                  :flex-direction "column"
                                  :max-width      "100%"}]
-                   [:.tabs {:display   "flex"
-                            :flex-wrap "nowrap"
+                   [:.tabs {:display    "flex"
+                            :flex-wrap  "nowrap"
                             :overflow-x "auto"}]
                    [:.tab
                     uc/font-os12sb
