@@ -28,9 +28,5 @@
     "url": "git+https://github.com/nubank/shuffle.common.git"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nubank/shuffle/issues"
-  },
-  "homepage": "https://github.com/nubank/shuffle"
+  "license": "ISC"
 }
