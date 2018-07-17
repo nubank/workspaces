@@ -198,7 +198,81 @@ When you create test cards using `ws/deftest`, a card will be automatically crea
 run on the test on that namespace, just click on the test namespace name on the index
 to load the card.
 
-### Card anathomy
+## Card settings
+
+### Card size
+
+You can define settings for your card, like what initial size it should have, to do that
+you can add maps to the card definition:
+
+```clojure
+(ns myapp.workspaces.configurated-cards
+  (:require [nubank.workspaces.core :as ws]
+            [nubank.workspaces.model :as wsm]))
+
+(ws/defcard sized-card
+  {::wsm/card-width 5
+   ::wsm/card-height 7}
+  (ct.react/react-card
+    (dom/div "Foo")))
+```
+
+The measuremnt is in grid tiles.
+
+### Card content alignment
+
+For the built-in cards you can also determine how the
+element will be positioned in the card. So far we have been using the center card position
+but depending on the kind of component you are trying that might not be the best option.
+
+```clojure
+(ws/defcard positioned-top
+  {::wsm/card-width  5
+   ::wsm/card-height 7
+   ::wsm/align       {:flex 1}}
+  (ct.react/react-card
+    (dom/div "Foo on top")))
+```
+
+The card container is a flex element, so the previous example will put the card on
+top and make it occupy the full width of the container.
+
+The default `::wsm/align` is:
+
+```clojure
+{:display         "flex"
+ :align-items     "center"
+ :justify-content "center"}
+```
+
+### Container node props
+
+Using the key `::wsm/node-props` you can set the style or other properties of the container node.
+
+```clojure
+(ws/defcard styles-card
+  {::wsm/node-props {:style {:background "red" :color "white"}}}
+  (ct.react/react-card
+    (dom/div "I'm in red")))
+```
+
+### Setting templates
+
+You will probably find some combinations of card settings you keep repeating, it's totally ok to
+put those in variables and re-use. You can also send as many configuration maps as you
+want, in fact the return of `(ct.react/react-card)` is also a map, they all just get
+merged and stored as the card definition.
+
+```clojure
+(def purple-card {::wsm/node-props {:style {:background "#79649a"}}})
+(def align-top {::wsm/align {:flex 1}})
+
+(ws/defcard widget-card
+  purple-card
+  align-top
+  (ct.react/react-card
+    (dom/div "💜")))
+```
 
 ## Using Workspaces [TODO]
 

@@ -21,7 +21,7 @@
 (s/def ::card-height pos-int?)
 (s/def ::card-resizable? boolean?)
 (s/def ::card-unlisted? boolean?)
-(s/def ::card (s/keys :req [::init] :opt [::title ::node-props]))
+(s/def ::card (s/keys :req [::init] :opt [::node-props]))
 (s/def ::workspace-layouts map?)
 
 (s/def ::align (s/or :predefined keyword? :custom map?))
