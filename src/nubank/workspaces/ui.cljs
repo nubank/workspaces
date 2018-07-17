@@ -226,10 +226,11 @@
                          :z-index     "999"}]
 
                        [:.more-actions
-                        {:display    "grid"
-                         :background uc/color-mystic
-                         :padding    "5px 10px 10px"
-                         :grid-gap   "6px"}]
+                        {:display       "grid"
+                         :background    uc/color-mystic
+                         :border-radius "0 0 6px 6px"
+                         :padding       "5px 10px 10px"
+                         :grid-gap      "6px"}]
 
                        [:.toolbar
                         {:align-items     "center"
