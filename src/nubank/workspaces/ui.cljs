@@ -246,7 +246,7 @@
                          [:button {:visibility "visible"}]]]
 
                        [:$cljs-workflow-static-workflow
-                        [:.card-actions {:display "none"}]]
+                        [:.close {:display "none"}]]
 
                        [:.card
                         {:display         "flex"
@@ -279,7 +279,6 @@
                                                                         (if (get-in props [[::workspace-root "singleton"] ::settings ::hide-card-header?])
                                                                           {:display "none"}))}
         (dom/div :.header-title
-
           (dom/div :.card-title {:title (str card-id)}
             (card-title card-id))
           (dom/div :.card-actions
