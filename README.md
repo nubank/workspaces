@@ -177,6 +177,9 @@ over making a special Root. But if you want to send your own root, you can set t
 
 * `::f.portal/wrap-root?` (default: `true`) Wraps component into a light root
 * `::f.portal/app` (default: `{}`) This is the app configuration, same options you could send to `fulcro/new-fulcro-client`
+* `::f.portal/initial-state` (default `{}`) Accepts a value or a function. A value will
+be used to call the initial state function of your root. If you provide a function, the
+value returned by it will be the initial state.
 
 ### Test cards
 
@@ -195,7 +198,7 @@ When you create test cards using `ws/deftest`, a card will be automatically crea
 run on the test on that namespace, just click on the test namespace name on the index
 to load the card.
 
-### Card anathomy [TODO]
+### Card anathomy
 
 ## Using Workspaces [TODO]
 
