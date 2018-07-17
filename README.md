@@ -268,6 +268,7 @@ merged and stored as the card definition.
 (def align-top {::wsm/align {:flex 1}})
 
 (ws/defcard widget-card
+  {::wsm/card-width 3 ::wsm/card-height 7}
   purple-card
   align-top
   (ct.react/react-card
