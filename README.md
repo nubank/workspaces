@@ -274,7 +274,53 @@ merged and stored as the card definition.
     (dom/div "💜")))
 ```
 
-## Using Workspaces [TODO]
+## Using Workspaces
+
+Now that we know how to define cards, it's time to learn how to work with then.
+
+Imagine when you are about to start working on some components of your project, you can
+start by looking at the index or searching using the spotlight feature (`alt+shift+a`).
+
+By clicking on the card names you will add then to the current workspace (one will be
+created if you don't have any open).
+
+The idea here is that you add just the cards there are relevant to the work you need
+to do, and create a workspace that can make the best use of your screen pixels.
+
+And workspaces comes on tabs, enabling you to quickly switch between different workspace
+settings.
+
+The following topics will describe what you can do to help you manage your workspaces. 
+
+### Creating workspaces
+
+You can create new workspaces by clicking at the `+` tab on the interface. The workspaces
+are created and stored in your browser local storage. You can rename the workspace
+by clicking on its tab while it's active.
+
+### Responsive grid
+
+Your cards are placed in a responsive grid, this means that the number of columns you
+have available will vary according to your page width size. In the right below the
+workspace tabs you can see how many columns you have available right now (eg: `c8` means 8 columns).
+
+Each responsive breakpoint will have stored separated, so you can arange a workspace
+to fit that available width. The sizes and positions will be recorded separated by each
+column numbers (they vary from 2 to 20).
+
+Each column size has 120~140px, varies depending on page width.
+
+### Workspace actions
+
+When you have an open workspace, there is a toolbar with some action buttons, here is
+a description of what each does:
+
+* Copy layout: actually a select here, use this to copy the layout from a different responsive breakpoint
+* Refresh cards: triggers a refresh on every card on this active workspace
+* Duplicate: creates a copy of current workspace
+* Unify layouts: makes every breakpoint have the same layout as the current active one
+* Export: Export current workspace layouts to data (logged into browser console)
+* Delete: Delete current workspace
 
 ## Sharing workspaces [TODO]
 
