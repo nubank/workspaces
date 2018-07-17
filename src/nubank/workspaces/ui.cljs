@@ -287,15 +287,16 @@
           (dom/div :.card-title {:title (str card-id)}
             (card-title card-id))
           (dom/div :.card-actions
-            (dom/div :.more-container
-              (uc/more-icon {})
-              (dom/div :.more
-                (dom/div :.more-actions
-                  (if card-form
-                    (uc/button {:onClick #(fm/set-value! this ::show-source? true)}
-                      "Source"))
-                  (if-not test?
-                    (uc/button {:onClick export-size} "Size")))))
+            (if (or card-form (not test?))
+              (dom/div :.more-container
+                (uc/more-icon {})
+                (dom/div :.more
+                  (dom/div :.more-actions
+                    (if card-form
+                      (uc/button {:onClick #(fm/set-value! this ::show-source? true)}
+                        "Source"))
+                    (if-not test?
+                      (uc/button {:onClick export-size} "Size"))))))
             (dom/div :.close {:onClick #(fp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
         (if render-toolbar
           (dom/div :.toolbar (render-toolbar))))
