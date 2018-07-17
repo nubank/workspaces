@@ -223,7 +223,7 @@
                          :right      "0"
                          :top        "100%"
                          :margin-top "-10px"
-                         :padding    "20px 10px 10px"
+                         :padding    "15px 10px 10px"
                          :grid-gap   "6px"
                          :z-index    "999"}]
 
