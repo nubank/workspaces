@@ -1,12 +1,6 @@
 # Workspaces
 
-Current release:
-
 Workspaces is a component development environment for ClojureScript, inspired by [devcards](https://github.com/bhauman/devcards).
-
-## Play around
-
-If you like to first get a feel about how workspaces function, you can try our live demo with some cards.
 
 ## Setup
 
