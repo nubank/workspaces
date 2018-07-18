@@ -175,6 +175,13 @@ over making a special Root. But if you want to send your own root, you can set t
 be used to call the initial state function of your root. If you provide a function, the
 value returned by it will be the initial state.
 
+When you use a Fulcro card you will notice it has an extra toolbar, in this toolbar you
+have two action buttons:
+
+* `Inspect`: this is an integration with [Fulcro Inspect](https://github.com/fulcrologic/fulcro-inspect), if you have the
+extension active on Chrome, it will select the application of the card for inspection.
+* `Restart`: this will do a full refresh on app, unmount and mount again
+
 ### Test cards
 
 Workspaces has default integration with `cljs.test`, but you have to start the tests
