@@ -1,5 +1,5 @@
 (ns nubank.workspaces.core
-  (:require [cljs.test]
+  (:require [clojure.test :as test]
             [nubank.workspaces.model :as wsm]))
 
 (defmacro defcard
@@ -27,6 +27,8 @@
     `(init-workspace '~fqsym {::wsm/workspace-layouts ~layouts
                               ::wsm/form-hash         ~form-hash})))
 
+(defn init-test "Stub method, does nothing in CLJ" [_ _ _])
+
 (defmacro deftest
   "Creates a test card, you can replace your cljs.test/deftest call by this, will
   work the same, but also define a card (the original cljs.test/deftest will also be
@@ -39,4 +41,4 @@
         card-form &form]
     `(do
        (init-test '~fqsym ~forms' '~card-form)
-       (cljs.test/deftest ~sym ~@forms))))
+       (test/deftest ~sym ~@forms))))
