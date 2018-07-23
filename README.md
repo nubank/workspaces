@@ -359,4 +359,10 @@ Here is a list of available shortcuts, all of then use `alt+shift` followed by a
 * `alt+shift+n`: Create new local workspace
 * `alt+shift+w`: Close current workspace
 
-## Developing custom card types [TODO]
+## Developing custom card types
+
+### Card life cycle
+
+### Extending a card type
+
+### Positioned cards

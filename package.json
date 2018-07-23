@@ -18,7 +18,7 @@
     "react-dom": "^16.4.1",
     "react-grid-layout": "^0.16.6",
     "react-test-renderer": "^16.4.1",
-    "shadow-cljs": "^2.4.20"
+    "shadow-cljs": "^2.4.21"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
