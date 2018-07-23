@@ -39,10 +39,10 @@
   (let [real-node (create-wrapper-node card)]
     (assoc instance
       ::wsm/dispose
-      (fn [_] (dispose real-node))
+      (fn [_] (if dispose (dispose real-node)))
 
       ::wsm/refresh
-      (fn [_] (refresh real-node))
+      (fn [_] (if refresh (refresh real-node)))
 
       ::wsm/render
       (fn [node]

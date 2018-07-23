@@ -46,7 +46,7 @@
 
 (defn dispose-card [card-id]
   (when-let [{::wsm/keys [node dispose]} (get @data/active-cards* card-id)]
-    (dispose node)
+    (if dispose (dispose node))
     (swap! data/active-cards* dissoc card-id)))
 
 (defn render-card [{::wsm/keys [card-id component node]}]
@@ -75,7 +75,7 @@
    (doseq [[card-id {::wsm/keys [node refresh]}] cards]
      (if (and check-changes? (card-changed? card-id))
        (restart-card card-id)
-       (refresh node)))))
+       (if refresh (refresh node))))))
 
 (defn active-workspace-cards [reconciler]
   (let [state (-> reconciler fp/app-state deref)]
