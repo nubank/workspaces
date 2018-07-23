@@ -1,6 +1,11 @@
 (ns nubank.workspaces.core
-  (:require [clojure.test :as test]
+  (:require [clojure.test]
+            [cljs.test]
             [nubank.workspaces.model :as wsm]))
+
+(defmacro if-cljs
+  [then else]
+  (if (:ns &env) then else))
 
 (defmacro defcard
   "Defines a new card, sym is a symbol for the card name (like def), and settings
@@ -41,4 +46,6 @@
         card-form &form]
     `(do
        (init-test '~fqsym ~forms' '~card-form)
-       (test/deftest ~sym ~@forms))))
+       (if-cljs
+         (cljs.test/deftest ~sym ~@forms)
+         (clojure.test/deftest ~sym ~@forms)))))

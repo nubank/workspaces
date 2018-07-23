@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0-preview3]
+- Fix warning for deftest in cljs
+
 ## [1.0.0-preview2]
 - Fix deftest to work with Clojure code
 
