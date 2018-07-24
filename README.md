@@ -384,7 +384,7 @@ In next section we will learn about the card life cycle and how you can hook on 
 
 The card life cycle happens according the following events:
 
-1. Initialization
+#### Initialization
 
 When cards are loaded, their settings are stored locally in an atom. Workspaces tries
 to make this process as light as possible, adding many cards should have the minimum
@@ -398,7 +398,7 @@ and add the same card to another workspace, it will just call a new render, but 
 new initialization (they potentially will share state, but that might vary depending
 on the card implementation).
 
-2. Refresh
+#### Refresh
 
 A refresh is intended to force a new render of the component. In the beginning of these
 docs we asked you setup the load hook `nubank.workspaces.core/after-load`, this hook
@@ -428,7 +428,7 @@ card definition itself. Workflows will detect when the card has changed (by comp
 the old form with the new form) and when it changes, the whole card is disposed and
 remounted.
 
-3. Dispose
+#### Dispose
 
 A card is disposed when all it's active references are removed from the open workspaces.
 When you remove a card from a workspace, it might get disposed, but only if this card
@@ -563,6 +563,23 @@ of components before `1.0.0`.
 Use this provide extra functionatility for your cards.
 
 ### Controlling the card header style
+
+You might noticed that the test cards are able to change the card header style to reflect
+the test status, and you can do this to your cards too.
+
+Let's add a button on our toolbar to change the header color:
+
+```clojure
+      ::wsm/render-toolbar
+      (fn []
+        (dom/div
+          (uc/button {:onClick #((::wsm/set-card-header-style card) {:background "#cc0"})} "Change header color")
+          (uc/button {:onClick #(js/console.log "State" @state-atom)} "Log app state")))
+```
+
+By calling the `::wsm/set-card-header-style` you can set any css you want to the header.
+
+That's all, go make some nice cards!
 
 ## Roadmap
 
