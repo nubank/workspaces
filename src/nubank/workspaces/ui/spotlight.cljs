@@ -65,8 +65,10 @@
    :css               [[:.area-container
                         {:height "600px"}]
                        [:.container
-                        {:background "#e2e2e2"
-                         :padding    "10px"}]
+                        {:background    "#e2e2e2"
+                         :border-radius "3px"
+                         :box-shadow    "0 6px 6px rgba(0, 0, 0, 0.26), 0 10px 20px rgba(0, 0, 0, 0.19), 0 0 2px rgba(0,0,0,0.3)"
+                         :padding       "10px"}]
                        [:.search
                         {:background  "#cccbcd"
                          :border      "0"
