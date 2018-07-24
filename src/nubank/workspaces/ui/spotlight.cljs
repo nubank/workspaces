@@ -9,7 +9,8 @@
 
 (def max-results 50)
 
-(def value->label (comp str ::id))
+(defn value->label [{::keys [id label]}]
+  (or label (str id)))
 
 (defn escape-re [input]
   (let [re (js/RegExp. "([.*+?^=!:${}()|[\\]\\/\\\\])" "g")]
@@ -64,8 +65,10 @@
    :css               [[:.area-container
                         {:height "600px"}]
                        [:.container
-                        {:background "#e2e2e2"
-                         :padding    "10px"}]
+                        {:background    "#e2e2e2"
+                         :border-radius "3px"
+                         :box-shadow    "0 6px 6px rgba(0, 0, 0, 0.26), 0 10px 20px rgba(0, 0, 0, 0.19), 0 0 2px rgba(0,0,0,0.3)"
+                         :padding       "10px"}]
                        [:.search
                         {:background  "#cccbcd"
                          :border      "0"
@@ -86,6 +89,9 @@
                          :white-space   "nowrap"
                          :overflow      "hidden"
                          :text-overflow "ellipsis"}]
+                       [:.option-type
+                        {:font-size  "11px"
+                         :font-style "italic"}]
                        [:.option-selected
                         {:background "#582074"
                          :color      "#fff"}]]
@@ -110,11 +116,12 @@
                                       (.stopPropagation %2)
                                       (on-select %))
                ::cursor/factory    (fn [opt]
-                                     (dom/div {:className (str (:option css) " " (if (= opt value) (:option-selected css)))
-                                               :onClick   #(do
-                                                             (on-change opt)
-                                                             (on-select opt))}
-                                       (value->label opt)))
+                                     (dom/div {:classes [(:option css) (if (= opt value) (:option-selected css))]
+                                               :onClick #(do
+                                                           (on-change opt)
+                                                           (on-select opt))}
+                                       (dom/div (value->label opt))
+                                       (dom/div {:classes [(:option-type css)]} (some-> opt ::type name))))
                ::cursor/value->key value->label
                ::dom-events/target #(gobj/get this "input")})))))))
 

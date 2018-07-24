@@ -711,10 +711,16 @@
 (defn open-spotlight [this]
   (let [{::keys [spotlight]} (fp/props this)
         state   (-> (fp/get-reconciler this) fp/app-state deref)
-        options (into [] (map (fn [[_ {::wsm/keys [card-id test?]}]]
-                                {::spotlight/type (if test? ::spotlight/test ::spotlight/card)
-                                 ::spotlight/id   card-id}))
-                      (::wsm/card-id state))]
+        options (-> []
+                    (into (map (fn [[_ {::wsm/keys [card-id test?]}]]
+                                 {::spotlight/type (if test? ::spotlight/test ::spotlight/card)
+                                  ::spotlight/id   card-id}))
+                          (::wsm/card-id state))
+                    (into (map (fn [[_ {::keys [workspace-id workspace-title]}]]
+                                 {::spotlight/type  ::spotlight/workspace
+                                  ::spotlight/id    workspace-id
+                                  ::spotlight/label workspace-title}))
+                          (::workspace-id state)))]
     (fp/transact! (fp/get-reconciler this) (fp/get-ident spotlight/Spotlight spotlight)
       `[(spotlight/reset {::spotlight/options ~options})])
     (fm/set-value! this ::show-spotlight? true)))
@@ -805,7 +811,6 @@
       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
         (dom/div :.menu
           "WORKSPACES"
-
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
             (dom/div
               (dom/div
