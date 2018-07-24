@@ -118,7 +118,7 @@ To define cards you use the `ws/defcard` macro, here is an example to create a R
 
 You can use this to mount any React component, for a [re-frame](https://github.com/Day8/re-frame/) for example, you can
 use `(reagent/as-element [re-frame-root])` as the content. For a complete re-frame demo
-check https://github.com/nubank/workspaces/blob/master/examples/workspaces-shadow-example/src/myapp/workspaces/reframe_demo_cards.cljs.
+check [these sources](https://github.com/nubank/workspaces/blob/master/examples/workspaces-shadow-example/src/myapp/workspaces/reframe_demo_cards.cljs).
 
 ### Stateful React cards
 
