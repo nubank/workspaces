@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.0.0-preview4-dev]
+## [1.0.0-preview4]
 - Open workspace via spotlight
 
 ## [1.0.0-preview3]
