@@ -455,6 +455,42 @@ a chance to free resources from that card.
           (gdom/setTextContent node (str "Card rendered, count: " @counter "!")))}))})
 ```
 
+### Positioned cards
+
+If we try to use our alignment settings with our new card, you will see it will not work.
+
+This is because the alignment implementation is a wrapper utility, and you have to manually
+call it to get it's functionality, let's see how we can extend our card to support it:
+
+```clojure
+(ws/defcard custom-card
+  {::wsm/align {:flex 1}
+   ::wsm/init
+   (fn [card]
+     (let [counter (atom 0)]
+       ; wrap our definition with positioned.card, from nubank.workspaces.card-types.util
+       (ct.util/positioned-card card
+         {::wsm/dispose
+          (fn [node]
+            ; doesn't make a real difference for resource cleaning, just a dummy example
+            ; so you can replace the code
+            (gdom/setTextContent node ""))
+
+          ::wsm/refresh
+          (fn [node]
+            (gdom/setTextContent node (str "Card updated, count: " (swap! counter inc) "!")))
+
+          ::wsm/render
+          (fn [node]
+            (gdom/setTextContent node (str "Card rendered, count: " @counter "!")))})))})
+```
+
+Now we can use the `::wsm/align` as usual. I like to point out you can use this strategy
+yourself to create wrapper functions that can add functionality to a card definition, they
+are good composition blocks.
+
 ### Extending a card type
 
-### Positioned cards
+### Adding a toolbar
+
+### Controlling the card header style
