@@ -9,4 +9,12 @@
                            :aliases [:dev]}
   :jar-exclusions [#"^workspaces/.*" #"^nubank/workspaces/workspaces/.*" #"\.DS_Store" #"^examples/"]
   :deploy-repositories [["releases" :clojars]]
+  :aliases {"pre-release"  [["vcs" "assert-committed"]
+                            ["change" "version" "leiningen.release/bump-version" "release"]
+                            ["vcs" "commit"]
+                            ["vcs" "tag" "v"]]
+
+            "post-release" [["change" "version" "leiningen.release/bump-version"]
+                            ["vcs" "commit"]
+                            ["vcs" "push"]]}
   :profiles {:dev {:source-paths ["src" "workspaces"]}})
