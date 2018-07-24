@@ -1,0 +1,14 @@
+;; shadow-cljs configuration
+{:deps true
+
+ :builds
+ {:workspaces {:target     :browser
+               :output-dir "resources/public/js/workspaces"
+               :asset-path "/js/workspaces"
+               :devtools   {:preloads           [devtools.preload fulcro.inspect.preload]
+                            :after-load         nubank.workspaces.core/after-load
+                            :loader-mode        :eval
+                            :http-root          "resources/public"
+                            :http-port          3655
+                            :http-resource-root "."}
+               :modules    {:main {:entries [myapp.workspaces.main]}}}}}

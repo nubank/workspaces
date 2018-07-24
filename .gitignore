@@ -13,5 +13,7 @@ pom.xml.asc
 .shadow-cljs
 .cpcache
 /resources/public/js
-/node_modules
+node_modules
 /out
+/examples/workspaces-shadow-example/resources/public/js
+/examples/workspaces-shadow-example/resources/target

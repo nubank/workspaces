@@ -1,0 +1,10 @@
+{:paths
+ ["src"]
+
+ :deps
+ {binaryage/devtools         {:mvn/version "0.9.10"}
+  fulcrologic/fulcro         {:mvn/version "2.5.12"}
+  fulcrologic/fulcro-inspect {:mvn/version "2.2.1"}
+  nubank/workspaces          {:mvn/version "1.0.0-preview3"}
+  org.clojure/core.async     {:mvn/version "0.4.474"}
+  re-frame                   {:mvn/version "0.10.5"}}}
