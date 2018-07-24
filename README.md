@@ -491,6 +491,43 @@ are good composition blocks.
 
 ### Extending a card type
 
+Here let's create a custom implementation for a React card, this implementation will assume
+the app state is an atom, and will have a timer ticking in a root property on the state
+atom.
+
+```clojure
+; it's a good pattern to have the card init function separated from the card function
+; this will make easier for others to use your card as a base for extension.
+(defn react-timed-card-init [card state-atom component]
+  (let [{::wsm/keys [dispose refresh render] :as react-card} (ct.react/react-card-init card state-atom component)
+        timer (js/setInterval #(swap! state-atom update ::ticks inc) 1000)]
+    (assoc react-card
+      ::wsm/dispose
+      (fn [node]
+        ; clean the timer on dispose
+        (js/clearInterval timer)
+        (dispose node))
+
+      ::wsm/refresh
+      (fn [node]
+        (refresh node))
+
+      ::wsm/render
+      (fn [node]
+        (render node)))))
+
+(defn react-timed-card [state-atom component]
+  {::wsm/init #(react-timed-card-init % state-atom component)})
+
+(ws/defcard react-timed-card-sample
+  (let [state (atom {})]
+    (react-timed-card state
+      ; note since we are not using the macro it's better to send a function to avoid
+      ; premature rendering
+      (fn []
+        (dom/div (str "Tick: " (::ticks @state)))))))
+```
+
 ### Adding a toolbar
 
 ### Controlling the card header style
