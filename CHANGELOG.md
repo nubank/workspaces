@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0-preview4-dev]
+- Open workspace via spotlight
+
 ## [1.0.0-preview3]
 - Fix warning for deftest in cljs
 - Prevent errors when card doesn't define refresh
