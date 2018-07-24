@@ -136,6 +136,10 @@ everytime it changes.
         (element "button" {:onClick #(swap! counter inc)} "+")))))
 ```
 
+*Important:* The `react-card` is actually a macro, the reason is that we wrap your render
+call into a function that will only be called when that card is initialized. This prevents
+the render calls to happen when cards are just loading.
+
 ### Fulcro cards
 
 Workspaces is built with [Fulcro](http://fulcro.fulcrologic.com/) and has some extra support for it. Using the `fulcro-card`
@@ -361,7 +365,95 @@ Here is a list of available shortcuts, all of then use `alt+shift` followed by a
 
 ## Developing custom card types
 
+To demonstrate what a custom card takes to be created, let's take the following example:
+
+```clojure
+(ws/defcard custom-card
+  {::wsm/init
+   (fn [card]
+     {::wsm/render
+      (fn [node]
+        (gdom/setTextContent node (str "Rendering card " (::wsm/card-id card))))})})
+```
+
+So card definitions are also maps. The `::wsm/init` will be called upon card initialization.
+
+In next section we will learn about the card life cycle and how you can hook on it.
+
 ### Card life cycle
+
+The card life cycle happens according the following events:
+
+1. Initialization
+
+When cards are loaded, their settings are stored locally in an atom. Workspaces tries
+to make this process as light as possible, adding many cards should have the minimum
+overhead possible, cards are not initialized until they are placed in a visible workspace.
+
+When the card is initialized, the map returned by it will be stored and used to manage
+the card while it lives.
+
+A card is a shared unit across workspaces, so if you have a card on a active workspace
+and add the same card to another workspace, it will just call a new render, but not a
+new initialization (they potentially will share state, but that might vary depending
+on the card implementation).
+
+2. Refresh
+
+A refresh is intended to force a new render of the component. In the beginning of these
+docs we asked you setup the load hook `nubank.workspaces.core/after-load`, this hook
+will refresh every card in the active workspace. In pratice it will call the `::wsm/refresh`
+method in your card, let's see an example by extending our previous custom card to
+handle refresh.
+
+```clojure
+(ws/defcard custom-card
+  {::wsm/init
+   (fn [card]
+     (let [counter (atom 0)]
+       {::wsm/refresh
+        (fn [node]
+          (gdom/setTextContent node (str "Card updated, count: " (swap! counter inc) "!")))
+
+        ::wsm/render
+        (fn [node]
+          (gdom/setTextContent node (str "Card rendered, count: " counter "!")))}))})
+```
+
+You can try clicking in the "Refresh cards" button in the workspace toolbar and see the
+counter updating on every refresh.
+
+There is one exception to this flow, and that is when you change anything about the
+card definition itself. Workflows will detect when the card has changed (by comparing
+the old form with the new form) and when it changes, the whole card is disposed and
+remounted.
+
+3. Dispose
+
+A card is disposed when all it's active references are removed from the open workspaces.
+When you remove a card from a workspace, it might get disposed, but only if this card
+is not present in any of the other open workspaces (living in tabs). This will give you
+a chance to free resources from that card.
+
+```clojure
+(ws/defcard custom-card
+  {::wsm/init
+   (fn [card]
+     (let [counter (atom 0)]
+       {::wsm/dispose
+        (fn [node]
+          ; doesn't make a real difference for resource cleaning, just a dummy example
+          ; so you can replace the code
+          (gdom/setTextContent node ""))
+        
+        ::wsm/refresh
+        (fn [node]
+          (gdom/setTextContent node (str "Card updated, count: " (swap! counter inc) "!")))
+
+        ::wsm/render
+        (fn [node]
+          (gdom/setTextContent node (str "Card rendered, count: " @counter "!")))}))})
+```
 
 ### Extending a card type
 
