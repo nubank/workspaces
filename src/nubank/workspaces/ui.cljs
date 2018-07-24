@@ -711,10 +711,16 @@
 (defn open-spotlight [this]
   (let [{::keys [spotlight]} (fp/props this)
         state   (-> (fp/get-reconciler this) fp/app-state deref)
-        options (into [] (map (fn [[_ {::wsm/keys [card-id test?]}]]
-                                {::spotlight/type (if test? ::spotlight/test ::spotlight/card)
-                                 ::spotlight/id   card-id}))
-                      (::wsm/card-id state))]
+        options (-> []
+                    (into (map (fn [[_ {::wsm/keys [card-id test?]}]]
+                                 {::spotlight/type (if test? ::spotlight/test ::spotlight/card)
+                                  ::spotlight/id   card-id}))
+                          (::wsm/card-id state))
+                    (into (map (fn [[_ {::keys [workspace-id workspace-title]}]]
+                                 {::spotlight/type  ::spotlight/workspace
+                                  ::spotlight/id    workspace-id
+                                  ::spotlight/label workspace-title}))
+                          (::workspace-id state)))]
     (fp/transact! (fp/get-reconciler this) (fp/get-ident spotlight/Spotlight spotlight)
       `[(spotlight/reset {::spotlight/options ~options})])
     (fm/set-value! this ::show-spotlight? true)))

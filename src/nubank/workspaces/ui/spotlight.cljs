@@ -9,7 +9,8 @@
 
 (def max-results 50)
 
-(def value->label (comp str ::id))
+(defn value->label [{::keys [id label]}]
+  (or label (str id)))
 
 (defn escape-re [input]
   (let [re (js/RegExp. "([.*+?^=!:${}()|[\\]\\/\\\\])" "g")]
@@ -86,6 +87,9 @@
                          :white-space   "nowrap"
                          :overflow      "hidden"
                          :text-overflow "ellipsis"}]
+                       [:.option-type
+                        {:font-size  "11px"
+                         :font-style "italic"}]
                        [:.option-selected
                         {:background "#582074"
                          :color      "#fff"}]]
@@ -110,11 +114,12 @@
                                       (.stopPropagation %2)
                                       (on-select %))
                ::cursor/factory    (fn [opt]
-                                     (dom/div {:className (str (:option css) " " (if (= opt value) (:option-selected css)))
-                                               :onClick   #(do
-                                                             (on-change opt)
-                                                             (on-select opt))}
-                                       (value->label opt)))
+                                     (dom/div {:classes [(:option css) (if (= opt value) (:option-selected css))]
+                                               :onClick #(do
+                                                           (on-change opt)
+                                                           (on-select opt))}
+                                       (dom/div (value->label opt))
+                                       (dom/div {:classes [(:option-type css)]} (some-> opt ::type name))))
                ::cursor/value->key value->label
                ::dom-events/target #(gobj/get this "input")})))))))
 

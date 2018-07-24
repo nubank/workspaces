@@ -48,6 +48,8 @@
      ::spotlight/id   nubank.shuffle.common.logic.misc-ws/test-shuffle-uri}
     {::spotlight/type ::spotlight/card
      ::spotlight/id   nubank.shuffle.common.tools-ws/auth-token-provider}
+    {::spotlight/type ::spotlight/workspace
+     ::spotlight/id   nubank.shuffle.common.ui.layout-ws/all}
     {::spotlight/type ::spotlight/card
      ::spotlight/id   nubank.shuffle.common.ui.layout-ws/alerts-card}
     {::spotlight/type ::spotlight/card
@@ -116,6 +118,8 @@
      ::spotlight/id   nubank.shuffle.common.ui.layout-ws/widget-shadow}
     {::spotlight/type ::spotlight/card
      ::spotlight/id   nubank.shuffle.common.ui.layout-ws/widget-with-floater}
+    {::spotlight/type ::spotlight/workspace
+     ::spotlight/id   nubank.shuffle.common.ui.modal-ws/all}
     {::spotlight/type ::spotlight/card
      ::spotlight/id   nubank.shuffle.common.ui.modal-ws/modal-gallery}
     {::spotlight/type ::spotlight/card
@@ -128,6 +132,8 @@
      ::spotlight/id   nubank.shuffle.common.ui.modal-ws/prev-image-mutation-test}
     {::spotlight/type ::spotlight/test
      ::spotlight/id   nubank.shuffle.common.ui.modal-ws/rotate-image-mutation-test}
+    {::spotlight/type ::spotlight/workspace
+     ::spotlight/id   nubank.shuffle.modules.atenta.components-ws/main}
     {::spotlight/type ::spotlight/card
      ::spotlight/id   nubank.shuffle.modules.atenta.components-ws/atenta}
     {::spotlight/type ::spotlight/card
@@ -324,6 +330,3 @@
 
   (is (= (ui/smart-item-position 8 (ui/block 4 15 0 0) [(ui/block 5 12 0 0)])
          (ui/block 4 15 0 12))))
-
-(ws/defworkspace sample
-  "[\"^ \",\"c10\",[[\"^ \",\"i\",\"~$nubank.workspaces.cards/highlight-card\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"minH\",2],[\"^ \",\"i\",\"~$nubank.workspaces.cards/spotlight-card\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"~$nubank.workspaces.cards/test-build-grid\",\"w\",2,\"h\",4,\"x\",0,\"y\",12,\"^1\",2],[\"^ \",\"i\",\"~$nubank.workspaces.cards/test-smart-item-position\",\"w\",2,\"h\",4,\"x\",2,\"y\",12,\"^1\",2]],\"c8\",[[\"^ \",\"w\",3,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",6],[\"^ \",\"w\",4,\"x\",4,\"i\",\"^2\",\"y\",0,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",0,\"i\",\"^3\",\"y\",12,\"^1\",2,\"h\",4],[\"^ \",\"w\",3,\"x\",0,\"i\",\"^4\",\"y\",6,\"^1\",2,\"h\",6]],\"c16\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c14\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c2\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",2,\"h\",17,\"x\",0,\"y\",12,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",0,\"y\",29,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",0,\"y\",33,\"^1\",2]],\"c12\",[[\"^ \",\"w\",5,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",12],[\"^ \",\"w\",4,\"x\",5,\"i\",\"^2\",\"y\",0,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",0,\"i\",\"^3\",\"y\",12,\"^1\",2,\"h\",7],[\"^ \",\"w\",3,\"x\",2,\"i\",\"^4\",\"y\",12,\"^1\",2,\"h\",8]],\"c4\",[[\"^ \",\"w\",4,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",12],[\"^ \",\"w\",4,\"x\",0,\"i\",\"^2\",\"y\",12,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",0,\"i\",\"^3\",\"y\",29,\"^1\",2,\"h\",4],[\"^ \",\"w\",2,\"x\",2,\"i\",\"^4\",\"y\",29,\"^1\",2,\"h\",4]],\"c18\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c20\",[[\"^ \",\"i\",\"^0\",\"w\",5,\"h\",12,\"x\",0,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^2\",\"w\",4,\"h\",17,\"x\",5,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^3\",\"w\",2,\"h\",4,\"x\",9,\"y\",0,\"^1\",2],[\"^ \",\"i\",\"^4\",\"w\",2,\"h\",4,\"x\",11,\"y\",0,\"^1\",2]],\"c6\",[[\"^ \",\"w\",5,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",12],[\"^ \",\"w\",4,\"x\",0,\"i\",\"^2\",\"y\",12,\"^1\",2,\"h\",17],[\"^ \",\"w\",2,\"x\",4,\"i\",\"^3\",\"y\",12,\"^1\",2,\"h\",4],[\"^ \",\"w\",2,\"x\",4,\"i\",\"^4\",\"y\",16,\"^1\",2,\"h\",4]]]")
