@@ -530,12 +530,45 @@ atom.
 
 ### Adding a toolbar
 
+To add a toolbar, you must provide the `::wsm/render-toolbar`. This time you must return
+a React component that will be used as the toolbar. We recommend using components from
+the namespace `nubank.workspaces.ui.core` for consistency, we will provide a better set
+of components before `1.0.0`.
+
+```clojure
+(defn react-timed-card-init [card state-atom component]
+  (let [{::wsm/keys [dispose refresh render] :as react-card} (ct.react/react-card-init card state-atom component)
+        timer (js/setInterval #(swap! state-atom update ::ticks inc) 1000)]
+    (assoc react-card
+      ::wsm/dispose
+      (fn [node]
+        ; clean the timer on dispose
+        (js/clearInterval timer)
+        (dispose node))
+
+      ::wsm/refresh
+      (fn [node]
+        (refresh node))
+
+      ::wsm/render
+      (fn [node]
+        (render node))
+
+      ::wsm/render-toolbar
+      (fn []
+        (dom/div
+          (uc/button {:onClick #(js/console.log "State" @state-atom)} "Log app state"))))))
+```
+
+Use this provide extra functionatility for your cards.
+
 ### Controlling the card header style
 
 ## Roadmap
 
 * 1.0.0
     * [ ] Open workspaces via spotlight
+    * [ ] Test runner for all tests
     * [ ] Definition for standard alignments
     * [ ] Finish designs for index section
     * [ ] Remove cards from index after removal from code
