@@ -805,7 +805,6 @@
       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
         (dom/div :.menu
           "WORKSPACES"
-
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
             (dom/div
               (dom/div
