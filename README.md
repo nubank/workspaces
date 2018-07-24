@@ -580,12 +580,3 @@ Let's add a button on our toolbar to change the header color:
 By calling the `::wsm/set-card-header-style` you can set any css you want to the header.
 
 That's all, go make some nice cards!
-
-## Roadmap
-
-* 1.0.0
-    * [ ] Open workspaces via spotlight
-    * [ ] Test runner for all tests
-    * [ ] Definition for standard alignments
-    * [ ] Finish designs for index section
-    * [ ] Remove cards from index after removal from code
