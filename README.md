@@ -531,9 +531,8 @@ atom.
 ### Adding a toolbar
 
 To add a toolbar, you must provide the `::wsm/render-toolbar`. This time you must return
-a React component that will be used as the toolbar. We recommend using components from
-the namespace `nubank.workspaces.ui.core` for consistency, we will provide a better set
-of components before `1.0.0`.
+a React component that will be used as the toolbar. We suggest using components from
+the namespace `nubank.workspaces.ui.core` for consistency.
 
 ```clojure
 (defn react-timed-card-init [card state-atom component]
@@ -589,4 +588,3 @@ That's all, go make some nice cards!
     * [ ] Definition for standard alignments
     * [ ] Finish designs for index section
     * [ ] Remove cards from index after removal from code
-    * [ ] Provided standard UI kit for toolbars
