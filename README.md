@@ -531,3 +531,12 @@ atom.
 ### Adding a toolbar
 
 ### Controlling the card header style
+
+## Roadmap
+
+* 1.0.0
+    * [ ] Open workspaces via spotlight
+    * [ ] Definition for standard alignments
+    * [ ] Finish designs for index section
+    * [ ] Remove cards from index after removal from code
+    * [ ] Provided standard UI kit for toolbars
