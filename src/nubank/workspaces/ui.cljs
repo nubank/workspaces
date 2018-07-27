@@ -589,6 +589,11 @@
                                :display         "flex"
                                :align-items     "center"
                                :justify-content "center"}]
+                   [:.welcome-content {:background  "#fff"
+                                       :color       "#000"
+                                       :font-family uc/font-open-sans
+                                       :padding     "0 12px"}
+                    [:p {:margin "12px 0"}]]
                    [:.workspace-title
                     uc/font-os12sb
                     {:flex          "1"
@@ -641,7 +646,13 @@
       (dom/div :.active
         (if active-workspace
           (workspace active-workspace)
-          (dom/div :.welcome "Go Navigate"))))))
+          (dom/div :.welcome
+            (dom/div :.welcome-content
+              (dom/p "Welcome to workspaces!")
+              (dom/p "Use the index on the left to start navigating.")
+              (dom/p "If you like more instructions please check "
+                (dom/a {:href "https://github.com/nubank/workspaces#using-workspaces" :target "_blank"}
+                  "workspaces usage guide") "."))))))))
 
 (def workspace-tabs (fp/factory WorkspaceTabs))
 
