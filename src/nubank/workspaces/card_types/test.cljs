@@ -155,7 +155,7 @@
      ::running?   false
      ::success?   true
      ::disabled?  (::disabled? current)
-     ::collapsed? (::collapsed? current)
+     ::collapsed? (if (contains? current ::collapsed?) (::collapsed? current) true)
      ::test-ns    test-ns
      ::test-vars  blocks}))
 
@@ -556,7 +556,7 @@
   {:initial-state (fn [ns]
                     {::enqueued?  false
                      ::running?   false
-                     ::collapsed? false
+                     ::collapsed? true
                      ::disabled?  false
                      ::test-ns    ns
                      ::test-vars  []})
