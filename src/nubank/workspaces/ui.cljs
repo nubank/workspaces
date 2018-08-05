@@ -862,7 +862,7 @@
 
           (dom/br)
 
-          "TESTS"
+          (dom/div {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)} "TESTS")
           (for [[ns cards] (->> tests
                                 (remove ::wsm/card-unlisted?)
                                 (group-by (comp namespace ::wsm/card-id))
