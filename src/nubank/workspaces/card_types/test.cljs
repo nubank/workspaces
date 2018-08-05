@@ -522,7 +522,7 @@
     uc/color-light-grey
 
     done?
-    (if success? uc/color-green-light uc/color-red-dark)
+    (if success? uc/color-mint-green uc/color-red-dark)
 
     running?
     uc/color-yellow
