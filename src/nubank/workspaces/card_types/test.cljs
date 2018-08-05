@@ -358,7 +358,7 @@
                      :font-weight "bold"
                      :margin      "10px 0"}]]
    :css-include   []}
-  (let [color (if (= :pass type) uc/color-green-light uc/color-red-light)]
+  (let [color (if (= :pass type) uc/color-green-light uc/color-red-dark)]
     (dom/div :.test-result {:style {:borderLeft (str "5px solid " color)}}
       (mapv #(dom/div {:key (str (hash %))} %) testing-contexts)
       (if (and message (not (seq testing-contexts)))
@@ -491,7 +491,7 @@
                    (seq test-results)
                    (if (test-success? test-results)
                      uc/color-green-light
-                     uc/color-red-light)
+                     uc/color-red-dark)
 
                    :else
                    uc/color-yellow)]
@@ -507,10 +507,19 @@
 
 (def var-test-block (fp/factory VarTestBlock {:keyfn ::test-var}))
 
+(defn runnable-status-color [{::keys [done? running? enqueued? success?]}]
+  (cond
+    done?
+    (if success? uc/color-green-light uc/color-red-dark)
+
+    running?
+    uc/color-yellow
+
+    enqueued?
+    uc/color-yellow))
+
 (fp/defsc NSTestGroup
-  [this {::keys [test-vars enqueued? running? success? done?]}
-   {::keys [set-header?]
-    :or    {set-header? true}}]
+  [this {::keys [test-vars] :as props}]
   {:initial-state (fn [ns]
                     {::enqueued? false
                      ::running?  false
@@ -526,20 +535,49 @@
    :css-include   [VarTestBlock]}
   (let [header-color #(header-color (fp/shared this) %)]
     (dom/div :.test-ns
-      (if set-header?
-        (cond
-          done?
-          (header-color (if success? uc/color-mint-green uc/color-red-dark))
-
-          running?
-          (header-color uc/color-yellow)
-
-          enqueued?
-          (header-color uc/color-yellow)))
-
+      (header-color (runnable-status-color props))
       (mapv var-test-block test-vars))))
 
-(def ns-test-group (fp/factory NSTestGroup {:keyfn ::test-ns}))
+(fp/defsc AllTestNSTestGroup
+  [this {::keys [test-ns test-vars collapsed?] :as props}
+   {::keys [set-header?]
+    :or    {set-header? true}}]
+  {:initial-state (fn [ns]
+                    {::enqueued?  false
+                     ::running?   false
+                     ::collapsed? false
+                     ::test-ns    ns
+                     ::test-vars  []})
+   :ident         [::test-ns ::test-ns]
+   :query         [::test-ns ::enqueued? ::running? ::success? ::done? :report-counters
+                   ::duration ::collapsed?
+                   {::test-vars (fp/get-query VarTestBlock)}]
+   :css           [[:.test-ns
+                    {:flex       "1"
+                     :align-self "flex-start"}]
+                   [:.test-ns-header
+                    {:background    "#404040"
+                     :color         "#fff"
+                     :font-family   "Helvetica"
+                     :font-size     "16px"
+                     :padding       "4px 5px"
+                     :display       "flex"
+                     :font-weight   "bold"
+                     :margin-bottom "3px"}]
+                   [:.status
+                    {:cursor "pointer"
+                     :margin "-4px 6px -4px -5px"
+                     :width  "20px"}]]
+   :css-include   [VarTestBlock]}
+  (dom/div :.test-ns
+    (dom/div :.test-ns-header
+      (dom/div :.status {:style   {:backgroundColor (runnable-status-color props)}
+                         :onClick #(fm/toggle! this ::collapsed?)})
+      (str test-ns))
+    (if-not collapsed?
+      (mapv var-test-block test-vars))))
+
+(def all-test-ns-test-group (fp/factory AllTestNSTestGroup {:keyfn ::test-ns}))
 
 (fp/defsc AllTests
   [this {::keys [test-namespaces enqueued? running? done? success?]}]
@@ -549,11 +587,12 @@
                      ::test-namespaces []})
    :ident         (fn [] [::all-tests-run "singleton"])
    :query         [::enqueued? ::running? ::done? :report-counters ::success? ::duration
-                   {::test-namespaces (fp/get-query NSTestGroup)}]
+
+                   {::test-namespaces (fp/get-query AllTestNSTestGroup)}]
    :css           [[:.test-ns
                     {:flex       "1"
                      :align-self "flex-start"}]]
-   :css-include   [VarTestBlock]}
+   :css-include   [AllTestNSTestGroup]}
   (let [header-color #(header-color (fp/shared this) %)]
     (dom/div :.test-ns
       (cond
@@ -566,7 +605,7 @@
         enqueued?
         (header-color uc/color-yellow))
 
-      (mapv #(ns-test-group (fp/computed % {::set-header? false})) test-namespaces))))
+      (mapv all-test-ns-test-group test-namespaces))))
 
 (defn test-ns-card-init [card test-ns]
   (let [{::ct.fulcro/keys [app*]
