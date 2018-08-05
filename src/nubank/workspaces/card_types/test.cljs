@@ -107,8 +107,8 @@
   (->> (vals @data/card-definitions*)
        (filterv ::wsm/test?)
        (filterv ::test-forms)
-       (group-by (comp (fnil symbol '_) namespace ::wsm/card-id))
-       (sort-by first)))
+       (sort-by ::wsm/card-id)
+       (group-by (comp (fnil symbol '_) namespace ::wsm/card-id))))
 
 (defn namespace-test-cards [ns] (get (test-cards-by-namespace) ns))
 
@@ -197,7 +197,7 @@
 
 (defmethod test-runner ::test-ns [{::keys [test-ns app*] :as env}]
   (go
-    (let [test-cards (sort-by ::wsm/card-id (namespace-test-cards test-ns))
+    (let [test-cards (namespace-test-cards test-ns)
           app        @app*]
       (fp/transact! (:reconciler app) [::test-ns test-ns]
         [`(start-ns-test-namespaces {::ns-tests ~test-cards})])
@@ -226,7 +226,7 @@
 (defmethod test-runner ::test-all [{::keys [app*] :as env}]
   (go
     (let [app             @app*
-          test-namespaces (test-cards-by-namespace)
+          test-namespaces (sort-by first (test-cards-by-namespace))
           start           (now)]
 
       (fp/transact! (:reconciler app) [::all-tests-run "singleton"]
