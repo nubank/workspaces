@@ -257,7 +257,7 @@
     (loop []
       (when-let [{::keys [done] :as input} (<! ch)]
         (let [result (<! (test-runner input))]
-          (put! done result)
+          (put! done (or result {}))
           (cljs.test/clear-env!)
           (<! (async/timeout 1))
           (recur))))))
@@ -345,8 +345,10 @@
   (highlight/highlight {::highlight/source (try-pprint s)}))
 
 (defn normalize-actual [{:keys [expected actual] :as props}]
-  (if (and (= 3 (count expected))
-           (= '= (first expected)))
+  (if (and (sequential? expected)
+           (= 3 (count expected))
+           (= '= (first expected))
+           (sequential? actual))
     (let [[_ actual expected] (second actual)]
       (assoc props
         :expected expected
