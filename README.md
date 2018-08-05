@@ -204,6 +204,12 @@ When you create test cards using `ws/deftest`, a card will be automatically crea
 run on the test on that namespace, just click on the test namespace name on the index
 to load the card.
 
+### All tests card
+
+When you add any test, you also get a card that will run the whole test suite. You can
+open this card by clicking at the `TESTS` in the index, or using spotlight to find the
+`test-all` card.
+
 ## Card settings
 
 ### Card size
