@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0-preview6]
+- All tests runner
+
 ## [1.0.0-preview5]
 - More description at initial page
 
