@@ -63,6 +63,12 @@
 
 (defn now [] (.getTime (js/Date.)))
 
+(defn test-success? [{:keys [report-counters]}]
+  (= 0 (:fail report-counters) (:error report-counters)))
+
+(defn results-duration [test-results]
+  (transduce (map ::duration) + test-results))
+
 (defn create-test-env [test]
   (assoc (cljs.test/empty-env)
     :reporter ::reporter
@@ -155,7 +161,8 @@
 
 (defn run-ns-test-blocks [{::keys [test-ns app* ns-tests]}]
   (go
-    (let [app @app*]
+    (let [app   @app*
+          start (now)]
       (ui/refresh-card-container test-ns)
       (<! (async/timeout 1))
 
@@ -165,10 +172,20 @@
           (let [res (<! (run-test-blocks {::test   card-id
                                           ::blocks test-forms}))]
             (fp/transact! (:reconciler app) [::test-var card-id]
-              [`(fm/set-props {:test-results ~res})]))))
+              [`(fm/set-props {:test-results ~res ::duration ~(::duration res)})]))))
 
-      (fp/transact! (:reconciler app) [::test-ns test-ns]
-        [`(fm/set-props {::done? true ::running? false})]))))
+      (let [state    (-> app :reconciler fp/app-state deref)
+            {::keys [test-vars]} (fp/db->tree (fp/get-query NSTestGroup) (get-in state [::test-ns test-ns]) state)
+            success? (->> test-vars
+                          (map :test-results)
+                          (filter seq)
+                          (every? test-success?))
+            duration (- (now) start)]
+        (fp/transact! (:reconciler app) [::test-ns test-ns]
+          [`(fm/set-props {::done?    true
+                           ::running? false
+                           ::success? ~success?
+                           ::duration ~duration})])))))
 
 (defmethod test-runner ::test-ns [{::keys [test-ns app*] :as env}]
   (go
@@ -201,7 +218,8 @@
 (defmethod test-runner ::test-all [{::keys [app*] :as env}]
   (go
     (let [app             @app*
-          test-namespaces (test-cards-by-namespace)]
+          test-namespaces (test-cards-by-namespace)
+          start           (now)]
 
       (fp/transact! (:reconciler app) [::all-tests-run "singleton"]
         [`(start-all-tests {::test-namespaces ~test-namespaces})])
@@ -209,8 +227,15 @@
       (doseq [[test-ns ns-tests] test-namespaces]
         (<! (run-ns-test-blocks (assoc env ::test-ns test-ns ::ns-tests ns-tests))))
 
-      (fp/transact! (:reconciler app) [::all-tests-run "singleton"]
-        [`(fm/set-props {::done? true ::running? false})])
+      (let [state    (-> app :reconciler fp/app-state deref)
+            {::keys [test-namespaces]} (fp/db->tree (fp/get-query AllTests) (get-in state [::all-tests-run "singleton"]) state)
+            success? (every? ::success? test-namespaces)
+            duration (- (now) start)]
+        (fp/transact! (:reconciler app) [::all-tests-run "singleton"]
+          [`(fm/set-props {::done?    true
+                           ::running? false
+                           ::success? ~success?
+                           ::duration ~duration})]))
 
       (<! (async/timeout 1))
       (ui/refresh-card-container `test-all)
@@ -267,9 +292,6 @@
                         ::done out
                         ::app* app*})
     out))
-
-(defn test-success? [{:keys [report-counters]}]
-  (= 0 (:fail report-counters) (:error report-counters)))
 
 (defn header-color [{::keys [card]} bg]
   ((::wsm/set-card-header-style card) {:background bg})
@@ -446,7 +468,7 @@
   {:initial-state (fn [_]
                     {})
    :ident         [::test-var ::test-var]
-   :query         [::test-var ::disabled?
+   :query         [::test-var ::disabled? ::success? ::duration
                    {:test-results
                     [:report-counters
                      {::summary (fp/get-query TestResult)}]}]
@@ -486,15 +508,17 @@
 (def var-test-block (fp/factory VarTestBlock {:keyfn ::test-var}))
 
 (fp/defsc NSTestGroup
-  [this {::keys [test-vars enqueued? running? done?]} {::keys [set-header?]
-                                                       :or    {set-header? true}}]
+  [this {::keys [test-vars enqueued? running? success? done?]}
+   {::keys [set-header?]
+    :or    {set-header? true}}]
   {:initial-state (fn [ns]
                     {::enqueued? false
                      ::running?  false
                      ::test-ns   ns
                      ::test-vars []})
    :ident         [::test-ns ::test-ns]
-   :query         [::test-ns ::enqueued? ::running? ::done? :report-counters
+   :query         [::test-ns ::enqueued? ::running? ::success? ::done? :report-counters
+                   ::duration
                    {::test-vars (fp/get-query VarTestBlock)}]
    :css           [[:.test-ns
                     {:flex       "1"
@@ -505,12 +529,7 @@
       (if set-header?
         (cond
           done?
-          (header-color (if (->> test-vars
-                                 (map :test-results)
-                                 (filter seq)
-                                 (every? test-success?))
-                          uc/color-mint-green
-                          uc/color-red-dark))
+          (header-color (if success? uc/color-mint-green uc/color-red-dark))
 
           running?
           (header-color uc/color-yellow)
@@ -523,13 +542,13 @@
 (def ns-test-group (fp/factory NSTestGroup {:keyfn ::test-ns}))
 
 (fp/defsc AllTests
-  [this {::keys [test-namespaces enqueued? running? done?]}]
+  [this {::keys [test-namespaces enqueued? running? done? success?]}]
   {:initial-state (fn [_]
                     {::enqueued?       false
                      ::running?        false
                      ::test-namespaces []})
    :ident         (fn [] [::all-tests-run "singleton"])
-   :query         [::enqueued? ::running? ::done? :report-counters
+   :query         [::enqueued? ::running? ::done? :report-counters ::success? ::duration
                    {::test-namespaces (fp/get-query NSTestGroup)}]
    :css           [[:.test-ns
                     {:flex       "1"
@@ -539,12 +558,7 @@
     (dom/div :.test-ns
       (cond
         done?
-        (header-color (if (->> test-namespaces
-                               (map :test-results)
-                               (filter seq)
-                               (every? test-success?))
-                        uc/color-mint-green
-                        uc/color-red-dark))
+        (header-color (if success? uc/color-mint-green uc/color-red-dark))
 
         running?
         (header-color uc/color-yellow)
@@ -552,10 +566,7 @@
         enqueued?
         (header-color uc/color-yellow))
 
-      (mapv ns-test-group test-namespaces))))
-
-(defn results-duration [test-results]
-  (transduce (map ::duration) + test-results))
+      (mapv #(ns-test-group (fp/computed % {::set-header? false})) test-namespaces))))
 
 (defn test-ns-card-init [card test-ns]
   (let [{::ct.fulcro/keys [app*]
@@ -579,14 +590,8 @@
                              (let [state
                                    (-> @app* :reconciler fp/app-state deref)
 
-                                   {::keys [test-vars running? done?]}
-                                   (get-in state [::test-ns test-ns])
-
-                                   test-results
-                                   (->> test-vars
-                                        (mapv #(get-in state %))
-                                        (remove ::disabled?)
-                                        (mapv :test-results))]
+                                   {::keys [running? done? duration]}
+                                   (get-in state [::test-ns test-ns])]
                                (dom/div {:style {:flex       "1"
                                                  :display    "flex"
                                                  :alignItems "center"}}
@@ -596,7 +601,7 @@
 
                                    done?
                                    (dom/div {:style {:fontSize "12px"}}
-                                     "Finished in " (results-duration test-results) "ms"))
+                                     "Finished in " duration "ms"))
                                  (dom/div {:style {:flex "1"}})
                                  (uc/button {:onClick run-tests} "Rerun tests")))))))
 
@@ -626,19 +631,11 @@
     (assoc card
       ::wsm/refresh (fn [_] (run-tests))
       ::wsm/render-toolbar (fn []
-                             ; TODO
-                             #_
                              (let [state
                                    (-> @app* :reconciler fp/app-state deref)
 
-                                   {::keys [test-namespaces running? done?]}
-                                   (get-in state [::all-tests-run "singleton"])
-
-                                   test-results
-                                   (->> test-namespaces
-                                        (into [] (comp (map #(get-in state %))
-                                                       (remove ::disabled?)
-                                                       (map :test-results))))]
+                                   {::keys [running? done? duration]}
+                                   (get-in state [::all-tests-run "singleton"])]
                                (dom/div {:style {:flex       "1"
                                                  :display    "flex"
                                                  :alignItems "center"}}
@@ -648,7 +645,7 @@
 
                                    done?
                                    (dom/div {:style {:fontSize "12px"}}
-                                     "Finished in " (results-duration test-results) "ms"))
+                                     "Finished in " duration "ms"))
                                  (dom/div {:style {:flex "1"}})
                                  (uc/button {:onClick run-tests} "Rerun tests")))))))
 
