@@ -777,6 +777,7 @@
                                   :flex       "1"
                                   :max-height "100vh"
                                   :overflow   "hidden"}]
+                   [:.pointer {:cursor "pointer"}]
                    [:.workspaces-solo {:max-width "100%"}]
                    [:.workspace {:cursor "pointer"}]
                    [:.nest-group {:margin-left "32px"}]
@@ -862,7 +863,7 @@
 
           (dom/br)
 
-          (dom/div {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)} "TESTS")
+          (dom/div :.pointer {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)} "TESTS")
           (for [[ns cards] (->> tests
                                 (remove ::wsm/card-unlisted?)
                                 (group-by (comp namespace ::wsm/card-id))
