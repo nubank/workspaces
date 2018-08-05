@@ -107,7 +107,8 @@
   (->> (vals @data/card-definitions*)
        (filterv ::wsm/test?)
        (filterv ::test-forms)
-       (group-by (comp (fnil symbol '_) namespace ::wsm/card-id))))
+       (group-by (comp (fnil symbol '_) namespace ::wsm/card-id))
+       (sort-by first)))
 
 (defn namespace-test-cards [ns] (get (test-cards-by-namespace) ns))
 
@@ -574,8 +575,8 @@
                      :font-size     "16px"
                      :padding       "4px 5px"
                      :display       "flex"
-                     :font-weight   "bold"
                      :margin-bottom "3px"}]
+                   [:.disabled {:text-decoration "line-through"}]
                    [:.status
                     {:cursor "pointer"
                      :margin "-4px 6px -4px -5px"
@@ -583,7 +584,7 @@
                    [:.title {:flex "1"}]]
    :css-include   [VarTestBlock]}
   (dom/div :.test-ns
-    (dom/div :.test-ns-header
+    (dom/div :.test-ns-header {:classes [(if disabled? :.disabled)]}
       (dom/div :.status {:style   {:backgroundColor (runnable-status-color props)}
                          :onClick #(fm/toggle! this ::collapsed?)})
       (dom/div :.title (str test-ns))
