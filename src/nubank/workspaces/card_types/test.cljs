@@ -142,15 +142,22 @@
 (defn app-test-block [reconciler ns]
   (-> reconciler fp/app-state deref (get-in [::test-var ns])))
 
+(defn app-ns-test-block [reconciler ns]
+  (-> reconciler fp/app-state deref (get-in [::test-ns ns])))
+
 (defn build-ns-test-group [{:keys [reconciler] ::keys [test-ns ns-tests]}]
-  (let [blocks (mapv #(hash-map ::test-var (::wsm/card-id %)
-                                :test-results nil
-                                ::disabled? (-> (app-test-block reconciler (::wsm/card-id %)) ::disabled?))
-                 ns-tests)]
-    {::enqueued? true
-     ::running?  false
-     ::test-ns   test-ns
-     ::test-vars blocks}))
+  (let [current (app-ns-test-block reconciler test-ns)
+        blocks  (mapv #(hash-map ::test-var (::wsm/card-id %)
+                                 :test-results nil
+                                 ::disabled? (-> (app-test-block reconciler (::wsm/card-id %)) ::disabled?))
+                  ns-tests)]
+    {::enqueued?  true
+     ::running?   false
+     ::success?   true
+     ::disabled?  (::disabled? current)
+     ::collapsed? (::collapsed? current)
+     ::test-ns    test-ns
+     ::test-vars  blocks}))
 
 (fm/defmutation start-ns-test-namespaces [input]
   (action [{:keys [reconciler state ref] :as env}]
@@ -225,7 +232,8 @@
         [`(start-all-tests {::test-namespaces ~test-namespaces})])
 
       (doseq [[test-ns ns-tests] test-namespaces]
-        (<! (run-ns-test-blocks (assoc env ::test-ns test-ns ::ns-tests ns-tests))))
+        (if-not (::disabled? (app-ns-test-block (:reconciler app) test-ns))
+          (<! (run-ns-test-blocks (assoc env ::test-ns test-ns ::ns-tests ns-tests)))))
 
       (let [state    (-> app :reconciler fp/app-state deref)
             {::keys [test-namespaces]} (fp/db->tree (fp/get-query AllTests) (get-in state [::all-tests-run "singleton"]) state)
@@ -507,8 +515,11 @@
 
 (def var-test-block (fp/factory VarTestBlock {:keyfn ::test-var}))
 
-(defn runnable-status-color [{::keys [done? running? enqueued? success?]}]
+(defn runnable-status-color [{::keys [disabled? done? running? enqueued? success?]}]
   (cond
+    disabled?
+    uc/color-light-grey
+
     done?
     (if success? uc/color-green-light uc/color-red-dark)
 
@@ -539,18 +550,19 @@
       (mapv var-test-block test-vars))))
 
 (fp/defsc AllTestNSTestGroup
-  [this {::keys [test-ns test-vars collapsed?] :as props}
+  [this {::keys [test-ns test-vars collapsed? disabled?] :as props}
    {::keys [set-header?]
     :or    {set-header? true}}]
   {:initial-state (fn [ns]
                     {::enqueued?  false
                      ::running?   false
                      ::collapsed? false
+                     ::disabled?  false
                      ::test-ns    ns
                      ::test-vars  []})
    :ident         [::test-ns ::test-ns]
    :query         [::test-ns ::enqueued? ::running? ::success? ::done? :report-counters
-                   ::duration ::collapsed?
+                   ::duration ::collapsed? ::disabled?
                    {::test-vars (fp/get-query VarTestBlock)}]
    :css           [[:.test-ns
                     {:flex       "1"
@@ -567,13 +579,17 @@
                    [:.status
                     {:cursor "pointer"
                      :margin "-4px 6px -4px -5px"
-                     :width  "20px"}]]
+                     :width  "20px"}]
+                   [:.title {:flex "1"}]]
    :css-include   [VarTestBlock]}
   (dom/div :.test-ns
     (dom/div :.test-ns-header
       (dom/div :.status {:style   {:backgroundColor (runnable-status-color props)}
                          :onClick #(fm/toggle! this ::collapsed?)})
-      (str test-ns))
+      (dom/div :.title (str test-ns))
+      (dom/div (dom/input {:type     "checkbox"
+                           :checked  (not disabled?)
+                           :onChange #(fm/toggle! this ::disabled?)})))
     (if-not collapsed?
       (mapv var-test-block test-vars))))
 
