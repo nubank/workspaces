@@ -2,7 +2,7 @@
   (:require-macros nubank.workspaces.core)
   (:require [fulcro.client :as fulcro]
             [fulcro.client.primitives :as fp]
-            [nubank.workspaces.card-types.test :refer [test-card test-ns-card]]
+            [nubank.workspaces.card-types.test :as ct.test]
             [nubank.workspaces.ui :as ui]
             [nubank.workspaces.data :as data]
             [nubank.workspaces.model :as wsm]
@@ -30,10 +30,16 @@
       workspace)))
 
 (defn init-test [sym forms card-form]
-  (init-card sym (assoc (test-card sym forms) ::wsm/card-form card-form))
+  (init-card sym (assoc (ct.test/test-card sym forms) ::wsm/card-form card-form))
+
+  ; start ns test card
   (let [test-ns (symbol (namespace sym))]
     (if-not (contains? @data/card-definitions* test-ns)
-      (init-card test-ns (test-ns-card test-ns)))))
+      (init-card test-ns (ct.test/test-ns-card test-ns))))
+
+  ; start all tests card
+  (if-not (contains? @data/card-definitions* `ct.test/test-all)
+    (init-card `ct.test/test-all (ct.test/all-tests-card))))
 
 (fp/defsc Root [this {:keys [ui/root]}]
   {:initial-state (fn [_] {:ui/root (fp/get-initial-state ui/WorkspacesRoot @data/card-definitions*)})
