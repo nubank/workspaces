@@ -311,7 +311,7 @@ by clicking on its tab while it's active.
 ### Responsive grid
 
 Your cards are placed in a responsive grid, this means that the number of columns you
-have available will vary according to your page width size. In the right below the
+have available will vary according to your page width size. Right below the
 workspace tabs you can see how many columns you have available right now (eg: `c8` means 8 columns).
 
 Each responsive breakpoint will have stored separated, so you can arange a workspace
