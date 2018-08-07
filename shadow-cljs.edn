@@ -1,5 +1,5 @@
 ;; shadow-cljs configuration
-{:deps   {:aliases [:dev :shadow]}
+{:deps   {:aliases [:provided :dev]}
  :nrepl  {:port 9845}
 
  :builds {:workspaces {:target           :browser
