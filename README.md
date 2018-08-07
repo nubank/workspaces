@@ -607,3 +607,7 @@ Let's add a button on our toolbar to change the header color:
 By calling the `::wsm/set-card-header-style` you can set any css you want to the header.
 
 That's all, go make some nice cards!
+
+## Support
+
+If you have any questions, hit us at the `#workspaces` channel on Clojurians.
