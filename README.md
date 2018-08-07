@@ -332,6 +332,17 @@ see some card available actions:
 * `Solo`: open a new workspace containing just this card using the whole workspace space
 * `Size`: prints the current card size in the browser console
 
+After that you have an `X` icon to remove the card from current workspace.
+
+### Solo cards
+
+Sometimes you want to focus on a single card, like when you want to see just the full
+test suite or want to have a card that renders your entire app.
+
+In these cases you can open a tab with a card occupying the whole space, you can do that
+clicking in the `Solo` button from the card actions, or via spotlight, holding the `alt`
+key when clicking or hitting return to select.
+
 ### Workspace actions
 
 When you have an open workspace, there is a toolbar with some action buttons, here is
