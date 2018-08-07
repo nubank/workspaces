@@ -133,7 +133,7 @@
                                      (dom/div {:classes [(:option css) (if (= opt value) (:option-selected css))]
                                                :onClick #(do
                                                            (on-change opt)
-                                                           (on-select opt))}
+                                                           (on-select opt (.-altKey %)))}
                                        (dom/div (value->label opt))
                                        (dom/div {:classes [(:option-type css)]}
                                          (some-> opt ::type name)
