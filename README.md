@@ -2,6 +2,8 @@
 
 Workspaces is a component development environment for ClojureScript, inspired by [devcards](https://github.com/bhauman/devcards).
 
+If you just want to see an example of Workspaces in action, check [Fulcro Incubator public workspace](https://fulcrologic.github.io/fulcro-incubator/).
+
 ## Setup
 
 First add the workspaces dependency on your project.
@@ -317,7 +319,7 @@ by clicking on its tab while it's active.
 ### Responsive grid
 
 Your cards are placed in a responsive grid, this means that the number of columns you
-have available will vary according to your page width size. In the right below the
+have available will vary according to your page width size. Right below the
 workspace tabs you can see how many columns you have available right now (eg: `c8` means 8 columns).
 
 Each responsive breakpoint will have stored separated, so you can arange a workspace
@@ -325,6 +327,27 @@ to fit that available width. The sizes and positions will be recorded separated 
 column numbers (they vary from 2 to 20).
 
 Each column size has 120~140px, varies depending on page width.
+
+### Card actions
+
+In the card header you will see the card title (which is the name of the card symbol) on
+the left, and at the right two icons. The first icon is the "more", mouse over it to
+see some card available actions:
+
+* `Source`: open a modal with the card source code
+* `Solo`: open a new workspace containing just this card using the whole workspace space
+* `Size`: prints the current card size in the browser console
+
+After that you have an `X` icon to remove the card from current workspace.
+
+### Solo cards
+
+Sometimes you want to focus on a single card, like when you want to see just the full
+test suite or want to have a card that renders your entire app.
+
+In these cases you can open a tab with a card occupying the whole space, you can do that
+clicking in the `Solo` button from the card actions, or via spotlight, holding the `alt`
+key when clicking or hitting return to select.
 
 ### Workspace actions
 
