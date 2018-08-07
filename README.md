@@ -322,6 +322,16 @@ column numbers (they vary from 2 to 20).
 
 Each column size has 120~140px, varies depending on page width.
 
+### Card actions
+
+In the card header you will see the card title (which is the name of the card symbol) on
+the left, and at the right two icons. The first icon is the "more", mouse over it to
+see some card available actions:
+
+* `Source`: open a modal with the card source code
+* `Solo`: open a new workspace containing just this card using the whole workspace space
+* `Size`: prints the current card size in the browser console
+
 ### Workspace actions
 
 When you have an open workspace, there is a toolbar with some action buttons, here is
