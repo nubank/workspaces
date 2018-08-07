@@ -2,6 +2,8 @@
 
 Workspaces is a component development environment for ClojureScript, inspired by [devcards](https://github.com/bhauman/devcards).
 
+If you just want to see an example of Workspaces in action, check [Fulcro Incubator public workspace](https://fulcrologic.github.io/fulcro-incubator/).
+
 ## Setup
 
 First add the workspaces dependency on your project.
