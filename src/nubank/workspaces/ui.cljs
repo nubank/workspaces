@@ -824,8 +824,7 @@
     (fm/set-value! this ::show-spotlight? true)))
 
 (fp/defsc WorkspacesRoot
-  [this {::keys [cards ws-tabs workspaces settings expanded spotlight
-                 show-spotlight? extended-views?]}]
+  [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?]}]
   {:initial-state (fn [card-definitions]
                     {::cards           (mapv #(fp/get-initial-state CardIndexListing %)
                                          (vals card-definitions))
@@ -839,10 +838,9 @@
 
                      ::spotlight       (fp/get-initial-state spotlight/Spotlight [])
                      ::show-spotlight? false
-                     ::extended-views? false
                      ::settings        {::show-index? (local-storage/get ::show-index? true)}})
    :ident         (fn [] [::workspace-root "singleton"])
-   :query         [::settings ::expanded ::show-spotlight? ::extended-views?
+   :query         [::settings ::expanded ::show-spotlight?
                    {::cards (fp/get-query CardIndexListing)}
                    {::workspaces (fp/get-query WorkspaceIndexListing)}
                    {::ws-tabs (fp/get-query WorkspaceTabs)}
@@ -874,7 +872,7 @@
                                     :cursor       "pointer"
                                     :font-size    "14px"}]]
    :css-include   [WorkspaceTabs WorkspaceIndexListing CardIndexListing spotlight/Spotlight uc/CSS]}
-  (dom/div :.container {:classes [(if extended-views? :$cljs-workspaces-extended-views)]}
+  (dom/div :.container
     (css/style-element WorkspacesRoot)
     (events/dom-listener {::events/keystroke "alt-shift-i"
                           ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
@@ -886,20 +884,23 @@
                           ::events/action    (events/pd #(open-spotlight this))})
     (events/dom-listener {::events/event  "keydown"
                           ::events/action #(if (= (.-keyCode %) 18)
-                                             (fm/set-value! this ::extended-views? true))})
+                                             (js/document.body.classList.add "cljs-workspaces-extended-views"))})
     (events/dom-listener {::events/event  "keyup"
                           ::events/action #(if (= (.-keyCode %) 18)
-                                             (fm/set-value! this ::extended-views? false))})
+                                             (js/document.body.classList.remove "cljs-workspaces-extended-views"))})
 
     (if show-spotlight?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
         (spotlight/spotlight
           (fp/computed spotlight
-            {::spotlight/on-select (fn [{::spotlight/keys [id type]}]
+            {::spotlight/on-select (fn [{::spotlight/keys [id type]} solo?]
                                      (if id
                                        (cond
                                          (= type ::spotlight/workspace)
                                          (fp/transact! this [`(select-workspace {::workspace-id ~id})])
+
+                                         solo?
+                                         (fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id id})])
 
                                          :else
                                          (add-card this id)))

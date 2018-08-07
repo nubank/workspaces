@@ -64,11 +64,13 @@
    :query             [::id ::options ::filter ::filtered-options ::value]
    :css               [[:.area-container
                         {:height "600px"}]
+
                        [:.container
                         {:background    "#e2e2e2"
                          :border-radius "3px"
                          :box-shadow    "0 6px 6px rgba(0, 0, 0, 0.26), 0 10px 20px rgba(0, 0, 0, 0.19), 0 0 2px rgba(0,0,0,0.3)"
                          :padding       "10px"}]
+
                        [:.search
                         {:background  "#cccbcd"
                          :border      "0"
@@ -79,9 +81,11 @@
                          :outline     "0"
                          :padding     "10px"
                          :width       "100%"}]
+
                        [:.options
                         {:font-family uc/font-open-sans
                          :margin-top  "10px"}]
+
                        [:.option
                         {:cursor        "pointer"
                          :font-size     "16px"
@@ -89,12 +93,22 @@
                          :white-space   "nowrap"
                          :overflow      "hidden"
                          :text-overflow "ellipsis"}]
+
                        [:.option-type
                         {:font-size  "11px"
                          :font-style "italic"}]
+
                        [:.option-selected
                         {:background "#582074"
-                         :color      "#fff"}]]
+                         :color      "#fff"}]
+
+                       [:.solo-hint
+                        {:display "none"}]
+
+                       [:$cljs-workspaces-extended-views
+                        [:.option-selected
+                         [:.solo-hint
+                          {:display "inline"}]]]]
    :css-include       [cursor/VerticalCursor]
    :componentDidMount (fn [] (.select (gobj/get this "input")))}
   (let [options'  (if (seq filter) filtered-options (take max-results options))
@@ -114,14 +128,17 @@
                ::cursor/on-change  on-change
                ::cursor/on-select  #(do
                                       (.stopPropagation %2)
-                                      (on-select %))
+                                      (on-select % (.-altKey %2)))
                ::cursor/factory    (fn [opt]
                                      (dom/div {:classes [(:option css) (if (= opt value) (:option-selected css))]
                                                :onClick #(do
                                                            (on-change opt)
                                                            (on-select opt))}
                                        (dom/div (value->label opt))
-                                       (dom/div {:classes [(:option-type css)]} (some-> opt ::type name))))
+                                       (dom/div {:classes [(:option-type css)]}
+                                         (some-> opt ::type name)
+                                         (if (some-> opt ::type (not= ::workspace))
+                                           (dom/span {:classes [(:solo-hint css)]} " - open solo")))))
                ::cursor/value->key value->label
                ::dom-events/target #(gobj/get this "input")})))))))
 
