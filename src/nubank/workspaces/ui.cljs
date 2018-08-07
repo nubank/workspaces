@@ -454,9 +454,12 @@
     (apply hash-map x)
     {::workspace-id x}))
 
+(defn workspace-id? [x]
+  (or (uuid? x) (symbol? x)))
+
 (defn workspace-ident [{::keys [workspace-id] ::wsm/keys [card-id]}]
   (cond
-    workspace-id [::workspace-id workspace-id]
+    (workspace-id? workspace-id) [::workspace-id workspace-id]
     card-id [::wsm/card-id card-id]
     :else [:invalid "ident"]))
 
@@ -629,11 +632,10 @@
 (fp/defsc WorkspaceTabs
   [this {::keys [active-workspace open-workspaces]}]
   {:initial-state (fn [_]
-                    (let [ws (fp/get-initial-state Workspace {})]
-                      {::open-workspaces  (->> (local-storage/get ::open-workspaces [])
-                                               (mapv ws-data->ident-map))
-                       ::active-workspace (if-let [active (local-storage/get ::active-workspace)]
-                                            (ws-data->ident-map active))}))
+                    {::open-workspaces  (->> (local-storage/get ::open-workspaces [])
+                                             (mapv ws-data->ident-map))
+                     ::active-workspace (if-let [active (local-storage/get ::active-workspace)]
+                                          (ws-data->ident-map active))})
    :ident         (fn [] [::workspace-tabs "singleton"])
    :query         [{::open-workspaces (fp/get-query WorkspaceTabItem)}
                    {::active-workspace (fp/get-query WorkspaceContainer)}]
@@ -756,15 +758,9 @@
 
 (def card-index-listing (fp/factory CardIndexListing {:keyfn ::wsm/card-id}))
 
-(fp/defsc WorkspaceIndexListing
-  [this {::keys []}]
-  {:initial-state (fn [_]
-                    {})
-   :ident         [::workspace-id ::workspace-id]
-   :query         [::workspace-id ::workspace-title ::wsm/workspace-static?]
-   :css           []
-   :css-include   []}
-  (dom/div))
+(fp/defsc WorkspaceIndexListing [_ _]
+  {:ident [::workspace-id ::workspace-id]
+   :query [::workspace-id ::workspace-title ::wsm/workspace-static?]})
 
 (def workspace-index-listing (fp/factory WorkspaceIndexListing {:keyfn ::workspace-id}))
 
