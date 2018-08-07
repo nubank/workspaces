@@ -395,8 +395,14 @@
     (let [ws-ref     (active-workspace-ref env)
           current-ws (get-in @state ws-ref)
           card       (data/card-definition card-id)]
-      (if (::wsm/workspace-static? current-ws)
+      (cond
+        (::wsm/workspace-static? current-ws)
         (js/console.warn "Can't add card to static workspace, please duplicate the workspace to add cards.")
+
+        (= ::wsm/card-id (first ws-ref))
+        (js/console.warn "Can't add card to solo card, please switch a local workspace.")
+
+        :else
         (when-not (contains? (workspace-card-ids current-ws) card-id)
           (fp/merge-component! reconciler WorkspaceCard (fp/get-initial-state WorkspaceCard {::wsm/card-id card-id})
             :append (conj ws-ref ::cards))
@@ -713,21 +719,20 @@
                :as        tab-ws} (sort-by ::workspace-title open-workspaces)
               :let [current? (= (workspace-ident tab-ws) (workspace-ident active-workspace))]]
           (dom/div :.tab {:key     (or workspace-id card-id)
-                          :classes [(if current? :.active-tab)]}
+                          :classes [(if current? :.active-tab)]
+                          :onClick (fn []
+                                     (let [ws-ident (workspace-ident tab-ws)]
+                                       (fm/set-value! this ::active-workspace ws-ident)
+                                       (local-storage/set! ::active-workspace ws-ident)))}
             (if (or workspace-static? card-id (not current?))
-              (dom/div :.workspace-title
-                {:onClick (fn []
-                            (let [ws-ident (workspace-ident tab-ws)]
-                              (fm/set-value! this ::active-workspace ws-ident)
-                              (local-storage/set! ::active-workspace ws-ident)))}
-                (str (or workspace-title card-id)))
+              (dom/div :.workspace-title (str (or workspace-title card-id)))
               (dom/input :.workspace-title {:value     (str workspace-title)
                                             :onChange  (fn [_])
                                             :onClick   #(.select (.-target %))
                                             :onBlur    #(update-title (.. % -target -value) workspace-id)
                                             :onKeyDown #(if (contains? #{(get events/KEYS "escape") (get events/KEYS "return")} (.-keyCode %))
                                                           (.blur (.-target %)))}))
-            (dom/div :.workspace-close {:onClick #(fp/transact! this [`(close-workspace ~tab-ws)])}
+            (dom/div :.workspace-close {:onClick (fn [e] (.stopPropagation e) (fp/transact! this [`(close-workspace ~tab-ws)]))}
               "×")))
         (dom/div :.tab.new-tab {:onClick #(fp/transact! this [`(create-workspace {})])}
           "+"))
