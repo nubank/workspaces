@@ -1,4 +1,4 @@
-(defproject nubank/workspaces "1.0.0-preview6-SNAPSHOT"
+(defproject nubank/workspaces "1.0.0-preview6"
   :description "Work environments for development of web apps."
   :url "https://github.com/nubank/workspaces"
   :license {:name "Apache License 2.0"
