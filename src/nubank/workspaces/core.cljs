@@ -55,9 +55,13 @@
   ([selector]
    (swap! data/app* fulcro/mount Root (js/document.querySelector selector))))
 
-(defn before-load []
+(defn before-load
+  {:dev/before-load true}
+  []
   (reset! data/card-definitions-snap* @data/card-definitions*))
 
-(defn after-load []
+(defn after-load
+  {:dev/after-load true}
+  []
   (ui/refresh-active-workspace-cards (:reconciler @data/app*))
   (reset! data/card-definitions-snap* @data/card-definitions*))

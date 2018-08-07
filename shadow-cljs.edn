@@ -1,5 +1,5 @@
 ;; shadow-cljs configuration
-{:deps   {:aliases [:dev :shadow]}
+{:deps   {:aliases [:provided :dev]}
  :nrepl  {:port 9845}
 
  :builds {:workspaces {:target           :browser
@@ -7,8 +7,6 @@
                        :asset-path       "/js"
                        :compiler-options {:closure-output-charset "US-ASCII"}
                        :devtools         {:preloads           [devtools.preload fulcro.inspect.preload]
-                                          :before-load        nubank.workspaces.core/before-load
-                                          :after-load         nubank.workspaces.core/after-load
                                           :loader-mode        :eval
                                           :http-root          "public/workspaces"
                                           :http-port          3689

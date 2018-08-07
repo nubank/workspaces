@@ -47,9 +47,7 @@ Then create the entry point for the workspaces:
 {:builds {:workspaces {:target           :browser
                        :output-dir       "resources/public/js/workspaces"
                        :asset-path       "/js/workspaces"
-                       :devtools         {:before-load        nubank.workspaces.core/before-load
-                                          :after-load         nubank.workspaces.core/after-load
-                                          :http-root          "resources/public"
+                       :devtools         {:http-root          "resources/public"
                                           :http-port          3689
                                           :http-resource-root "."}
                        :modules          {:main {:entries [my-app.workspaces.main]}}}}}
