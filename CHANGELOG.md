@@ -2,6 +2,8 @@
 
 ## [1.0.0-preview6]
 - All tests runner
+- Solo cards
+- Simplified shadow-cljs setup, automatic setup hooks
 
 ## [1.0.0-preview5]
 - More description at initial page
