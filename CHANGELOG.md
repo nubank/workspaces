@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0-preview7]
+- Add back some required dependencies to jar
+
 ## [1.0.0-preview6]
 - All tests runner
 - Solo cards
