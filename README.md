@@ -426,6 +426,25 @@ and add the same card to another workspace, it will just call a new render, but 
 new initialization (they potentially will share state, but that might vary depending
 on the card implementation).
 
+#### Rendering
+
+The render system is based on HTML nodes, you provide a render function and workspaces
+will call that function with a HTML node so you can render/mount your component in it.
+
+The definition from render (and other life cycle functions) will come from calling
+`::wsm/init` on your card.
+
+Here is an example of a custom card with a basic render:
+
+```clojure
+(ws/defcard custom-card
+  {::wsm/init
+   (fn [card]
+     {::wsm/render
+      (fn [node]
+        (gdom/setTextContent node "Hello custom card!"))})})
+```
+
 #### Refresh
 
 A refresh is intended to force a new render of the component. In the beginning of these
