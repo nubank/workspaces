@@ -367,8 +367,7 @@
                     {:font-family uc/font-helvetica
                      :font-size   "14px"
                      :font-weight "bold"
-                     :margin      "10px 0"}]]
-   :css-include   []}
+                     :margin      "10px 0"}]]}
   (let [color (if (= :pass type) uc/color-green-light uc/color-red-dark)]
     (dom/div :.test-result {:style {:borderLeft (str "5px solid " color)}}
       (mapv #(dom/div {:key (str (hash %))} %) testing-contexts)
@@ -404,8 +403,7 @@
                    {:test-results
                     [:report-counters
                      {::summary (fp/get-query TestResult)}]}]
-   :css           []
-   :css-include   [TestResult]}
+   :css           []}
   (let [{::keys [summary]} test-results
         header-color #(header-color (fp/shared this) %)]
     (dom/div
@@ -545,8 +543,7 @@
                    {::test-vars (fp/get-query VarTestBlock)}]
    :css           [[:.test-ns
                     {:flex       "1"
-                     :align-self "flex-start"}]]
-   :css-include   [VarTestBlock]}
+                     :align-self "flex-start"}]]}
   (let [header-color #(header-color (fp/shared this) %)]
     (dom/div :.test-ns
       (header-color (runnable-status-color props))
@@ -583,8 +580,7 @@
                     {:cursor "pointer"
                      :margin "-4px 6px -4px -5px"
                      :width  "20px"}]
-                   [:.title {:flex "1"}]]
-   :css-include   [VarTestBlock]}
+                   [:.title {:flex "1"}]]}
   (dom/div :.test-ns
     (dom/div :.test-ns-header {:classes [(if disabled? :.disabled)]}
       (dom/div :.status {:style   {:backgroundColor (runnable-status-color props)}
@@ -610,8 +606,7 @@
                    {::test-namespaces (fp/get-query AllTestNSTestGroup)}]
    :css           [[:.test-ns
                     {:flex       "1"
-                     :align-self "flex-start"}]]
-   :css-include   [AllTestNSTestGroup]}
+                     :align-self "flex-start"}]]}
   (let [header-color #(header-color (fp/shared this) %)]
     (dom/div :.test-ns
       (cond
@@ -625,6 +620,8 @@
         (header-color uc/color-yellow))
 
       (mapv all-test-ns-test-group test-namespaces))))
+
+(f.portal/add-component-css! AllTests)
 
 (defn test-ns-card-init [card test-ns]
   (let [{::ct.fulcro/keys [app*]

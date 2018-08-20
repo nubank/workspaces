@@ -1,6 +1,6 @@
 (ns nubank.workspaces.lib.fulcro-portal
   (:require [cljs.spec.alpha :as s]
-            [fulcro-css.css :as css]
+            [fulcro-css.css-injection :as cssi]
             [fulcro.client :as fulcro]
             [fulcro.client.dom :as dom]
             [fulcro.client.primitives :as fp]
@@ -17,7 +17,13 @@
 (defonce persistent-apps* (atom #{}))
 
 (defn gen-css-component []
-  (fp/sc [_ _] {:css-include (fn [] (vec @css-components*))}))
+  (fp/ui
+    static fp/IQuery
+    (query [_]
+      (into
+        []
+        (keep-indexed (fn [i v] {(keyword (str "item" i)) (or (fp/get-query v) (with-meta [] {:component v}))}))
+        @css-components*))))
 
 (defn make-root [Root]
   (let [factory (fp/factory Root)]
@@ -64,7 +70,7 @@
     (fi.client/dispose-app app-uuid)))
 
 (defn refresh-css! []
-  (css/upsert-css "fulcro-portal-css" (gen-css-component)))
+  (cssi/upsert-css "fulcro-portal-css" {:component (gen-css-component)}))
 
 (defn add-component-css! [comp]
   (swap! css-components* conj comp)

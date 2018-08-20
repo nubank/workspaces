@@ -98,7 +98,6 @@
                        (grid-item-css {:background    "#fff"
                                        :border-radius uc/card-border-radius
                                        :display       "flex"})]
-   :css-include       []
    :componentDidMount (fn []
                         (let [{:keys [onBreakpointChange]} (fp/props this)
                               width (-> (gobj/getValueByKeys this "grid")

@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0-preview8]
+- Use new fulcro css support (requires Fulcro 2.6+)
+
 ## [1.0.0-preview7]
 - Add back some required dependencies to jar
 

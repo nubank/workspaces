@@ -4,7 +4,7 @@
  :deps
  {cljsjs/highlight           {:mvn/version "9.12.0-2"}
   cljsjs/react-grid-layout   {:mvn/version "0.16.6-0"}
-  fulcrologic/fulcro         {:mvn/version "2.5.12"}
+  fulcrologic/fulcro         {:mvn/version "2.6.0-RC9"}
   fulcrologic/fulcro-inspect {:mvn/version "2.2.1"}
   org.clojure/core.async     {:mvn/version "0.4.474"}}
 

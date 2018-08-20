@@ -43,9 +43,7 @@
 
 (fp/defsc Root [this {:keys [ui/root]}]
   {:initial-state (fn [_] {:ui/root (fp/get-initial-state ui/WorkspacesRoot @data/card-definitions*)})
-   :query         [{:ui/root (fp/get-query ui/WorkspacesRoot)}]
-   :css           []
-   :css-include   [ui/WorkspacesRoot]}
+   :query         [{:ui/root (fp/get-query ui/WorkspacesRoot)}]}
   (ui/workspaces-root root))
 
 (defn mount

@@ -2,7 +2,7 @@
   (:require [clojure.set :as set]
             [cljs.pprint]
             [cognitect.transit :as t]
-            [fulcro-css.css :as css]
+            [fulcro-css.css-injection :as cssi]
             [fulcro.client.localized-dom :as dom]
             [fulcro.client.mutations :as fm]
             [fulcro.client.primitives :as fp]
@@ -189,7 +189,6 @@
                          :justify-content "center"
                          :overflow        "auto"
                          :padding         "10px"}]]
-   :css-include       [highlight/Highlight modal/Modal]
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)
                               node (gobj/get this "cardNode")]
@@ -549,7 +548,7 @@
                                  :align-items "center"}
                         [:button {:margin-left "5px"}]]
                        [:.breakpoint {:flex "1"}]]
-   :css-include       [grid/GridLayout WorkspaceCard]
+   :css-include       [grid/GridLayout]
    :componentDidMount (fn [] (js/requestAnimationFrame #(fp/set-state! this {:render? true})))}
 
   (dom/div :.container$workspaces-workspace-container
@@ -613,8 +612,7 @@
                   {::workspace-id (fp/get-query Workspace)
                    ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
    :css         [[:$workspaces-workspace-container {:background "#9fa2ab"
-                                                    :flex       "1"}]]
-   :css-include [Workspace WorkspaceSoloCard]}
+                                                    :flex       "1"}]]}
 
   (case (first (fp/get-ident this))
     ::workspace-id (workspace (fp/computed props {::open-solo-card open-solo-card}))
@@ -702,8 +700,7 @@
                                :cursor     "text"}]]
                    [:.workspace-close
                     uc/close-icon-css
-                    {:margin-left "10px"}]]
-   :css-include   [WorkspaceContainer]}
+                    {:margin-left "10px"}]]}
   (let [update-title
         (fn [new-title workspace-id]
           (fp/transact! this [`(update-workspace ~{::workspace-id    workspace-id
@@ -755,8 +752,7 @@
                     (select-keys card [::wsm/card-id ::wsm/test? ::wsm/card-unlisted?]))
    :ident         [::wsm/card-id ::wsm/card-id]
    :query         [::wsm/card-id ::wsm/test? ::wsm/card-unlisted?]
-   :css           [[:.container {:cursor "pointer"}]]
-   :css-include   []}
+   :css           [[:.container {:cursor "pointer"}]]}
   (dom/div :.container
     (dom/div {:onClick #(add-card this card-id)}
       (name card-id))))
@@ -871,9 +867,9 @@
                    [:.expand-arrow {:margin-right "5px"
                                     :cursor       "pointer"
                                     :font-size    "14px"}]]
-   :css-include   [WorkspaceTabs WorkspaceIndexListing CardIndexListing spotlight/Spotlight uc/CSS]}
+   :css-include   [uc/CSS]}
   (dom/div :.container
-    (css/style-element WorkspacesRoot)
+    (cssi/style-element {:component WorkspacesRoot})
     (events/dom-listener {::events/keystroke "alt-shift-i"
                           ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
     (events/dom-listener {::events/keystroke "alt-shift-s"
