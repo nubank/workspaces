@@ -870,13 +870,13 @@
    :css-include   [uc/CSS]}
   (dom/div :.container
     (cssi/style-element {:component WorkspacesRoot})
-    (events/dom-listener {::events/keystroke "alt-shift-i"
+    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-toggle-index "alt-shift-i")
                           ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
-    (events/dom-listener {::events/keystroke "alt-shift-s"
+    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-fix-sizes "alt-shift-s")
                           ::events/action    #(events/trigger-event js/window {::events/event "resize"})})
-    (events/dom-listener {::events/keystroke "alt-shift-h"
+    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-toggle-card-headers "alt-shift-h")
                           ::events/action    #(fm/set-value! this ::settings (update (::settings (fp/props this)) ::hide-card-header? not))})
-    (events/dom-listener {::events/keystroke "alt-shift-a"
+    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-spotlight "alt-shift-a")
                           ::events/action    (events/pd #(open-spotlight this))})
     (events/dom-listener {::events/event  "keydown"
                           ::events/action #(if (= (.-keyCode %) 18)

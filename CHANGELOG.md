@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0-preview9]
+- Customize keyboard shortcuts (no ui, have to change on local storage manually for now)
+
 ## [1.0.0-preview8]
 - Use new fulcro css support (requires Fulcro 2.6+)
 
