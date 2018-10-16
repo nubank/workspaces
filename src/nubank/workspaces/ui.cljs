@@ -17,6 +17,8 @@
             [nubank.workspaces.ui.modal :as modal]
             [nubank.workspaces.ui.highlight :as highlight]))
 
+(defonce components-with-error (atom #{}))
+
 (defn card-title [card-id]
   (name card-id))
 
@@ -75,9 +77,17 @@
   ([cards] (refresh-cards cards true))
   ([cards check-changes?]
    (doseq [[card-id {::wsm/keys [node refresh]}] cards]
-     (if (and check-changes? (card-changed? card-id))
-       (restart-card card-id)
-       (if refresh (refresh node))))))
+     (try
+       (if (and check-changes? (card-changed? card-id))
+         (restart-card card-id)
+         (if refresh (refresh node)))
+       (catch :default e
+         (js/console.error "Error refreshing card" card-id e))))
+
+    (doseq [comp @components-with-error]
+      (fp/set-state! comp {::error-catch? false}))
+
+    (reset! components-with-error #{})))
 
 (defn active-workspace-cards [reconciler]
   (let [state (-> reconciler fp/app-state deref)]
@@ -182,6 +192,10 @@
                          :padding         "6px"}
                         [:button {:margin-left "5px"}]]
 
+                       [:.error {:color       "#ef0000"
+                                 :font-weight "bold"
+                                 :padding     "10px"}]
+
                        [:.card
                         {:display         "flex"
                          :flex            "1"
@@ -189,18 +203,27 @@
                          :justify-content "center"
                          :overflow        "auto"
                          :padding         "10px"}]]
+
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)
                               node (gobj/get this "cardNode")]
-                          (render-card {::wsm/card-id   card-id
-                                        ::wsm/node      node
-                                        ::wsm/component this})
-                          (.forceUpdate this)))}
+                          (try
+                            (render-card {::wsm/card-id   card-id
+                                          ::wsm/node      node
+                                          ::wsm/component this})
+                            (.forceUpdate this)
+                            (catch :default e
+                              (swap! components-with-error conj this)
+                              (js/console.error "Error mounting card" card-id e)
+                              (fp/set-state! this {::error-catch? true})))))}
+
   (let [{::wsm/keys [render-toolbar]} (data/active-card card-id)]
     (dom/div :.container
       (if render-toolbar
         (dom/div :.toolbar (render-toolbar))
         (dom/div))
+      (if (fp/get-state this ::error-catch?)
+        (dom/div :.error "Error rendering card, check console for details."))
       (dom/div :.card (merge-with merge
                         (::wsm/node-props (data/card-definition card-id))
                         {:ref #(gobj/set this "cardNode" %)})))))
@@ -227,6 +250,10 @@
 
                        [:$cljs-workflow-static-workflow
                         [:.header {:cursor "default"}]]
+
+                       [:.error {:color       "#ef0000"
+                                 :font-weight "bold"
+                                 :padding     "10px"}]
 
                        [:.header
                         uc/font-os12sb
@@ -315,19 +342,25 @@
                          :border-radius uc/card-border-radius
                          :box-shadow    uc/box-shadow}]]
    :css-include       [highlight/Highlight modal/Modal]
+
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)
                               node (gobj/get this "cardNode")]
-                          (render-card {::wsm/card-id   card-id
-                                        ::wsm/node      node
-                                        ::wsm/component this})
-                          (.forceUpdate this)))}
+                          (try
+                            (render-card {::wsm/card-id   card-id
+                                          ::wsm/node      node
+                                          ::wsm/component this})
+                            (.forceUpdate this)
+                            (catch :default e
+                              (swap! components-with-error conj this)
+                              (js/console.error "Error mounting card" card-id e)
+                              (fp/set-state! this {::error-catch? true})))))}
   (let [{::wsm/keys [render-toolbar]} (data/active-card card-id)
         {::wsm/keys [card-form test?]} (data/card-definition card-id)]
     (dom/div :.container
       (dom/div :.header$workspaces-cljs-card-drag-handle {:style (merge card-header-style
-                                                                        (if (get-in props [[::workspace-root "singleton"] ::settings ::hide-card-header?])
-                                                                          {:display "none"}))}
+                                                                   (if (get-in props [[::workspace-root "singleton"] ::settings ::hide-card-header?])
+                                                                     {:display "none"}))}
         (dom/div :.header-title
           (dom/div :.card-title {:title (str card-id)}
             (card-title card-id))
@@ -345,6 +378,8 @@
             (dom/div :.close {:onClick #(fp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
         (if render-toolbar
           (dom/div :.toolbar (render-toolbar))))
+      (if (fp/get-state this ::error-catch?)
+        (dom/div :.error "Error rendering card, check console for details."))
       (dom/div :.card (merge-with merge
                         (::wsm/node-props (data/card-definition card-id))
                         {:ref #(gobj/set this "cardNode" %)}))
@@ -548,60 +583,67 @@
                                  :align-items "center"}
                         [:button {:margin-left "5px"}]]
                        [:.breakpoint {:flex "1"}]]
+
+   :componentDidCatch (fn [error info]
+                        (swap! components-with-error conj this)
+                        (fp/set-state! this {::error-catch? true}))
+
    :css-include       [grid/GridLayout]
    :componentDidMount (fn [] (js/requestAnimationFrame #(fp/set-state! this {:render? true})))}
 
-  (dom/div :.container$workspaces-workspace-container
-    (dom/div :.tools
-      (dom/div :.breakpoint (str breakpoint))
-      (if-not workspace-static?
-        (dom/select {:value    "-"
-                     :onChange (fn [e]
-                                 (fp/transact! this [`(copy-breakpoint-layout ~{::source-breakpoint (.. e -target -value)})])
-                                 (gobj/set (.-target e) "selectedIndex" 0))}
-          (dom/option {:value "-"} "Copy layout")
-          (for [{:keys [id]} grid/breakpoints]
-            (dom/option {:key id :value id} id))))
-      (uc/button {:onClick #(refresh-cards (active-workspace-cards (fp/get-reconciler this)) false)} "Refresh cards")
-      (uc/button {:onClick #(fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"]
-                              [`(create-workspace ~{::workspace-title (str workspace-title " copy")
-                                                    ::layouts         layouts})])} "Duplicate")
-      (if-not workspace-static?
-        (uc/button {:onClick #(fp/transact! this [`(normalize-sizes {})])} "Unify layouts"))
-      (if-not workspace-static?
-        (uc/button {:onClick #(js/console.log (let [writer (t/writer :json)]
-                                                (pr-str (t/write writer layouts))))} "Export"))
-      (if-not workspace-static?
-        (uc/button {:onClick #(when (js/confirm "Delete workspace?")
-                                (fp/transact! this [`(close-workspace {::workspace-id ~workspace-id})])
-                                (fp/transact! this [`(remove-workspace {::workspace-id ~workspace-id})]))} "Delete")))
+  (if (fp/get-state this ::error-catch?)
+    (dom/div "Some error leaked to workspace level (ugh...), please report this and check console for details.")
+    (dom/div :.container$workspaces-workspace-container
+      (dom/div :.tools
+        (dom/div :.breakpoint (str breakpoint))
+        (if-not workspace-static?
+          (dom/select {:value    "-"
+                       :onChange (fn [e]
+                                   (fp/transact! this [`(copy-breakpoint-layout ~{::source-breakpoint (.. e -target -value)})])
+                                   (gobj/set (.-target e) "selectedIndex" 0))}
+            (dom/option {:value "-"} "Copy layout")
+            (for [{:keys [id]} grid/breakpoints]
+              (dom/option {:key id :value id} id))))
+        (uc/button {:onClick #(refresh-cards (active-workspace-cards (fp/get-reconciler this)) false)} "Refresh cards")
+        (uc/button {:onClick #(fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"]
+                                [`(create-workspace ~{::workspace-title (str workspace-title " copy")
+                                                      ::layouts         layouts})])} "Duplicate")
+        (if-not workspace-static?
+          (uc/button {:onClick #(fp/transact! this [`(normalize-sizes {})])} "Unify layouts"))
+        (if-not workspace-static?
+          (uc/button {:onClick #(js/console.log (let [writer (t/writer :json)]
+                                                  (pr-str (t/write writer layouts))))} "Export"))
+        (if-not workspace-static?
+          (uc/button {:onClick #(when (js/confirm "Delete workspace?")
+                                  (fp/transact! this [`(close-workspace {::workspace-id ~workspace-id})])
+                                  (fp/transact! this [`(remove-workspace {::workspace-id ~workspace-id})]))} "Delete")))
 
-    (dom/div :.grid
-      (if (fp/get-state this :render?)
-        (grid/grid-layout
-          (cond->
-            {:className          (str "layout " (if workspace-static? "cljs-workflow-static-workflow"))
-             :rowHeight          30
-             :breakpoints        (into {} (map (juxt :id :breakpoint)) grid/breakpoints)
-             :cols               (into {} (map (juxt :id :cols)) grid/breakpoints)
-             :layouts            layouts
-             :draggableHandle    ".workspaces-cljs-card-drag-handle"
-             :onBreakpointChange (fn [bp _]
-                                   (fm/set-value! this ::breakpoint bp))
-             :onLayoutChange     (fn [_ layouts]
-                                   (let [layouts' (->> (js->clj layouts)
-                                                       (into {} (map (fn [[k v]] [k (normalize-layout v)]))))]
-                                     (fp/transact! this [`(update-workspace ~{::workspace-id workspace-id
-                                                                              ::layouts      layouts'})])))}
+      (dom/div :.grid
+        (if (fp/get-state this :render?)
+          (grid/grid-layout
+            (cond->
+              {:className          (str "layout " (if workspace-static? "cljs-workflow-static-workflow"))
+               :rowHeight          30
+               :breakpoints        (into {} (map (juxt :id :breakpoint)) grid/breakpoints)
+               :cols               (into {} (map (juxt :id :cols)) grid/breakpoints)
+               :layouts            layouts
+               :draggableHandle    ".workspaces-cljs-card-drag-handle"
+               :onBreakpointChange (fn [bp _]
+                                     (fm/set-value! this ::breakpoint bp))
+               :onLayoutChange     (fn [_ layouts]
+                                     (let [layouts' (->> (js->clj layouts)
+                                                         (into {} (map (fn [[k v]] [k (normalize-layout v)]))))]
+                                       (fp/transact! this [`(update-workspace ~{::workspace-id workspace-id
+                                                                                ::layouts      layouts'})])))}
 
-            workspace-static?
-            (assoc :isDraggable false :isResizable false
-                   :onLayoutChange (fn [_ _])))
-          (for [{::wsm/keys [card-id] :as card} cards
-                :when card-id]
-            (dom/div {:key (str card-id)}
-              (workspace-card (fp/computed card {::export-size    #(export-card-size this card-id)
-                                                 ::open-solo-card open-solo-card})))))))))
+              workspace-static?
+              (assoc :isDraggable false :isResizable false
+                     :onLayoutChange (fn [_ _])))
+            (for [{::wsm/keys [card-id] :as card} cards
+                  :when card-id]
+              (dom/div {:key (str card-id)}
+                (workspace-card (fp/computed card {::export-size    #(export-card-size this card-id)
+                                                   ::open-solo-card open-solo-card}))))))))))
 
 (def workspace (fp/factory Workspace {:keyfn ::workspace-id}))
 
@@ -612,11 +654,20 @@
                   {::workspace-id (fp/get-query Workspace)
                    ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
    :css         [[:$workspaces-workspace-container {:background "#9fa2ab"
-                                                    :flex       "1"}]]}
+                                                    :flex       "1"}]
+                 [:.error {:color       "#ef0000"
+                           :font-weight "bold"
+                           :padding     "10px"}]]
 
-  (case (first (fp/get-ident this))
-    ::workspace-id (workspace (fp/computed props {::open-solo-card open-solo-card}))
-    ::wsm/card-id (workspace-solo-card props)))
+   :componentDidCatch (fn [error info]
+                        (swap! components-with-error conj this)
+                        (fp/set-state! this {::error-catch? true}))}
+
+  (if (fp/get-state this ::error-catch?)
+    (dom/div :.error "Error rendering workspace, check console for details.")
+    (case (first (fp/get-ident this))
+      ::workspace-id (workspace (fp/computed props {::open-solo-card open-solo-card}))
+      ::wsm/card-id (workspace-solo-card props))))
 
 (def workspace-container (fp/factory WorkspaceContainer {:keyfn #(or (::workspace-id %) (::wsm/card-id %))}))
 

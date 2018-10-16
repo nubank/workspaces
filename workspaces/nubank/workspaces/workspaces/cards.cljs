@@ -273,6 +273,10 @@
     {::spotlight/type ::spotlight/test
      ::spotlight/id   nubank.temporary.tests/simpler-err}])
 
+(ws/defcard card-react-error
+  (ct.react/react-card
+    (dom/div "Hello World" :fail)))
+
 (fp/defsc SpotlightContainer
   [this {:keys [spot]}]
   {:initial-state (fn [_]

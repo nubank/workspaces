@@ -2,6 +2,7 @@
 
 ## [1.0.0-preview9]
 - Customize keyboard shortcuts (no ui, have to change on local storage manually for now)
+- Add error boundaries and try catch to prevent workspaces from breaking when some exception happens during card render/refresh
 
 ## [1.0.0-preview8]
 - Use new fulcro css support (requires Fulcro 2.6+)
