@@ -17,3 +17,5 @@ node_modules
 /out
 /examples/workspaces-shadow-example/resources/public/js
 /examples/workspaces-shadow-example/resources/target
+.idea
+*.iml
