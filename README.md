@@ -47,12 +47,11 @@ Then create the entry point for the workspaces:
 {:builds {:workspaces {:target           :browser
                        :output-dir       "resources/public/js/workspaces"
                        :asset-path       "/js/workspaces"
-                       :devtools         {;:preloads   [fulcro.inspect.preload ] ; include for Fulcro support
+                       :devtools         {;:preloads   [fulcro.inspect.preload ] ; include for Fulcro Inspect support
                                           :http-root          "resources/public"
                                           :http-port          3689
                                           :http-resource-root "."
-                                          :preloads []
-                                          }
+                                          :preloads []}
                        :modules          {:main {:entries [my-app.workspaces.main]}}}}}
 ```
 
