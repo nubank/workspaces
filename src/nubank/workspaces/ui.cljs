@@ -924,9 +924,9 @@
                                :border-radius "4px"
                                :color         "#fff"
                                :font-weight   "bold"
-                               :padding       "2px 6px"
+                               :padding       "3px 7px"
                                :box-shadow    "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
-                               :margin        "0px 1px 6px"}
+                               :margin        "1px 1px 6px"}
                      [:button {:color "#fff"}]]
                     [:.row {:display "flex"}]
                     [:.pointer {:cursor "pointer"}]
@@ -983,7 +983,7 @@
           (dom/div :.row.header
             (dom/div "Workspaces")
             (dom/div :.flex)
-            (dom/div (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "«")))
+            (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "«"))
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
             (dom/div
               (dom/div
