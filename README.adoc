@@ -8,7 +8,7 @@
 :toclevels: 3
 :sectlinks:
 :sectanchors:
-:imagesdir: img
+:imagesdir: public/img
 :leveloffset: 1
 :sectnums:
 
@@ -30,6 +30,8 @@ inspired by https://github.com/bhauman/devcards[devcards].
 If you just want to see an example of Workspaces in action, check
 https://fulcrologic.github.io/fulcro-incubator/[Fulcro Incubator public
 workspace].
+
+image:workspaces-main.gif[Workspaces Main]
 
 == Setup
 
@@ -231,6 +233,8 @@ the initial state.
 
 When you use a Fulcro card you will notice it has an extra toolbar, in
 this toolbar you have two action buttons:
+
+
 
 * `Inspect`: this is an integration with
 https://github.com/fulcrologic/fulcro-inspect[Fulcro Inspect], if you

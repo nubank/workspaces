@@ -297,7 +297,7 @@
 
 (ws/defcard highlight-card
   {::wsm/align      {:flex "1"}
-   ::wsm/card-width 5 ::wsm/card-height 12}
+   ::wsm/card-width 4 ::wsm/card-height 12}
   (ct.react/react-card
     (highlight/highlight {::highlight/source   "(ws/defcard\n purchases-charges\n {:nubank.workspaces.model/card-width 7,\n  :nubank.workspaces.model/card-height 11}\n cards/widget-card-config\n (cards/fulcro-card\n  chargeback/PurchaseCharges\n  {:nubank.shuffle.workspaces.card-types/gen-env gen-env,\n   :nubank.shuffle.workspaces.card-types/load true}))"
                           ::highlight/language "clojure"})))
