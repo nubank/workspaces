@@ -92,8 +92,7 @@ export function fuzzy_match(pattern, str) {
             // Apply penalty for each letter before the first pattern match
             // Note: std::max because penalties are negative values. So max is smallest penalty.
             if (patternIdx === 0) {
-                var penalty = Math.max(strIdx * leading_letter_penalty, max_leading_letter_penalty);
-                score += penalty;
+              score += Math.max(strIdx * leading_letter_penalty, max_leading_letter_penalty);
             }
 
             // Apply bonus for consecutive bonuses
