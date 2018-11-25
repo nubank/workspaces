@@ -5,7 +5,8 @@
             [nubank.workspaces.ui.events :as dom-events]
             [fulcro.client.mutations :as fm]
             [fulcro.client.primitives :as fp]
-            [nubank.workspaces.ui.core :as uc]))
+            [nubank.workspaces.ui.core :as uc]
+            [fulcro-css.css :as css]))
 
 (def max-results 50)
 
@@ -110,9 +111,45 @@
                          [:.solo-hint
                           {:display "inline"}]]]]
    :css-include       [cursor/VerticalCursor]
-   :componentDidMount (fn [] (.select (gobj/get this "input")))}
+   :componentDidMount (fn [] (.select (gobj/get this "input")))
+   :initLocalState    (fn []
+                        (let [on-change #(fm/set-value! this ::value %)]
+                          {:cursor-select
+                           (fn [opt e]
+                             (let [{::keys [on-select]
+                                    :or    {on-select identity}}
+                                   (-> this fp/props fp/get-computed)]
+                               (.stopPropagation e)
+                               (on-select opt (.-altKey e))))
+
+                           :cursor-change
+                           on-change
+
+                           :cursor-factory
+                           (fn [opt]
+                             (let [{::keys [value] :as props} (fp/props this)
+                                   {::keys [on-select]
+                                    :or    {on-select identity}}
+                                   (-> props fp/get-computed)
+                                   css (css/get-classnames Spotlight)]
+                               (dom/div {:classes [(:option css) (if (= opt value) (:option-selected css))]
+                                         :onClick #(do
+                                                     (on-change opt)
+                                                     (on-select opt (.-altKey %)))}
+                                 (dom/div (value->label opt))
+                                 (dom/div {:classes [(:option-type css)]}
+                                   (some-> opt ::type name)
+                                   (if (some-> opt ::type (not= ::workspace))
+                                     (dom/span {:classes [(:solo-hint css)]} " - open solo"))))))
+
+                           :cursor-key
+                           (fn [opt]
+                             (str (some-> opt ::type name) "-" (value->label opt)))
+
+                           :cursor-target
+                           #(gobj/get this "input")}))}
   (let [options'  (if (seq filter) filtered-options (take max-results options))
-        on-change #(fm/set-value! this ::value %)]
+        on-change (fp/get-state this :cursor-change)]
     (dom/div :.area-container
       (dom/div :.container
         (dom/input :.search {:value     filter
@@ -126,20 +163,9 @@
                ::cursor/value      value
                ::cursor/options    options'
                ::cursor/on-change  on-change
-               ::cursor/on-select  #(do
-                                      (.stopPropagation %2)
-                                      (on-select % (.-altKey %2)))
-               ::cursor/factory    (fn [opt]
-                                     (dom/div {:classes [(:option css) (if (= opt value) (:option-selected css))]
-                                               :onClick #(do
-                                                           (on-change opt)
-                                                           (on-select opt (.-altKey %)))}
-                                       (dom/div (value->label opt))
-                                       (dom/div {:classes [(:option-type css)]}
-                                         (some-> opt ::type name)
-                                         (if (some-> opt ::type (not= ::workspace))
-                                           (dom/span {:classes [(:solo-hint css)]} " - open solo")))))
-               ::cursor/value->key value->label
-               ::dom-events/target #(gobj/get this "input")})))))))
+               ::cursor/on-select  (fp/get-state this :cursor-select)
+               ::cursor/factory    (fp/get-state this :cursor-factory)
+               ::cursor/value->key (fp/get-state this :cursor-key)
+               ::dom-events/target (fp/get-state this :cursor-target)})))))))
 
 (def spotlight (fp/factory Spotlight))
