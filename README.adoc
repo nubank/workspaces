@@ -234,8 +234,6 @@ the initial state.
 When you use a Fulcro card you will notice it has an extra toolbar, in
 this toolbar you have two action buttons:
 
-
-
 * `Inspect`: this is an integration with
 https://github.com/fulcrologic/fulcro-inspect[Fulcro Inspect], if you
 have the extension active on Chrome, it will select the application of
