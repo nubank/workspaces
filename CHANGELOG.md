@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.0]
+- Fixed react-key issues on spotlight
+- Add button in the index to show/hide
+- Improved spotlight search algorithm, details highlighed
+
 ## [1.0.0-preview9]
 - Customize keyboard shortcuts (no ui, have to change on local storage manually for now)
 - Add error boundaries and try catch to prevent workspaces from breaking when some exception happens during card render/refresh
