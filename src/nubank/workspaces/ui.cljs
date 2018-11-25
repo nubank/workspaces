@@ -959,6 +959,10 @@
                                             :margin-top   "-4px"
                                             :outline      "none"
                                             :padding      "0"}
+                     [:&.spotlight {:color       "transparent"
+                                    :text-shadow "0 0 #ffffff"
+                                    :font-size   "14px"
+                                    :margin      "-2px 10px 0 0"}]
                      [:&.help {:font-size "17px"
                                :margin    "-2px 10px 0 0"}]]
                     [:.header {:background    "#404040"
@@ -1031,6 +1035,8 @@
           (dom/div :.row.header
             (dom/div "Workspaces")
             (dom/div :.flex)
+            (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
+              "\uD83D\uDD0D")
             (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
               "?")
             (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
