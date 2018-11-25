@@ -139,6 +139,10 @@
                             :padding     "10px"
                             :width       "100%"}]
 
+                          [:.options
+                           {:font-family uc/font-open-sans
+                            :margin-top  "10px"}]
+
                           [:$cljs-workspaces-extended-views
                            [:.option-selected
                             [:.solo-hint
