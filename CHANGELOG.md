@@ -3,8 +3,10 @@
 ## [1.0.0]
 - Fixed react-key issues on spotlight
 - Add button in the index to show/hide
+- Add button to show spotlight
+- Add help dialog and a action button to show it
 - Improved spotlight search algorithm, details highlighed
-- Purple background on index headers
+- Styled index headers
 
 ## [1.0.0-preview9]
 - Customize keyboard shortcuts (no ui, have to change on local storage manually for now)
