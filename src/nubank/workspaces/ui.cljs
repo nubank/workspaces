@@ -917,14 +917,17 @@
                                             :font-size    "23px"
                                             :font-weight  "bold"
                                             :margin-right "5px"
-                                            :margin-top "-4px"
+                                            :margin-top   "-4px"
                                             :outline      "none"
                                             :padding      "0"}]
-                    [:.header {:background    "#581f74"
+                    [:.header {:background    "#2b5275"
                                :border-radius "4px"
                                :color         "#fff"
-                               :padding       "2px 4px"}
-                     [:button {:color        "#fff"}]]
+                               :font-weight   "bold"
+                               :padding       "2px 6px"
+                               :box-shadow    "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
+                               :margin        "0px 1px 6px"}
+                     [:button {:color "#fff"}]]
                     [:.row {:display "flex"}]
                     [:.pointer {:cursor "pointer"}]
                     [:.flex {:flex "1"}]
@@ -978,7 +981,7 @@
       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
         (dom/div :.menu
           (dom/div :.row.header
-            (dom/div "WORKSPACES")
+            (dom/div "Workspaces")
             (dom/div :.flex)
             (dom/div (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "«")))
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
@@ -1005,7 +1008,7 @@
 
           (dom/br)
 
-          (dom/div :.header "CARDS")
+          (dom/div :.header "Cards")
           (for [[ns cards] (->> (group-by (comp namespace ::wsm/card-id) uis)
                                 (sort-by first))]
             (dom/div {:key (str ns)}
@@ -1022,7 +1025,7 @@
           (dom/br)
 
           (dom/div :.pointer.header {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
-            "TESTS")
+            "Tests")
           (for [[ns cards] (->> tests
                                 (remove ::wsm/card-unlisted?)
                                 (group-by (comp namespace ::wsm/card-id))
