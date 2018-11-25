@@ -20,6 +20,17 @@
 (defonce components-with-error (atom #{}))
 
 ;region helpers
+(def default-bindings
+  {::keybinding-toggle-index        "alt-shift-i"
+   ::keybinding-spotlight           "alt-shift-a"
+   ::keybinding-toggle-card-headers "alt-shift-h"
+   ::keybinding-new-workspace       "alt-shift-n"
+   ::keybinding-close-workspace     "alt-shift-w"
+   ::keybinding-fix-sizes           "alt-shift-s"})
+
+(defn get-keybinding [name]
+  (local-storage/get name (get default-bindings name)))
+
 (defn card-title [card-id]
   (name card-id))
 
@@ -759,9 +770,9 @@
           (fp/transact! this [`(update-workspace ~{::workspace-id    workspace-id
                                                    ::workspace-title new-title})]))]
     (dom/div :.container
-      (events/dom-listener {::events/keystroke "alt-shift-w"
+      (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-close-workspace)
                             ::events/action    #(fp/transact! this [`(close-workspace ~active-workspace)])})
-      (events/dom-listener {::events/keystroke "alt-shift-n"
+      (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-new-workspace)
                             ::events/action    #(fp/transact! this [`(create-workspace {})])})
       (dom/div :.tabs
         (for [{::keys     [workspace-id workspace-title]
@@ -872,15 +883,6 @@
       `[(spotlight/reset {::spotlight/options ~options})])
     (fm/set-value! this ::show-spotlight? true)))
 
-(def default-bindings
-  {::keybinding-toggle-index        "alt-shift-i"
-   ::keybinding-spotlight           "alt-shift-a"
-   ::keybinding-toggle-card-headers "alt-shift-h"
-   ::keybinding-fix-sizes           "alt-shift-s"})
-
-(defn get-keybinding [name]
-  (local-storage/get name (get default-bindings name)))
-
 (fp/defsc HelpDialog
   [this {::keys []}]
   {:css [[:.container
@@ -901,8 +903,8 @@
     (dom/div (dom/strong (get-keybinding ::keybinding-spotlight)) ": Add card to current workspace (open spotlight for card picking)")
     (dom/div (dom/strong (get-keybinding ::keybinding-toggle-index)) ": Toggle index view")
     (dom/div (dom/strong (get-keybinding ::keybinding-toggle-card-headers)) ": Toggle card headers")
-    (dom/div (dom/strong "alt-shift-n") ": Create new local workspace")
-    (dom/div (dom/strong "alt-shift-w") ": Close current workspace")
+    (dom/div (dom/strong (get-keybinding ::keybinding-new-workspace)) ": Create new local workspace")
+    (dom/div (dom/strong (get-keybinding ::keybinding-close-workspace)) ": Close current workspace")
     (dom/div (dom/strong "alt-shift-?") ": Toggle shorcuts modal")))
 
 (def help-dialog (fp/factory HelpDialog))
