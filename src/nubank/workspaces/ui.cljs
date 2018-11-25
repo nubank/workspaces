@@ -19,6 +19,7 @@
 
 (defonce components-with-error (atom #{}))
 
+;region helpers
 (defn card-title [card-id]
   (name card-id))
 
@@ -32,16 +33,16 @@
     active
     (if-let [{::wsm/keys [init] :as card-def} (data/card-definition card-id)]
       (let [card (init (merge card-def
-                              {::wsm/node
-                               node
+                         {::wsm/node
+                          node
 
-                               ::wsm/reconciler
-                               reconciler
+                          ::wsm/reconciler
+                          reconciler
 
-                               ::wsm/set-card-header-style
-                               (fn [style]
-                                 (fp/transact! reconciler [::wsm/card-id card-id]
-                                   [`(fm/set-props {::wsm/card-header-style ~style})]))}))]
+                          ::wsm/set-card-header-style
+                          (fn [style]
+                            (fp/transact! reconciler [::wsm/card-id card-id]
+                              [`(fm/set-props {::wsm/card-header-style ~style})]))}))]
         (swap! data/active-cards* assoc card-id card)
         card)
       (js/console.warn "Card card-id" card-id "not found"))))
@@ -84,10 +85,10 @@
        (catch :default e
          (js/console.error "Error refreshing card" card-id e))))
 
-    (doseq [comp @components-with-error]
-      (fp/set-state! comp {::error-catch? false}))
+   (doseq [comp @components-with-error]
+     (fp/set-state! comp {::error-catch? false}))
 
-    (reset! components-with-error #{})))
+   (reset! components-with-error #{})))
 
 (defn active-workspace-cards [reconciler]
   (let [state (-> reconciler fp/app-state deref)]
@@ -160,6 +161,7 @@
             (fn [layouts]
               (filterv #(not= (get % "i") card-id) layouts))
             breakpoints)))))
+;endregion
 
 (fm/defmutation remove-card-from-active-ns [{::wsm/keys [card-id]}]
   (action [{:keys [state] :as env}]
@@ -872,53 +874,78 @@
 
 (fp/defsc WorkspacesRoot
   [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?]}]
-  {:initial-state (fn [card-definitions]
-                    {::cards           (mapv #(fp/get-initial-state CardIndexListing %)
-                                         (vals card-definitions))
-                     ::workspaces      (->> (local-storage/get ::local-workspaces [])
-                                            (mapv #(fp/get-initial-state Workspace
-                                                     (local-storage/tget [::workspace-id %])))
-                                            (into (initialize-static-workspaces)))
+  {:initial-state  (fn [card-definitions]
+                     {::cards           (mapv #(fp/get-initial-state CardIndexListing %)
+                                          (vals card-definitions))
+                      ::workspaces      (->> (local-storage/get ::local-workspaces [])
+                                             (mapv #(fp/get-initial-state Workspace
+                                                      (local-storage/tget [::workspace-id %])))
+                                             (into (initialize-static-workspaces)))
 
-                     ::expanded        (local-storage/get ::expanded {})
-                     ::ws-tabs         (fp/get-initial-state WorkspaceTabs {})
+                      ::expanded        (local-storage/get ::expanded {})
+                      ::ws-tabs         (fp/get-initial-state WorkspaceTabs {})
 
-                     ::spotlight       (fp/get-initial-state spotlight/Spotlight [])
-                     ::show-spotlight? false
-                     ::settings        {::show-index? (local-storage/get ::show-index? true)}})
-   :ident         (fn [] [::workspace-root "singleton"])
-   :query         [::settings ::expanded ::show-spotlight?
-                   {::cards (fp/get-query CardIndexListing)}
-                   {::workspaces (fp/get-query WorkspaceIndexListing)}
-                   {::ws-tabs (fp/get-query WorkspaceTabs)}
-                   {::spotlight (fp/get-query spotlight/Spotlight)}]
-   :css           [[:body {:margin     0
-                           :background "#f7f7f7"
-                           :overflow   "hidden"}]
-                   [:.container {:box-sizing "border-box"
-                                 :display    "flex"
-                                 :width      "100vw"
-                                 :height     "100vh"
-                                 :padding    "10px"}]
-                   [:.menu {:padding-right "10px"
-                            :font-family   uc/font-open-sans
-                            :flex-shrink   "0"
-                            :overflow      "auto"
-                            :min-width     "300px"}]
-                   [:.workspaces {:display    "flex"
-                                  :flex       "1"
-                                  :max-height "100vh"
-                                  :overflow   "hidden"}]
-                   [:.pointer {:cursor "pointer"}]
-                   [:.workspaces-solo {:max-width "100%"}]
-                   [:.workspace {:cursor "pointer"}]
-                   [:.nest-group {:margin-left "32px"}]
-                   [:.nest-group-small {:margin-left "18px"}]
-                   [:.ns-header {:display "flex" :align-items "center"}]
-                   [:.expand-arrow {:margin-right "5px"
-                                    :cursor       "pointer"
-                                    :font-size    "14px"}]]
-   :css-include   [uc/CSS]}
+                      ::spotlight       (fp/get-initial-state spotlight/Spotlight [])
+                      ::show-spotlight? false
+                      ::settings        {::show-index? (local-storage/get ::show-index? true)}})
+   :ident          (fn [] [::workspace-root "singleton"])
+   :query          [::settings ::expanded ::show-spotlight?
+                    {::cards (fp/get-query CardIndexListing)}
+                    {::workspaces (fp/get-query WorkspaceIndexListing)}
+                    {::ws-tabs (fp/get-query WorkspaceTabs)}
+                    {::spotlight (fp/get-query spotlight/Spotlight)}]
+   :css            [[:body {:margin     0
+                            :background "#f7f7f7"
+                            :overflow   "hidden"}]
+                    [:.container {:box-sizing "border-box"
+                                  :display    "flex"
+                                  :width      "100vw"
+                                  :height     "100vh"
+                                  :padding    "10px"}]
+                    [:.menu {:padding-right "10px"
+                             :font-family   uc/font-open-sans
+                             :flex-shrink   "0"
+                             :overflow      "auto"
+                             :min-width     "300px"}]
+                    [:.workspaces {:display    "flex"
+                                   :flex       "1"
+                                   :max-height "100vh"
+                                   :overflow   "hidden"}]
+                    [:.toggle-index-button {:background   "transparent"
+                                            :border       "none"
+                                            :cursor       "pointer"
+                                            :font-size    "23px"
+                                            :font-weight  "bold"
+                                            :margin-right "5px"
+                                            :margin-top "-4px"
+                                            :outline      "none"
+                                            :padding      "0"}]
+                    [:.row {:display "flex"}]
+                    [:.pointer {:cursor "pointer"}]
+                    [:.flex {:flex "1"}]
+                    [:.workspaces-solo {:max-width "100%"}]
+                    [:.workspace {:cursor "pointer"}]
+                    [:.nest-group {:margin-left "32px"}]
+                    [:.nest-group-small {:margin-left "18px"}]
+                    [:.ns-header {:display "flex" :align-items "center"}]
+                    [:.expand-arrow {:margin-right "5px"
+                                     :cursor       "pointer"
+                                     :font-size    "14px"}]]
+   :css-include    [uc/CSS]
+   :initLocalState (fn [] {:spotlight-select
+                           (fn [{::spotlight/keys [id type]} solo?]
+                             (if id
+                               (cond
+                                 (= type ::spotlight/workspace)
+                                 (fp/transact! this [`(select-workspace {::workspace-id ~id})])
+
+                                 solo?
+                                 (fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id id})])
+
+                                 :else
+                                 (add-card this id)))
+
+                             (fm/set-value! this ::show-spotlight? false))})}
   (dom/div :.container
     (cssi/style-element {:component WorkspacesRoot})
     (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-toggle-index "alt-shift-i")
@@ -940,24 +967,15 @@
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
         (spotlight/spotlight
           (fp/computed spotlight
-            {::spotlight/on-select (fn [{::spotlight/keys [id type]} solo?]
-                                     (if id
-                                       (cond
-                                         (= type ::spotlight/workspace)
-                                         (fp/transact! this [`(select-workspace {::workspace-id ~id})])
+            {::spotlight/on-select (fp/get-state this :spotlight-select)}))))
 
-                                         solo?
-                                         (fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id id})])
-
-                                         :else
-                                         (add-card this id)))
-
-                                     (fm/set-value! this ::show-spotlight? false))}))))
-
-    (when (::show-index? settings)
+    (if (::show-index? settings)
       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
         (dom/div :.menu
-          "WORKSPACES"
+          (dom/div :.row
+            (dom/div "WORKSPACES")
+            (dom/div :.flex)
+            (dom/div (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "«")))
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
             (dom/div
               (dom/div
@@ -998,7 +1016,8 @@
 
           (dom/br)
 
-          (dom/div :.pointer {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)} "TESTS")
+          (dom/div :.pointer {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
+            "TESTS")
           (for [[ns cards] (->> tests
                                 (remove ::wsm/card-unlisted?)
                                 (group-by (comp namespace ::wsm/card-id))
@@ -1013,7 +1032,9 @@
 
               (if (get-in expanded [:test-ns ns])
                 (dom/div :.nest-group
-                  (mapv card-index-listing (sort-by ::wsm/card-id cards)))))))))
+                  (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
+      (dom/div :.menu-show
+        (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "»")))
     (dom/div :.workspaces
       (workspace-tabs ws-tabs))))
 
