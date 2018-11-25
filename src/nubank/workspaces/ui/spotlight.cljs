@@ -7,7 +7,7 @@
             [fulcro.client.primitives :as fp]
             [fulcro.incubator.ui-state-machines :as fsm]
             [nubank.workspaces.ui.core :as uc]
-            ["../lib/fts_fuzzy_match" :refer [fuzzy_match]]))
+            [nubank.workspaces.lib.fuzzy :as fuzzy]))
 
 (def max-results 50)
 
@@ -20,7 +20,7 @@
     (str (some-> opt ::type name) "-" (value->label opt))))
 
 (defn match-one [filter opt]
-  (let [[match? score hl] (fuzzy_match filter (value->label opt))]
+  (let [[match? score hl] (fuzzy/fuzzy_match filter (value->label opt))]
     (if match?
       (assoc opt ::match? match? ::match-score score ::match-hl hl))))
 

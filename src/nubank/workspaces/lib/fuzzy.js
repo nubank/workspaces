@@ -12,9 +12,20 @@
 //
 // CONTRIBUTORS
 //   Jørgen Tjernø - async helper
+//   Wilker Lucio - modified to work as a google closure module
+
+"use strict";
+
+goog.provide("nubank.workspaces.lib.fuzzy");
 
 // Returns true if each character in pattern is found sequentially within str
-export function fuzzy_match_simple(pattern, str) {
+/**
+ * Simple fuzzy match
+ * @param {string} pattern The pattern to lookup
+ * @param {string} str The string to search into
+ * @return {boolean} True if `pattern` matches `str`.
+ */
+nubank.workspaces.lib.fuzzy.fuzzy_match_simple = function(pattern, str) {
     var patternIdx = 0;
     var strIdx = 0;
     var patternLength = pattern.length;
@@ -29,14 +40,19 @@ export function fuzzy_match_simple(pattern, str) {
     }
 
     return patternLength !== 0 && strLength !== 0 && patternIdx === patternLength;
-}
+};
 
 // Returns [bool, score, formattedStr]
 // bool: true if each character in pattern is found sequentially within str
 // score: integer; higher is better match. Value has no intrinsic meaning. Range varies with pattern. 
 //        Can only compare scores with same search pattern.
 // formattedStr: input str with matched characters marked in <b> tags. Delete if unwanted.
-export function fuzzy_match(pattern, str) {
+/**
+ * Simple fuzzy match
+ * @param {string} pattern The pattern to lookup
+ * @param {string} str The string to search into
+ */
+nubank.workspaces.lib.fuzzy.fuzzy_match = function(pattern, str) {
     // Score consts
     var adjacency_bonus = 5;                // bonus for adjacent matches
     var separator_bonus = 10;               // bonus if match occurs after a separator
@@ -160,7 +176,7 @@ export function fuzzy_match(pattern, str) {
 
     var matched = patternIdx === patternLength;
     return [matched, score, formattedStr];
-}
+};
 
 // Strictly optional utility to help make using fts_fuzzy_match easier for large data sets
 // Uses setTimeout to process matches before a maximum amount of time before sleeping
@@ -170,7 +186,7 @@ export function fuzzy_match(pattern, str) {
 //                                              function(results) { console.log(results); });
 //      asyncMatcher.start();
 //
-export function fts_fuzzy_match_async(matchFn, pattern, dataSet, onComplete) {
+nubank.workspaces.lib.fuzzy.fts_fuzzy_match_async = function(matchFn, pattern, dataSet, onComplete) {
     var ITEMS_PER_CHECK = 1000;         // performance.now can be very slow depending on platform
 
     var max_ms_per_frame = 1000.0/30.0; // 30FPS
@@ -225,4 +241,4 @@ export function fts_fuzzy_match_async(matchFn, pattern, dataSet, onComplete) {
         max_ms_per_frame = Infinity;
         step();
     }
-}
+};
