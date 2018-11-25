@@ -872,24 +872,61 @@
       `[(spotlight/reset {::spotlight/options ~options})])
     (fm/set-value! this ::show-spotlight? true)))
 
+(def default-bindings
+  {::keybinding-toggle-index        "alt-shift-i"
+   ::keybinding-spotlight           "alt-shift-a"
+   ::keybinding-toggle-card-headers "alt-shift-h"
+   ::keybinding-fix-sizes           "alt-shift-s"})
+
+(defn get-keybinding [name]
+  (local-storage/get name (get default-bindings name)))
+
+(fp/defsc HelpDialog
+  [this {::keys []}]
+  {:css [[:.container
+          {:background    "rgba(0, 0, 0, 0.8)"
+           :border-radius "4px"
+           :color         "#fff"
+           :font-family   uc/font-monospace
+           :padding       "20px"}]
+
+         [:.header
+          {:font-family uc/font-open-sans
+           :font-size   "26px"
+           :font-weight "bold"
+           :margin      "-5px 0 20px"
+           :text-align  "center"}]]}
+  (dom/div :.container
+    (dom/div :.header "Keyboard Shortcuts")
+    (dom/div (dom/strong (get-keybinding ::keybinding-spotlight)) ": Add card to current workspace (open spotlight for card picking)")
+    (dom/div (dom/strong (get-keybinding ::keybinding-toggle-index)) ": Toggle index view")
+    (dom/div (dom/strong (get-keybinding ::keybinding-toggle-card-headers)) ": Toggle card headers")
+    (dom/div (dom/strong "alt-shift-n") ": Create new local workspace")
+    (dom/div (dom/strong "alt-shift-w") ": Close current workspace")
+    (dom/div (dom/strong "alt-shift-?") ": Toggle shorcuts modal")))
+
+(def help-dialog (fp/factory HelpDialog))
+
 (fp/defsc WorkspacesRoot
-  [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?]}]
+  [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?
+                 show-help-modal?]}]
   {:initial-state  (fn [card-definitions]
-                     {::cards           (mapv #(fp/get-initial-state CardIndexListing %)
+                     {::cards            (mapv #(fp/get-initial-state CardIndexListing %)
                                           (vals card-definitions))
-                      ::workspaces      (->> (local-storage/get ::local-workspaces [])
-                                             (mapv #(fp/get-initial-state Workspace
+                      ::workspaces       (->> (local-storage/get ::local-workspaces [])
+                                              (mapv #(fp/get-initial-state Workspace
                                                       (local-storage/tget [::workspace-id %])))
-                                             (into (initialize-static-workspaces)))
+                                              (into (initialize-static-workspaces)))
 
-                      ::expanded        (local-storage/get ::expanded {})
-                      ::ws-tabs         (fp/get-initial-state WorkspaceTabs {})
+                      ::expanded         (local-storage/get ::expanded {})
+                      ::ws-tabs          (fp/get-initial-state WorkspaceTabs {})
 
-                      ::spotlight       (fp/get-initial-state spotlight/Spotlight [])
-                      ::show-spotlight? false
-                      ::settings        {::show-index? (local-storage/get ::show-index? true)}})
+                      ::spotlight        (fp/get-initial-state spotlight/Spotlight [])
+                      ::show-spotlight?  false
+                      ::show-help-modal? false
+                      ::settings         {::show-index? (local-storage/get ::show-index? true)}})
    :ident          (fn [] [::workspace-root "singleton"])
-   :query          [::settings ::expanded ::show-spotlight?
+   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal?
                     {::cards (fp/get-query CardIndexListing)}
                     {::workspaces (fp/get-query WorkspaceIndexListing)}
                     {::ws-tabs (fp/get-query WorkspaceTabs)}
@@ -911,7 +948,7 @@
                                    :flex       "1"
                                    :max-height "100vh"
                                    :overflow   "hidden"}]
-                    [:.toggle-index-button {:background   "transparent"
+                    [:.index-action-button {:background   "transparent"
                                             :border       "none"
                                             :cursor       "pointer"
                                             :font-size    "23px"
@@ -919,7 +956,9 @@
                                             :margin-right "5px"
                                             :margin-top   "-4px"
                                             :outline      "none"
-                                            :padding      "0"}]
+                                            :padding      "0"}
+                     [:&.help {:font-size "17px"
+                               :margin    "-2px 10px 0 0"}]]
                     [:.header {:background    "#404040"
                                :border-radius "4px"
                                :color         "#fff"
@@ -940,7 +979,7 @@
                     [:.expand-arrow {:margin-right "5px"
                                      :cursor       "pointer"
                                      :font-size    "14px"}]]
-   :css-include    [uc/CSS]
+   :css-include    [uc/CSS HelpDialog]
    :initLocalState (fn [] {:spotlight-select
                            (fn [{::spotlight/keys [id type]} solo?]
                              (if id
@@ -957,13 +996,15 @@
                              (fm/set-value! this ::show-spotlight? false))})}
   (dom/div :.container
     (cssi/style-element {:component WorkspacesRoot})
-    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-toggle-index "alt-shift-i")
+    (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-index)
                           ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
-    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-fix-sizes "alt-shift-s")
+    (events/dom-listener {::events/keystroke "alt-shift-/"
+                          ::events/action    #(fm/toggle! this ::show-help-modal?)})
+    (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-fix-sizes)
                           ::events/action    #(events/trigger-event js/window {::events/event "resize"})})
-    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-toggle-card-headers "alt-shift-h")
+    (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-card-headers)
                           ::events/action    #(fm/set-value! this ::settings (update (::settings (fp/props this)) ::hide-card-header? not))})
-    (events/dom-listener {::events/keystroke (local-storage/get ::keybinding-spotlight "alt-shift-a")
+    (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-spotlight)
                           ::events/action    (events/pd #(open-spotlight this))})
     (events/dom-listener {::events/event  "keydown"
                           ::events/action #(if (= (.-keyCode %) 18)
@@ -971,6 +1012,10 @@
     (events/dom-listener {::events/event  "keyup"
                           ::events/action #(if (= (.-keyCode %) 18)
                                              (js/document.body.classList.remove "cljs-workspaces-extended-views"))})
+
+    (if show-help-modal?
+      (modal/modal {::modal/on-close #(fm/set-value! this ::show-help-modal? false)}
+        (help-dialog {})))
 
     (if show-spotlight?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
@@ -984,7 +1029,10 @@
           (dom/div :.row.header
             (dom/div "Workspaces")
             (dom/div :.flex)
-            (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "«"))
+            (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
+              "?")
+            (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+              "«"))
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
             (dom/div
               (dom/div
@@ -1043,7 +1091,8 @@
                 (dom/div :.nest-group
                   (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
       (dom/div :.menu-show
-        (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "»")))
+        (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+          "»")))
     (dom/div :.workspaces
       (workspace-tabs ws-tabs))))
 

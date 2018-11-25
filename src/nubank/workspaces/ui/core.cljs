@@ -23,6 +23,7 @@
 
 (def font-helvetica "Helvetica Neue,Arial,Helvetica,sans-serif")
 (def font-open-sans "'Open Sans', sans-serif")
+(def font-monospace "monospace")
 
 (def font-os12sb
   {:font-size   "12px"
