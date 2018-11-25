@@ -920,6 +920,11 @@
                                             :margin-top "-4px"
                                             :outline      "none"
                                             :padding      "0"}]
+                    [:.header {:background    "#581f74"
+                               :border-radius "4px"
+                               :color         "#fff"
+                               :padding       "2px 4px"}
+                     [:button {:color        "#fff"}]]
                     [:.row {:display "flex"}]
                     [:.pointer {:cursor "pointer"}]
                     [:.flex {:flex "1"}]
@@ -972,7 +977,7 @@
     (if (::show-index? settings)
       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
         (dom/div :.menu
-          (dom/div :.row
+          (dom/div :.row.header
             (dom/div "WORKSPACES")
             (dom/div :.flex)
             (dom/div (dom/button :.toggle-index-button {:onClick #(fp/transact! this [`(toggle-index-view {})])} "«")))
@@ -1000,7 +1005,7 @@
 
           (dom/br)
 
-          "CARDS"
+          (dom/div :.header "CARDS")
           (for [[ns cards] (->> (group-by (comp namespace ::wsm/card-id) uis)
                                 (sort-by first))]
             (dom/div {:key (str ns)}
@@ -1016,7 +1021,7 @@
 
           (dom/br)
 
-          (dom/div :.pointer {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
+          (dom/div :.pointer.header {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
             "TESTS")
           (for [[ns cards] (->> tests
                                 (remove ::wsm/card-unlisted?)
