@@ -1,4 +1,4 @@
-== Workspaces
+= Workspaces
 :lang: en
 :encoding: UTF-8
 :doctype: book
