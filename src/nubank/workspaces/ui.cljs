@@ -920,7 +920,7 @@
                                             :margin-top   "-4px"
                                             :outline      "none"
                                             :padding      "0"}]
-                    [:.header {:background    "#2b5275"
+                    [:.header {:background    "#404040"
                                :border-radius "4px"
                                :color         "#fff"
                                :font-weight   "bold"
