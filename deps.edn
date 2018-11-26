@@ -7,6 +7,7 @@
   fulcrologic/fulcro           {:mvn/version "2.6.16"}
   fulcrologic/fulcro-incubator {:mvn/version "0.0.19"}
   fulcrologic/fulcro-inspect   {:mvn/version "2.2.4"}
+  com.wsscode/fuzzy            {:mvn/version "1.0.0"}
   org.clojure/core.async       {:mvn/version "0.4.474"}}
 
  :aliases

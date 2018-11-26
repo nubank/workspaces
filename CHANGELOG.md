@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.1]
+- Use fuzzy from `com.wsscode/fuzzy`
+
 ## [1.0.0]
 - Fixed react-key issues on spotlight
 - Add button in the index to show/hide

@@ -1,13 +1,13 @@
 (ns nubank.workspaces.ui.spotlight
-  (:require [nubank.workspaces.ui.cursor :as cursor]
+  (:require [com.wsscode.fuzzy :as fuzzy]
             [fulcro.client.localized-dom :as dom]
-            [goog.object :as gobj]
-            [nubank.workspaces.ui.events :as dom-events]
             [fulcro.client.mutations :as fm]
             [fulcro.client.primitives :as fp]
             [fulcro.incubator.ui-state-machines :as fsm]
+            [goog.object :as gobj]
             [nubank.workspaces.ui.core :as uc]
-            [nubank.workspaces.lib.fuzzy :as fuzzy]))
+            [nubank.workspaces.ui.cursor :as cursor]
+            [nubank.workspaces.ui.events :as dom-events]))
 
 (def max-results 50)
 
@@ -19,20 +19,9 @@
     (str id)
     (str (some-> opt ::type name) "-" (value->label opt))))
 
-(defn match-one [filter opt]
-  (let [[match? score hl] (fuzzy/fuzzy_match filter (value->label opt))]
-    (if match?
-      (assoc opt ::match? match? ::match-score score ::match-hl hl))))
-
 (defn fuzzy-match [{:keys [options search-input]}]
-  (if (seq search-input)
-    (let [fuzzy   (partial match-one search-input)
-          compare #(compare %2 %)]
-      (->> options
-           (keep fuzzy)
-           (sort-by compare ::match-score)
-           (take max-results)))
-    options))
+  (fuzzy/fuzzy-match {::fuzzy/search-input search-input
+                      ::fuzzy/options      (map #(assoc % ::fuzzy/string (value->label %)) options)}))
 
 (fsm/defstatemachine spotlight-sm
   {::fsm/aliases
@@ -96,7 +85,7 @@
                      :onClick #(do
                                  (on-change opt)
                                  (on-select opt (.-altKey %)))}
-    (dom/div {:dangerouslySetInnerHTML {:__html (or (::match-hl opt) (value->label opt))}})
+    (dom/div {:dangerouslySetInnerHTML {:__html (or (::fuzzy/match-hl opt) (value->label opt))}})
     (dom/div :.option-type
       (some-> opt ::type name)
       (if (some-> opt ::type (not= ::workspace))
