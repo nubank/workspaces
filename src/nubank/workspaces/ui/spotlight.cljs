@@ -80,7 +80,12 @@
            :color      "#fff"}]
 
          [:.solo-hint
-          {:display "none"}]]}
+          {:display "none"}]
+
+         [:$cljs-workspaces-extended-views
+          [:.option-selected
+           [:.solo-hint
+            {:display "inline"}]]]]}
   (dom/div :.option {:classes [(if (= opt value) :.option-selected)]
                      :onClick #(do
                                  (on-change opt)
@@ -130,12 +135,7 @@
 
                           [:.options
                            {:font-family uc/font-open-sans
-                            :margin-top  "10px"}]
-
-                          [:$cljs-workspaces-extended-views
-                           [:.option-selected
-                            [:.solo-hint
-                             {:display "inline"}]]]]
+                            :margin-top  "10px"}]]
    :css-include          [cursor/VerticalCursor SpotlightEntry]
    :componentDidMount    (fn []
                            (fsm/begin! this spotlight-sm ::spotlight {:spotlight this})

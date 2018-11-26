@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.2]
+- Fix solo hint
+
 ## [1.0.1]
 - Use fuzzy from `com.wsscode/fuzzy`
 
