@@ -4,12 +4,14 @@
             [fulcro.client.mutations :as fm]
             [fulcro.client.primitives :as fp]
             [fulcro.incubator.ui-state-machines :as fsm]
+            [goog.functions :as gfun]
             [goog.object :as gobj]
             [nubank.workspaces.ui.core :as uc]
             [nubank.workspaces.ui.cursor :as cursor]
             [nubank.workspaces.ui.events :as dom-events]))
 
 (def max-results 50)
+(def spotlight-lookup-debounce-ms 150)
 
 (defn value->label [{::keys [id label]}]
   (or label (str id)))
@@ -39,11 +41,17 @@
     :searching
     {::fsm/events
      {::fsm/value-changed
+      {}
+
+      :lookup!
       {::fsm/handler
        (fn [env]
-         (let [filtered-options (fuzzy-match (fsm/aliased-data env))]
+         (let [{:keys [search-input options] :as data} (fsm/aliased-data env)]
            (-> env
-               (fsm/set-aliased-value :current-options filtered-options))))}
+               (fsm/set-aliased-value :current-options
+                 (if (< (count search-input) 3)
+                   options
+                   (fuzzy-match data))))))}
 
       :exit!
       {::fsm/target-state ::fsm/exit}}}}})
@@ -143,7 +151,11 @@
    :componentWillUnmount (fn []
                            (fsm/trigger! this ::spotlight :exit!))
    :initLocalState       (fn []
-                           (let [on-change #(fm/set-value! this ::value %)]
+                           (let [on-change #(fm/set-value! this ::value %)
+                                 lookup    (gfun/debounce
+                                             (fn []
+                                               (fsm/trigger! this ::spotlight :lookup!))
+                                             spotlight-lookup-debounce-ms)]
                              {:cursor-select
                               (fn [opt e]
                                 (let [{::keys [on-select]
@@ -166,21 +178,26 @@
                                                     ::on-select on-select})))
 
                               :cursor-target
-                              #(gobj/get this "input")}))}
-  (let [options'  (if (seq filter) filtered-options (take max-results options))
+                              #(gobj/get this "input")
+
+                              :update-input
+                              (fn [e]
+                                (fsm/set-string! this ::spotlight :search-input e)
+                                (lookup))}))}
+  (let [options'  (if (seq filter) filtered-options options)
         on-change (fp/get-state this :cursor-change)]
     (dom/div :.area-container
       (dom/div :.container
         (dom/input :.search {:value     filter
                              :autoFocus true
                              :ref       #(gobj/set this "input" %)
-                             :onChange  #(fsm/set-string! this ::spotlight :search-input %)})
+                             :onChange  (fp/get-state this :update-input)})
         (if (seq options')
           (dom/div :.options
             (cursor/vertical-cursor
               {:style              {:maxHeight "500px"}
                ::cursor/value      value
-               ::cursor/options    options'
+               ::cursor/options    (take max-results options')
                ::cursor/on-change  on-change
                ::cursor/on-select  (fp/get-state this :cursor-select)
                ::cursor/factory    (fp/get-state this :cursor-factory)

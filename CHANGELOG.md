@@ -1,7 +1,8 @@
 # Change Log
 
-## [1.0.2]
+## [1.0.2-dev]
 - Fix solo hint
+- Debounce spotlight search, only start after 2 characters
 
 ## [1.0.1]
 - Use fuzzy from `com.wsscode/fuzzy`

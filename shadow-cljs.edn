@@ -1,7 +1,6 @@
 ;; shadow-cljs configuration
 {:deps   {:aliases [:provided :dev]}
  :nrepl  {:port 9845}
-
  :builds {:workspaces {:target           :browser
                        :output-dir       "public/workspaces/js"
                        :asset-path       "/js"
