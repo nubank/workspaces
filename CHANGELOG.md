@@ -1,8 +1,9 @@
 # Change Log
 
-## [1.0.2-dev]
+## [1.0.2]
 - Fix solo hint
-- Debounce spotlight search, only start after 2 characters
+- Start spotlight search  only after 2 characters
+- Fulcro portal make root don't render when root props are empty
 
 ## [1.0.1]
 - Use fuzzy from `com.wsscode/fuzzy`

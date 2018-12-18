@@ -152,10 +152,8 @@
                            (fsm/trigger! this ::spotlight :exit!))
    :initLocalState       (fn []
                            (let [on-change #(fm/set-value! this ::value %)
-                                 lookup    (gfun/debounce
-                                             (fn []
-                                               (fsm/trigger! this ::spotlight :lookup!))
-                                             spotlight-lookup-debounce-ms)]
+                                 lookup    (fn []
+                                             (fsm/trigger! this ::spotlight :lookup!))]
                              {:cursor-select
                               (fn [opt e]
                                 (let [{::keys [on-select]

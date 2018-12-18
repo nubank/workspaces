@@ -38,7 +38,8 @@
       Object
       (render [this]
         (let [{:ui/keys [root]} (fp/props this)]
-          (factory root))))))
+          (if (seq root)
+            (factory root)))))))
 
 (defn fulcro-initial-state [{::keys [initial-state wrap-root? root]
                              :or    {wrap-root? true}}]
