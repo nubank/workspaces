@@ -24,6 +24,10 @@ ifdef::env-github[]
 toc::[]
 endif::[]
 
+
+image:https://img.shields.io/clojars/v/nubank/workspaces.svg[link=https://clojars.org/nubank/workspaces]
+image:https://cljdoc.xyz/badge/nubank/workspaces[link=https://cljdoc.xyz/d/nubank/workspaces/CURRENT]
+
 Workspaces is a component development environment for ClojureScript,
 inspired by https://github.com/bhauman/devcards[devcards].
 
