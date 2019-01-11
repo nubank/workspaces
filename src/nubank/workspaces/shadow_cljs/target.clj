@@ -1,5 +1,5 @@
 (ns nubank.workspaces.shadow-cljs.target
-  (:refer-clojure :exclude (compile flush resolve))
+  (:refer-clojure :exclude [compile flush resolve])
   (:require
     [shadow.build :as build]
     [shadow.build.modules :as modules]
@@ -28,7 +28,10 @@
 
     (-> state
       ;; Add the mounter and all of the resolved cards/tests
-      (update-in [::modules/config :main :entries] into dynamically-resolved-namespaces)
+      (assoc-in [::modules/config :main :entries] (-> []
+                                                      (into (get config :preloads []))
+                                                      (into dynamically-resolved-namespaces)
+                                                      (conj 'nubank.workspaces.shadow-cljs.mount)))
       (cond->
         (and (= :dev mode) (:worker-info state))
         (update-in [::modules/config :main] browser/inject-repl-client state config)

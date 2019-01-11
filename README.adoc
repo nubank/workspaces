@@ -88,9 +88,11 @@ NEW: Workspaces now has a custom shadow-cljs build target. If you use it, it wil
 ----
 ;; shadow-cljs configuration
 {:builds {:cards {:target     nubank.workspaces.shadow-cljs.target
-                  :ns-regexp  "-(test|ws)$"
+                  :ns-regexp  "-(test|cards)$"
                   :output-dir "resources/public/js/workspaces"
-                  :asset-path "/js/workspaces"}}
+                  :asset-path "/js/workspaces"
+                  :preloads   [] ; optional, list namespaces to be pre loaded
+                  }}
 ----
 
 You may still configure it with the old style with the `:browser` target, but in that case
