@@ -78,6 +78,24 @@ Then create the entry point for the workspaces:
 
 === With Shadow-CLJS
 
+NEW: Workspaces now has a custom shadow-cljs build target. If you use it, it will:
+
+- Auto-scan for all workspace cards and tests (based on a regex you supply)
+- Auto-configures the "main" module based on that scan.
+- Auto-detects when you add new files.
+
+[source,clojure]
+----
+;; shadow-cljs configuration
+{:builds {:cards {:target     nubank.workspaces.shadow-cljs.target
+                  :ns-regexp  "-(test|ws)$"
+                  :output-dir "resources/public/js/workspaces"
+                  :asset-path "/js/workspaces"}}
+----
+
+You may still configure it with the old style with the `:browser` target, but in that case
+you will always have to add your workspace and test namespaces to your `main.cljs` file.
+
 [source,clojure]
 ----
 ;; shadow-cljs configuration
