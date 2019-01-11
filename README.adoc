@@ -87,7 +87,7 @@ NEW: Workspaces now has a custom shadow-cljs build target. If you use it, it wil
 [source,clojure]
 ----
 ;; shadow-cljs configuration
-{:builds {:cards {:target     nubank.workspaces.shadow-cljs.workspaces-target
+{:builds {:cards {:target     nubank.workspaces.shadow-cljs.target
                   :ns-regexp  "-(test|ws)$"
                   :output-dir "resources/public/js/workspaces"
                   :asset-path "/js/workspaces"}}

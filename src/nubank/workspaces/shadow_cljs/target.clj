@@ -1,4 +1,4 @@
-(ns nubank.workspaces.shadow-cljs.workspaces-target
+(ns nubank.workspaces.shadow-cljs.target
   (:refer-clojure :exclude (compile flush resolve))
   (:require
     [shadow.build :as build]
