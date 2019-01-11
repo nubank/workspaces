@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.3]
+- Add target support runner for shadow-cljs
+
 ## [1.0.2]
 - Fix solo hint
 - Start spotlight search  only after 2 characters
