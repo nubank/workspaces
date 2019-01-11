@@ -14,7 +14,8 @@
  {:provided
   {:extra-deps
    {org.clojure/clojure       {:mvn/version "1.9.0"}
-    org.clojure/clojurescript {:mvn/version "1.10.439"}}}
+    org.clojure/clojurescript {:mvn/version "1.10.439"}
+    thheller/shadow-cljs      {:mvn/version "2.7.13"}}}
 
   :dev
   {:extra-paths
