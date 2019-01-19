@@ -15,7 +15,11 @@
    ::wsm/align-center-flex {:display         "flex"
                             :flex            "1"
                             :align-items     "center"
-                            :justify-content "center"}})
+                            :justify-content "center"}
+   ::wsm/stretch-flex      {:display         "flex"
+                            :flex            "1"
+                            :align-items     "stretch"
+                            :justify-content "stretch"}})
 
 (defn position-style [{::wsm/keys [align] :or {align ::wsm/align-center}}]
   (let [custom (get predef-alignments align (if (map? align) align {}))]
