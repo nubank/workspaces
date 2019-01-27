@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.4]
+- Add `stretch-flex` align
+
 ## [1.0.3]
 - Add target support runner for shadow-cljs
 
