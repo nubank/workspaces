@@ -14,7 +14,7 @@
 (s/def ::initial-state (s/or :fn? fn? :factory-param any?))
 
 (defonce css-components* (atom #{}))
-(defonce persistent-apps* (atom #{}))
+(defonce persistent-apps* (atom {}))
 
 (defn gen-css-component []
   (fp/ui
@@ -53,7 +53,7 @@
 (defn upsert-app [{::keys                    [app persistence-key]
                    :fulcro.inspect.core/keys [app-id]
                    :as                       config}]
-  (if-let [instance (and persistence-key (get-in @persistent-apps* persistence-key))]
+  (if-let [instance (and persistence-key (get @persistent-apps* persistence-key))]
     instance
     (let [app      (cond-> app
                      (not (contains? app :initial-state))
@@ -79,10 +79,11 @@
 
 (defn mount-at [app* {::keys [root wrap-root? persistence-key] :or {wrap-root? true}} node]
   (add-component-css! root)
-  (let [instance (if wrap-root? (make-root root) root)]
+  (let [instance (if wrap-root? (make-root root) root)
+        new-app (swap! app* fulcro/mount instance node)]
     (if persistence-key
-      (swap! persistent-apps* assoc persistence-key instance))
-    (swap! app* fulcro/mount instance node)))
+      (swap! persistent-apps* assoc persistence-key new-app))
+    new-app))
 
 (fp/defsc FulcroPortal
   [this _]
