@@ -99,9 +99,8 @@
 
    :componentWillUnmount
    (fn []
-     (let [{::keys [persistence-key]} (fp/props this)
-           app* (gobj/get this "app")]
-       (if-not persistence-key (dispose-app @app*))
+     (let [app* (gobj/get this "app")]
+       (dispose-app @app*)
        (reset! app* nil)
        (js/ReactDOM.unmountComponentAtNode (dom/node this))))
 
