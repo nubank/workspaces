@@ -349,7 +349,7 @@
            (= 3 (count expected))
            (= '= (first expected))
            (sequential? actual))
-    (let [[_ actual expected] (second actual)]
+    (let [[_ expected actual] (second actual)]
       (assoc props
         :expected expected
         :actual actual))
