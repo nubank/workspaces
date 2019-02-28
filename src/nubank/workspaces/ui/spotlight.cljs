@@ -76,8 +76,9 @@
            :overflow      "hidden"
            :text-overflow "ellipsis"}
 
-          :b
-          {:color "#000"}]
+          [:b
+           {:background "#e2d610"
+            :color      "#000"}]]
 
          [:.option-type
           {:font-size  "11px"

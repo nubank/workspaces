@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.6]
+- Highlight text match on spotlight search
+
 ## [1.0.5]
 - Fixes to portal persistent apps
 - Fix order of actual/expected when checking `=` on tests
