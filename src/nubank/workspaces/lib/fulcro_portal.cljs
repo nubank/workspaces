@@ -12,6 +12,7 @@
 (s/def ::app map?)
 (s/def ::persistence-key any?)
 (s/def ::initial-state (s/or :fn? fn? :factory-param any?))
+(s/def ::root-state map?)
 
 (defonce css-components* (atom #{}))
 (defonce persistent-apps* (atom {}))
@@ -41,14 +42,16 @@
           (if (seq root)
             (factory root)))))))
 
-(defn fulcro-initial-state [{::keys [initial-state wrap-root? root]
+(defn fulcro-initial-state [{::keys [initial-state wrap-root? root root-state]
                              :or    {wrap-root? true}}]
   (let [state (if (fn? initial-state)
                 (initial-state (fp/get-initial-state root nil))
                 (fp/get-initial-state root initial-state))]
-    (if wrap-root?
-      {:ui/root state}
-      state)))
+    (merge
+      (if wrap-root?
+        {:ui/root state}
+        state)
+      root-state)))
 
 (defn upsert-app [{::keys                    [app persistence-key]
                    :fulcro.inspect.core/keys [app-id]

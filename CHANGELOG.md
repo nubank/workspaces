@@ -2,6 +2,7 @@
 
 ## [1.0.6]
 - Highlight text match on spotlight search
+- Support ::f.portal/root-state in Fulcro portal
 
 ## [1.0.5]
 - Fixes to portal persistent apps
