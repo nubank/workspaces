@@ -50,7 +50,7 @@
             (factory (cond-> root computed (fp/computed computed)))))))))
 
 (defn fulcro-initial-state [{::keys [initial-state wrap-root? root root-state]
-                             :or    {wrap-root? true}}]
+                             :or    {wrap-root? true initial-state {}}}]
   (let [state (if (fn? initial-state)
                 (initial-state (safe-initial-state root nil))
                 (safe-initial-state root initial-state))]
