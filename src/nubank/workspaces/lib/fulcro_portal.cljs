@@ -26,12 +26,17 @@
         (keep-indexed (fn [i v] {(keyword (str "item" i)) (or (fp/get-query v) (with-meta [] {:component v}))}))
         @css-components*))))
 
+(defn safe-initial-state [comp params]
+  (if (fp/has-initial-app-state? comp)
+    (fp/get-initial-state comp params)
+    params))
+
 (defn make-root [Root]
   (let [factory (fp/factory Root)]
     (fp/ui
       static fp/InitialAppState
       (initial-state [_ params]
-        {:ui/root (or (fp/get-initial-state Root params) {})})
+        {:ui/root (or (safe-initial-state Root params) {})})
 
       static fp/IQuery
       (query [_] [:fulcro.inspect.core/app-id {:ui/root (fp/get-query Root)}])
@@ -45,8 +50,8 @@
 (defn fulcro-initial-state [{::keys [initial-state wrap-root? root root-state]
                              :or    {wrap-root? true}}]
   (let [state (if (fn? initial-state)
-                (initial-state (fp/get-initial-state root nil))
-                (fp/get-initial-state root initial-state))]
+                (initial-state (safe-initial-state root nil))
+                (safe-initial-state root initial-state))]
     (merge
       (if wrap-root?
         {:ui/root state}
