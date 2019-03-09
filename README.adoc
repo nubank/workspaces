@@ -257,6 +257,7 @@ the initial state.
 * `::f.portal/root-state` This map will be merged into the app root state to be part
 of the initial state in the root, this is useful to set things like `:ui/locale` considering
 that a wrapped root initial state will not end up in the root (will be in `:ui/root`).
+* `::f.portal/computed` Add this computed data to the root factory props
 
 When you use a Fulcro card you will notice it has an extra toolbar, in
 this toolbar you have two action buttons:

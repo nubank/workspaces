@@ -13,6 +13,7 @@
 (s/def ::persistence-key any?)
 (s/def ::initial-state (s/or :fn? fn? :factory-param any?))
 (s/def ::root-state map?)
+(s/def ::computed map?)
 
 (defonce css-components* (atom #{}))
 (defonce persistent-apps* (atom {}))
@@ -43,9 +44,10 @@
 
       Object
       (render [this]
-        (let [{:ui/keys [root]} (fp/props this)]
+        (let [{:ui/keys [root]} (fp/props this)
+              computed (fp/shared this ::computed)]
           (if (seq root)
-            (factory root)))))))
+            (factory (cond-> root computed (fp/computed computed)))))))))
 
 (defn fulcro-initial-state [{::keys [initial-state wrap-root? root root-state]
                              :or    {wrap-root? true}}]
@@ -58,7 +60,7 @@
         state)
       root-state)))
 
-(defn upsert-app [{::keys                    [app persistence-key]
+(defn upsert-app [{::keys                    [app persistence-key computed]
                    :fulcro.inspect.core/keys [app-id]
                    :as                       config}]
   (if-let [instance (and persistence-key (get @persistent-apps* persistence-key))]
@@ -66,6 +68,9 @@
     (let [app      (cond-> app
                      (not (contains? app :initial-state))
                      (assoc :initial-state (fulcro-initial-state config))
+
+                     computed
+                     (update :shared assoc ::computed computed)
 
                      app-id
                      (assoc-in [:initial-state :fulcro.inspect.core/app-id] app-id))
