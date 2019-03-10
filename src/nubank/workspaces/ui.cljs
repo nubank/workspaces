@@ -472,6 +472,18 @@
 (defn add-card [this card-id]
   (fp/transact! this [`(pick-card-to-namespace {::wsm/card-id ~card-id})]))
 
+(fm/defmutation open-solo-workspace [{::wsm/keys [card-id]}]
+  (action [{:keys [state ref]}]
+    (let [ws-ident [::wsm/card-id card-id]]
+      (fp/integrate-ident! state ws-ident
+        :append (conj ref ::open-workspaces)
+        :replace (conj ref ::active-workspace))
+      (local-storage/update! ::open-workspaces (fnil conj #{}) ws-ident)
+      (local-storage/set! ::active-workspace ws-ident))))
+
+(defn add-card-solo [this card-id]
+  (fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id card-id})]))
+
 (defn normalize-layout [layout]
   (mapv #(-> (into {} (filter (fn [[_ v]] v)) %)
              (update "i" symbol))
@@ -688,15 +700,6 @@
   {:ident (fn [] (workspace-ident props))
    :query [::workspace-id ::workspace-title ::wsm/workspace-static? ::wsm/card-id]})
 
-(fm/defmutation open-solo-workspace [{::wsm/keys [card-id]}]
-  (action [{:keys [state ref]}]
-    (let [ws-ident [::wsm/card-id card-id]]
-      (fp/integrate-ident! state ws-ident
-        :append (conj ref ::open-workspaces)
-        :replace (conj ref ::active-workspace))
-      (local-storage/update! ::open-workspaces (fnil conj #{}) ws-ident)
-      (local-storage/set! ::active-workspace ws-ident))))
-
 (fp/defsc WorkspaceTabs
   [this {::keys [active-workspace open-workspaces]}]
   {:initial-state (fn [_]
@@ -818,7 +821,9 @@
    :query         [::wsm/card-id ::wsm/test? ::wsm/card-unlisted?]
    :css           [[:.container {:cursor "pointer"}]]}
   (dom/div :.container
-    (dom/div {:onClick #(add-card this card-id)}
+    (dom/div {:onClick #(if (.-altKey %)
+                          (add-card-solo this card-id)
+                          (add-card this card-id))}
       (name card-id))))
 
 (def card-index-listing (fp/factory CardIndexListing {:keyfn ::wsm/card-id}))
@@ -994,7 +999,7 @@
                                  (fp/transact! this [`(select-workspace {::workspace-id ~id})])
 
                                  solo?
-                                 (fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id id})])
+                                 (add-card-solo this id)
 
                                  :else
                                  (add-card this id)))

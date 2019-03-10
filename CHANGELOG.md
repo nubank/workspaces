@@ -3,6 +3,7 @@
 ## [1.0.7]
 - Now when you send initial state and the Fulcro component doens't implemenet it, params are used as is instead of crashing
 - Add support for `::f.portal/computed`
+- Support alt+click on menu to open card in solo mode
 
 ## [1.0.6]
 - Highlight text match on spotlight search
