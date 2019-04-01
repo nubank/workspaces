@@ -258,6 +258,7 @@ the initial state.
 of the initial state in the root, this is useful to set things like `:ui/locale` considering
 that a wrapped root initial state will not end up in the root (will be in `:ui/root`).
 * `::f.portal/computed` Add this computed data to the root factory props
+* `::f.portal/root-node-props` use this to send props into the root note created to mount the portal on.
 
 When you use a Fulcro card you will notice it has an extra toolbar, in
 this toolbar you have two action buttons:

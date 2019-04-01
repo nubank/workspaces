@@ -14,6 +14,7 @@
 (s/def ::initial-state (s/or :fn? fn? :factory-param any?))
 (s/def ::root-state map?)
 (s/def ::computed map?)
+(s/def ::root-node-props map?)
 
 (defonce css-components* (atom #{}))
 (defonce persistent-apps* (atom {}))
@@ -99,7 +100,7 @@
     new-app))
 
 (fp/defsc FulcroPortal
-  [this _]
+  [this {::keys [root-node-props]}]
   {:componentDidMount
    (fn []
      (let [props (fp/props this)
@@ -120,9 +121,25 @@
    :shouldComponentUpdate
    (fn [_ _] false)}
 
-  (dom/div))
+  (dom/div root-node-props))
 
 (def fulcro-portal* (fp/factory FulcroPortal))
 
-(defn fulcro-portal [component options]
+(defn fulcro-portal
+  "Create a new portal for a Fulcro app, available options:
+
+  ::root - the root component to be mounted
+  ::app This is the app configuration, same options you could send to `fulcro/new-fulcro-client`
+  ::wrap-root? - by default the portal expects a component with ident to be mounted and
+  the portal will wrap that with an actual root (with no ident), if you wanna provide
+  your own root, set this to `false`
+  ::initial-state - Accepts a value or a function. A value will be used to call the
+  initial state function of your root. If you provide a function, the value returned by
+  it will be the initial state.
+  ::root-state - This map will be merged into the app root state to be part of the initial
+  state in the root, this is useful to set things like `:ui/locale` considering
+  ::computed - send computed props to the root
+  ::root-node-props - use this to send props into the root note created to mount the
+  portal on."
+  [component options]
   (fulcro-portal* (assoc options ::root component)))
