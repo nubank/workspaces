@@ -71,10 +71,10 @@
            :vertical-align   "middle"
            :user-select      "none"
            :outline          "none"}
-          #_
-          [:&:hover {:background-color "#e6e6e6"
-                     :border-color     "#adadad"
-                     :color            "#333"}]]]}
+          [:&:disabled
+           {:background "#8c95a0"
+            :color      "#ccc"
+            :cursor     "not-allowed"}]]]}
   (apply dom/button :.button props (fp/children this)))
 
 (def button (fp/factory Button))

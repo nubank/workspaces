@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.8]
+- Add disable state style to workspaces ui button
+
 ## [1.0.7]
 - Now when you send initial state and the Fulcro component doens't implemenet it, params are used as is instead of crashing
 - Add support for `::f.portal/computed`
