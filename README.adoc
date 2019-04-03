@@ -435,6 +435,7 @@ the ``more'', mouse over it to see some card available actions:
 * `Solo`: open a new workspace containing just this card using the whole
 workspace space
 * `Size`: prints the current card size in the browser console
+* `Remount`: dispose the card and start it over
 
 After that you have an `X` icon to remove the card from current
 workspace.

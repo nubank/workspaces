@@ -387,7 +387,8 @@
                       "Source"))
                   (uc/button {:onClick #(open-solo-card {::wsm/card-id card-id})} "Solo")
                   (if-not test?
-                    (uc/button {:onClick export-size} "Size")))))
+                    (uc/button {:onClick export-size} "Size"))
+                  (uc/button {:onClick #(restart-card card-id)} "Remount"))))
             (dom/div :.close {:onClick #(fp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
         (if render-toolbar
           (dom/div :.toolbar (render-toolbar))))
