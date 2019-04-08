@@ -1,8 +1,9 @@
 # Change Log
 
-## [1.0.8]
+## [NEXT-1.0.8]
 - Add disable state style to workspaces ui button
 - Accept ::f.portal/root-node-props on Fulcro portal
+- Add generic button to remount card
 
 ## [1.0.7]
 - Now when you send initial state and the Fulcro component doens't implemenet it, params are used as is instead of crashing
