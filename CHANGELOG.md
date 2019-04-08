@@ -1,6 +1,6 @@
 # Change Log
 
-## [NEXT-1.0.8]
+## [1.0.8]
 - Add disable state style to workspaces ui button
 - Accept ::f.portal/root-node-props on Fulcro portal
 - Add generic button to remount card
