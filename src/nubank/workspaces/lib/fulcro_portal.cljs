@@ -1,11 +1,13 @@
 (ns nubank.workspaces.lib.fulcro-portal
   (:require [cljs.spec.alpha :as s]
-            [fulcro-css.css-injection :as cssi]
-            [fulcro.client :as fulcro]
-            [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as fp]
-            [fulcro.inspect.client :as fi.client]
-            [goog.object :as gobj]))
+            [com.fulcrologic.fulcro-css.css-injection :as cssi]
+            [com.fulcrologic.fulcro.application :as app]
+            [com.fulcrologic.fulcro.dom :as dom]
+    ;; TASK: Inspect
+    ;;[fulcro.inspect.client :as fi.client]
+            [com.fulcrologic.fulcro.components :as fp]
+            [goog.object :as gobj]
+            [com.fulcrologic.fulcro.components :as comp]))
 
 (s/def ::root any?)
 (s/def ::wrap-root? boolean?)
@@ -20,13 +22,15 @@
 (defonce persistent-apps* (atom {}))
 
 (defn gen-css-component []
-  (fp/ui
-    static fp/IQuery
-    (query [_]
-      (into
-        []
-        (keep-indexed (fn [i v] {(keyword (str "item" i)) (or (fp/get-query v) (with-meta [] {:component v}))}))
-        @css-components*))))
+  (let [generated-name (gensym)
+        component-key  (keyword "nubank.workspaces.lib.fulcro-portal" (name generated-name))]
+    (comp/configure-component! (fn *dyn-root* [])
+      component-key
+      {
+       :query (fn [_] (into
+                        []
+                        (keep-indexed (fn [i v] {(keyword (str "item" i)) (or (fp/get-query v) (with-meta [] {:component v}))}))
+                        @css-components*))})))
 
 (defn safe-initial-state [comp params]
   (if (fp/has-initial-app-state? comp)
@@ -34,21 +38,18 @@
     params))
 
 (defn make-root [Root]
-  (let [factory (fp/factory Root)]
-    (fp/ui
-      static fp/InitialAppState
-      (initial-state [_ params]
-        {:ui/root (or (safe-initial-state Root params) {})})
-
-      static fp/IQuery
-      (query [_] [:fulcro.inspect.core/app-id {:ui/root (fp/get-query Root)}])
-
-      Object
-      (render [this]
-        (let [{:ui/keys [root]} (fp/props this)
-              computed (fp/shared this ::computed)]
-          (if (seq root)
-            (factory (cond-> root computed (fp/computed computed)))))))))
+  (let [factory        (fp/factory Root)
+        generated-name (gensym)
+        component-key  (keyword "nubank.workspaces.lib.fulcro-portal" (name generated-name))]
+    (comp/configure-component! (fn *dyn-root* [])
+      component-key
+      {:initial-state (fn [params] {:ui/root (or (safe-initial-state Root params) {})})
+       :query         (fn [_] [:fulcro.inspect.core/app-id {:ui/root (fp/get-query Root)}])
+       :render        (fn [this]
+                        (let [{:ui/keys [root]} (fp/props this)
+                              computed (fp/shared this ::computed)]
+                          (if (seq root)
+                            (factory (cond-> root computed (fp/computed computed))))))})))
 
 (defn fulcro-initial-state [{::keys [initial-state wrap-root? root root-state]
                              :or    {wrap-root? true initial-state {}}}]
@@ -75,14 +76,16 @@
 
                      app-id
                      (assoc-in [:initial-state :fulcro.inspect.core/app-id] app-id))
-          instance (apply fulcro/new-fulcro-client (apply concat app))]
+          ;; TASK: explicit initial state handling
+          instance (app/fulcro-app app)]
       (if persistence-key (swap! persistent-apps* assoc persistence-key instance))
       instance)))
 
 (defn dispose-app [{::keys [persistence-key] :as app}]
   (if persistence-key (swap! persistent-apps* dissoc persistence-key))
-  (when-let [app-uuid (some-> app :reconciler fp/app-state deref (get fi.client/app-uuid-key))]
-    (fi.client/dispose-app app-uuid)))
+  (when-let [app-uuid (some-> app ::app/id)]
+    ;; TASK: Inspect
+    #_(fi.client/dispose-app app-uuid)))
 
 (defn refresh-css! []
   (cssi/upsert-css "fulcro-portal-css" {:component (gen-css-component)}))
@@ -94,7 +97,7 @@
 (defn mount-at [app* {::keys [root wrap-root? persistence-key] :or {wrap-root? true}} node]
   (add-component-css! root)
   (let [instance (if wrap-root? (make-root root) root)
-        new-app (swap! app* fulcro/mount instance node)]
+        new-app  (app/mount! app* instance node)]
     (if persistence-key
       (swap! persistent-apps* assoc persistence-key new-app))
     new-app))
@@ -109,7 +112,7 @@
        (mount-at app* props (dom/node this))))
 
    :componentDidUpdate
-   (fn [_ _] (some-> (gobj/get this "app") deref :reconciler fp/force-root-render!))
+   (fn [_ _] (some-> (gobj/get this "app") app/force-root-render!))
 
    :componentWillUnmount
    (fn []

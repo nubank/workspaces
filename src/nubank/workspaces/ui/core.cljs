@@ -1,7 +1,7 @@
 (ns nubank.workspaces.ui.core
   (:require [nubank.workspaces.model :as wsm]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.primitives :as fp]))
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.components :as comp]))
 
 (def color-white "#fff")
 (def color-light-grey "#b1b1b1")
@@ -53,7 +53,7 @@
   (dom/svg (merge {:width 20 :height 19 :viewBox "0 0 40 40"} props)
     (dom/g {:fill "#000"} (dom/path {:d "m20 26.6c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-10c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-3.2c-1.8 0-3.4-1.6-3.4-3.4s1.6-3.4 3.4-3.4 3.4 1.6 3.4 3.4-1.6 3.4-3.4 3.4z"}))))
 
-(fp/defsc Button
+(comp/defsc Button
   [this props]
   {:css [[:.button
           font-os12sb
@@ -75,9 +75,9 @@
            {:background "#8c95a0"
             :color      "#ccc"
             :cursor     "not-allowed"}]]]}
-  (apply dom/button :.button props (fp/children this)))
+  (apply dom/button :.button props (comp/children this)))
 
-(def button (fp/factory Button))
+(def button (comp/factory Button))
 
-(fp/defsc CSS [this _]
+(comp/defsc CSS [_ _]
   {:css-include [Button]})

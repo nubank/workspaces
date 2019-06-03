@@ -2,8 +2,8 @@
   (:require [goog.dom :as gdom]
             [goog.object :as gobj]
             [goog.style :as style]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.primitives :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.components :as fp]
             [nubank.workspaces.ui.events :as events]))
 
 (defn render-subtree-into-container [parent c node]

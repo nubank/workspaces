@@ -1,7 +1,7 @@
 (ns nubank.workspaces.card-types.fulcro
-  (:require [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as fp]
-            [fulcro.inspect.client :as fi.client]
+  (:require [com.fulcrologic.fulcro.dom :as dom]
+            [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro.application :as fapp]
             [goog.functions :as gfun]
             [nubank.workspaces.lib.fulcro-portal :as f.portal]
             [nubank.workspaces.card-types.util :as ct.util]
@@ -9,13 +9,15 @@
             [nubank.workspaces.model :as wsm]
             [nubank.workspaces.ui :as ui]
             [cljs.spec.alpha :as s]
-            [nubank.workspaces.ui.core :as uc]))
+            [nubank.workspaces.ui.core :as uc]
+            [com.fulcrologic.fulcro.application :as app]))
 
 (defn inspector-set-app [card-id]
   (let [{::keys [app*]} (data/active-card card-id)
-        app-uuid (-> @app* :reconciler fp/app-state deref (get fi.client/app-uuid-key))]
+        app-uuid (::app/id @app*)]
     (if app-uuid
-      (fi.client/set-active-app app-uuid))))
+      ;; TASK: Port Fulcro Inspect
+      #_(fi.client/set-active-app app-uuid))))
 
 (def debounced-refresh-css!
   (gfun/debounce f.portal/refresh-css! 100))
@@ -36,7 +38,7 @@
        ::wsm/refresh
        (fn [_]
          (debounced-refresh-css!)
-         (fp/force-root-render! (:reconciler @app*)))
+         (app/force-root-render! @app*))
 
        ::wsm/render
        (fn [node]

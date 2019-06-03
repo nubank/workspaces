@@ -1,14 +1,8 @@
 (ns nubank.workspaces.data
-  (:require [fulcro.client :as fulcro]
+  (:require [com.fulcrologic.fulcro.application :as fulcro]
             [nubank.workspaces.ui.events :as events]))
 
-(defonce app* (atom (fulcro/new-fulcro-client
-                      :shared
-                      {}
-
-                      :started-callback
-                      (fn [app]
-                        (js/setTimeout #(events/trigger-event js/window {::events/event "resize"}) 600)))))
+(defonce app* (fulcro/fulcro-app))
 
 (defonce workspace-definitions* (atom {}))
 (defonce card-definitions* (atom {}))

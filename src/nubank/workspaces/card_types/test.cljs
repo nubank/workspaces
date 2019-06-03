@@ -5,17 +5,20 @@
     [cljs.test]
     [cljsjs.react.dom]
     [clojure.data]
-    [fulcro-css.css :as css]
-    [fulcro.client.localized-dom :as dom]
-    [fulcro.client.mutations :as fm]
-    [fulcro.client.primitives :as fp]
+    [com.fulcrologic.fulcro-css.css :as css]
+    [com.fulcrologic.fulcro-css.localized-dom :as dom]
+    [com.fulcrologic.fulcro.mutations :as fm]
+    [com.fulcrologic.fulcro.components :as fp]
     [nubank.workspaces.card-types.fulcro :as ct.fulcro]
     [nubank.workspaces.data :as data]
     [nubank.workspaces.lib.fulcro-portal :as f.portal]
     [nubank.workspaces.model :as wsm]
     [nubank.workspaces.ui :as ui]
     [nubank.workspaces.ui.core :as uc]
-    [nubank.workspaces.ui.highlight :as highlight]))
+    [nubank.workspaces.ui.highlight :as highlight]
+    [com.fulcrologic.fulcro.application :as app]
+    [com.fulcrologic.fulcro.algorithms.merge :as merge]
+    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]))
 
 (defonce test-context* (atom []))
 
@@ -105,10 +108,10 @@
 
 (defn test-cards-by-namespace []
   (->> (vals @data/card-definitions*)
-       (filterv ::wsm/test?)
-       (filterv ::test-forms)
-       (sort-by ::wsm/card-id)
-       (group-by (comp (fnil symbol '_) namespace ::wsm/card-id))))
+    (filterv ::wsm/test?)
+    (filterv ::test-forms)
+    (sort-by ::wsm/card-id)
+    (group-by (comp (fnil symbol '_) namespace ::wsm/card-id))))
 
 (defn namespace-test-cards [ns] (get (test-cards-by-namespace) ns))
 
@@ -118,7 +121,7 @@
 
 (defmethod test-runner ::test-one [{::keys [app* test] :as input}]
   (go
-    (fp/transact! (:reconciler @app*) [::test-result-id "singleton"]
+    (fp/transact! @app* [::test-result-id "singleton"]
       [`(fm/set-props {::running?    true
                        ::enqueued?   false
                        :test-results {}})])
@@ -128,7 +131,7 @@
     (<! (async/timeout 1))
 
     (let [res (<! (run-test-blocks input))]
-      (fp/transact! (:reconciler @app*) [::test-result-id "singleton"]
+      (fp/transact! @app* [::test-result-id "singleton"]
         [`(fm/set-props {:test-results ~res
                          ::done?       true
                          ::running?    false})])
@@ -141,16 +144,16 @@
 (declare NSTestGroup)
 
 (defn app-test-block [reconciler ns]
-  (-> reconciler fp/app-state deref (get-in [::test-var ns])))
+  (-> reconciler app/current-state (get-in [::test-var ns])))
 
 (defn app-ns-test-block [reconciler ns]
-  (-> reconciler fp/app-state deref (get-in [::test-ns ns])))
+  (-> reconciler app/current-state (get-in [::test-ns ns])))
 
 (defn build-ns-test-group [{:keys [reconciler] ::keys [test-ns ns-tests]}]
   (let [current (app-ns-test-block reconciler test-ns)
         blocks  (mapv #(hash-map ::test-var (::wsm/card-id %)
-                                 :test-results nil
-                                 ::disabled? (-> (app-test-block reconciler (::wsm/card-id %)) ::disabled?))
+                         :test-results nil
+                         ::disabled? (-> (app-test-block reconciler (::wsm/card-id %)) ::disabled?))
                   ns-tests)]
     {::enqueued?  true
      ::running?   false
@@ -163,9 +166,9 @@
 (fm/defmutation start-ns-test-namespaces [input]
   (action [{:keys [reconciler state ref] :as env}]
     (let [source (get-in @state ref)]
-      (fp/merge-component! reconciler NSTestGroup
+      (merge/merge-component! reconciler NSTestGroup
         (-> (build-ns-test-group (merge env source input))
-            (assoc ::running? true ::enqueued? false))))))
+          (assoc ::running? true ::enqueued? false))))))
 
 (defn run-ns-test-blocks [{::keys [test-ns app* ns-tests]}]
   (go
@@ -176,20 +179,20 @@
 
       (doseq [{::wsm/keys [card-id]
                ::keys     [test-forms]} ns-tests]
-        (if-not (::disabled? (app-test-block (:reconciler app) card-id))
+        (if-not (::disabled? (app-test-block app card-id))
           (let [res (<! (run-test-blocks {::test   card-id
                                           ::blocks test-forms}))]
-            (fp/transact! (:reconciler app) [::test-var card-id]
+            (fp/transact! app [::test-var card-id]
               [`(fm/set-props {:test-results ~res ::duration ~(::duration res)})]))))
 
-      (let [state    (-> app :reconciler fp/app-state deref)
-            {::keys [test-vars]} (fp/db->tree (fp/get-query NSTestGroup) (get-in state [::test-ns test-ns]) state)
+      (let [state    (app/current-state app)
+            {::keys [test-vars]} (fdn/db->tree (fp/get-query NSTestGroup) (get-in state [::test-ns test-ns]) state)
             success? (->> test-vars
-                          (map :test-results)
-                          (filter seq)
-                          (every? test-success?))
+                       (map :test-results)
+                       (filter seq)
+                       (every? test-success?))
             duration (- (now) start)]
-        (fp/transact! (:reconciler app) [::test-ns test-ns]
+        (fp/transact! app [::test-ns test-ns]
           [`(fm/set-props {::done?    true
                            ::running? false
                            ::success? ~success?
@@ -199,7 +202,7 @@
   (go
     (let [test-cards (namespace-test-cards test-ns)
           app        @app*]
-      (fp/transact! (:reconciler app) [::test-ns test-ns]
+      (fp/transact! app [::test-ns test-ns]
         [`(start-ns-test-namespaces {::ns-tests ~test-cards})])
 
       (<! (async/timeout 1))
@@ -208,7 +211,7 @@
       (<! (async/timeout 1))
       (ui/refresh-card-container test-ns)
 
-      (fp/force-root-render! (:reconciler app))
+      (app/force-root-render! app)
       app)))
 
 (declare AllTests)
@@ -216,9 +219,9 @@
 (fm/defmutation start-all-tests [{::keys [test-namespaces]}]
   (action [{:keys [reconciler] :as env}]
     (let [test-namespaces (->> test-namespaces
-                               (into [] (map (fn [[test-ns ns-tests]] (build-ns-test-group (merge env {::test-ns  test-ns
-                                                                                                       ::ns-tests ns-tests}))))))]
-      (fp/merge-component! reconciler AllTests
+                            (into [] (map (fn [[test-ns ns-tests]] (build-ns-test-group (merge env {::test-ns  test-ns
+                                                                                                    ::ns-tests ns-tests}))))))]
+      (merge/merge-component! reconciler AllTests
         (-> {::enqueued?       false
              ::running?        true
              ::test-namespaces test-namespaces})))))
@@ -229,18 +232,18 @@
           test-namespaces (sort-by first (test-cards-by-namespace))
           start           (now)]
 
-      (fp/transact! (:reconciler app) [::all-tests-run "singleton"]
+      (fp/transact! app [::all-tests-run "singleton"]
         [`(start-all-tests {::test-namespaces ~test-namespaces})])
 
       (doseq [[test-ns ns-tests] test-namespaces]
-        (if-not (::disabled? (app-ns-test-block (:reconciler app) test-ns))
+        (if-not (::disabled? (app-ns-test-block app test-ns))
           (<! (run-ns-test-blocks (assoc env ::test-ns test-ns ::ns-tests ns-tests)))))
 
-      (let [state    (-> app :reconciler fp/app-state deref)
-            {::keys [test-namespaces]} (fp/db->tree (fp/get-query AllTests) (get-in state [::all-tests-run "singleton"]) state)
+      (let [state    (app/current-state app)
+            {::keys [test-namespaces]} (fdn/db->tree (fp/get-query AllTests) (get-in state [::all-tests-run "singleton"]) state)
             success? (every? ::success? test-namespaces)
             duration (- (now) start)]
-        (fp/transact! (:reconciler app) [::all-tests-run "singleton"]
+        (fp/transact! app [::all-tests-run "singleton"]
           [`(fm/set-props {::done?    true
                            ::running? false
                            ::success? ~success?
@@ -249,7 +252,7 @@
       (<! (async/timeout 1))
       (ui/refresh-card-container `test-all)
 
-      (fp/force-root-render! (:reconciler app))
+      (app/force-root-render! app)
       app)))
 
 (defn run-test-loop [ch]
@@ -273,7 +276,7 @@
 (defn run-card-tests! [test app*]
   (let [forms (-> (data/card-definition test) ::test-forms)
         out   (async/promise-chan)]
-    (fp/transact! (:reconciler @app*) [::test-result-id "singleton"] [`(enqueue-test-run {})])
+    (fp/transact! @app* [::test-result-id "singleton"] [`(enqueue-test-run {})])
 
     (put! test-channel {::type   ::test-one
                         ::test   test
@@ -285,7 +288,7 @@
 
 (defn run-ns-tests! [ns app*]
   (let [out (async/promise-chan)]
-    (fp/transact! (:reconciler @app*) [::test-ns ns] [`(enqueue-test-run {})])
+    (fp/transact! @app* [::test-ns ns] [`(enqueue-test-run {})])
 
     (put! test-channel {::type    ::test-ns
                         ::test-ns ns
@@ -295,7 +298,7 @@
 
 (defn run-all-tests! [app*]
   (let [out (async/promise-chan)]
-    (fp/transact! (:reconciler @app*) [::all-tests-run "singleton"] [`(enqueue-test-run {})])
+    (fp/transact! @app* [::all-tests-run "singleton"] [`(enqueue-test-run {})])
 
     (put! test-channel {::type ::test-all
                         ::done out
@@ -346,9 +349,9 @@
 
 (defn normalize-actual [{:keys [expected actual] :as props}]
   (if (and (sequential? expected)
-           (= 3 (count expected))
-           (= '= (first expected))
-           (sequential? actual))
+        (= 3 (count expected))
+        (= '= (first expected))
+        (sequential? actual))
     (let [[_ expected actual] (second actual)]
       (assoc props
         :expected expected
@@ -446,8 +449,7 @@
     (assoc card
       ::wsm/refresh (fn [_] (run-tests))
       ::wsm/render-toolbar (fn []
-                             (let [state
-                                   (-> @app* :reconciler fp/app-state deref)
+                             (let [state (app/current-state @app*)
 
                                    {::keys [running? done?]
                                     :keys  [test-results]}
@@ -642,8 +644,7 @@
     (assoc card
       ::wsm/refresh (fn [_] (run-tests))
       ::wsm/render-toolbar (fn []
-                             (let [state
-                                   (-> @app* :reconciler fp/app-state deref)
+                             (let [state (app/current-state @app*)
 
                                    {::keys [running? done? duration]}
                                    (get-in state [::test-ns test-ns])]
@@ -686,8 +687,7 @@
     (assoc card
       ::wsm/refresh (fn [_] (run-tests))
       ::wsm/render-toolbar (fn []
-                             (let [state
-                                   (-> @app* :reconciler fp/app-state deref)
+                             (let [state (app/current-state @app*)
 
                                    {::keys [running? done? duration]}
                                    (get-in state [::all-tests-run "singleton"])]

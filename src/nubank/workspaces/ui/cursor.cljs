@@ -1,6 +1,6 @@
 (ns nubank.workspaces.ui.cursor
-  (:require [fulcro.client.primitives :as fp]
-            [fulcro.client.localized-dom :as dom]
+  (:require [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
             [nubank.workspaces.ui.events :as dom-events]
             [goog.object :as gobj]))
 

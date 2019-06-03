@@ -1,6 +1,6 @@
 (ns nubank.workspaces.ui.grid-layout
-  (:require [fulcro.client.primitives :as fp]
-            [fulcro.client.localized-dom :as dom]
+  (:require [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
             [garden.selectors :as gs]
             [goog.object :as gobj]
             [cljsjs.react-grid-layout]
@@ -101,12 +101,12 @@
    :componentDidMount (fn []
                         (let [{:keys [onBreakpointChange]} (fp/props this)
                               width (-> (gobj/getValueByKeys this "grid")
-                                        (dom/node)
-                                        (gobj/get "offsetWidth"))
+                                      (dom/node)
+                                      (gobj/get "offsetWidth"))
                               bp    (->> (rseq breakpoints)
-                                         (filter #(>= width (:breakpoint %)))
-                                         first
-                                         :id)]
+                                      (filter #(>= width (:breakpoint %)))
+                                      first
+                                      :id)]
                           (onBreakpointChange bp)))}
   (dom/create-element GridWithWidth (clj->js (assoc props :ref #(gobj/set this "grid" %)))
     (fp/children this)))

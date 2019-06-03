@@ -1,9 +1,9 @@
 (ns nubank.workspaces.ui.spotlight
   (:require [com.wsscode.fuzzy :as fuzzy]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.mutations :as fm]
-            [fulcro.client.primitives :as fp]
-            [fulcro.incubator.ui-state-machines :as fsm]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.mutations :as fm]
+            [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro.ui-state-machines :as fsm]
             [goog.functions :as gfun]
             [goog.object :as gobj]
             [nubank.workspaces.ui.core :as uc]
@@ -36,7 +36,7 @@
     {::fsm/handler
      (fn [env]
        (-> env
-           (fsm/activate :searching)))}
+         (fsm/activate :searching)))}
 
     :searching
     {::fsm/events
@@ -48,10 +48,10 @@
        (fn [env]
          (let [{:keys [search-input options] :as data} (fsm/aliased-data env)]
            (-> env
-               (fsm/set-aliased-value :current-options
-                 (if (< (count search-input) 3)
-                   options
-                   (fuzzy-match data))))))}
+             (fsm/set-aliased-value :current-options
+               (if (< (count search-input) 3)
+                 options
+                 (fuzzy-match data))))))}
 
       :exit!
       {::fsm/target-state ::fsm/exit}}}}})

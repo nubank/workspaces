@@ -1,12 +1,13 @@
 (ns nubank.workspaces.core
   (:require-macros nubank.workspaces.core)
-  (:require [fulcro.client :as fulcro]
-            [fulcro.client.primitives :as fp]
+  (:require [com.fulcrologic.fulcro.application :as fulcro]
+            [com.fulcrologic.fulcro.components :as fp]
             [nubank.workspaces.card-types.test :as ct.test]
             [nubank.workspaces.ui :as ui]
             [nubank.workspaces.data :as data]
             [nubank.workspaces.model :as wsm]
-            [nubank.workspaces.lib.local-storage :as local-storage]))
+            [nubank.workspaces.lib.local-storage :as local-storage]
+            [nubank.workspaces.ui.events :as events]))
 
 (defn init-card [card-id card]
   (let [card (assoc card ::wsm/card-id card-id)]
@@ -51,7 +52,8 @@
   Use the selector string to pass a querySelector string to pick the mount node."
   ([] (mount "#app"))
   ([selector]
-   (swap! data/app* fulcro/mount Root (js/document.querySelector selector))))
+   (fulcro/mount! data/app* Root (js/document.querySelector selector))
+   (js/setTimeout #(events/trigger-event js/window {::events/event "resize"}) 600)))
 
 (defn before-load
   {:dev/before-load true}

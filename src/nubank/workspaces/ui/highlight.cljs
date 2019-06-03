@@ -1,6 +1,6 @@
 (ns nubank.workspaces.ui.highlight
-  (:require [fulcro.client.primitives :as fp]
-            [fulcro.client.localized-dom :as dom]
+  (:require [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
             [cljsjs.highlight]))
 
 (fp/defsc Highlight [this {::keys [source language]}]

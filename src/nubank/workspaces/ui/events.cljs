@@ -2,8 +2,8 @@
   (:require [cljs.spec.alpha :as s]
             [clojure.string :as str]
             [goog.object :as gobj]
-            [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as fp]))
+            [com.fulcrologic.fulcro.dom :as dom]
+            [com.fulcrologic.fulcro.components :as fp]))
 
 (def KEYS
   {"backspace" 8
