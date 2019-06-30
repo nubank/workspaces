@@ -121,7 +121,6 @@
      (let [props (fc/props this)
            app   (upsert-app props)]
        (gobj/set this "app" app)
-       (js/console.log "MOUNT" app)
        (mount-at app props (dom/node this))))
 
    :componentDidUpdate
@@ -166,7 +165,7 @@
 
 (defn inspector-set-app [card-id]
   (let [{::keys [app]} (data/active-card card-id)
-        app-uuid (::fapp/id app)]
+        app-uuid (fi.client/app-uuid app)]
     (if app-uuid
       (fi.client/set-active-app app-uuid))))
 
