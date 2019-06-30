@@ -2,13 +2,15 @@
  ["src"]
 
  :deps
- {cljsjs/highlight             {:mvn/version "9.12.0-2"}
-  cljsjs/react-grid-layout     {:mvn/version "0.16.6-0"}
-  fulcrologic/fulcro           {:mvn/version "2.6.16"}
-  fulcrologic/fulcro-incubator {:mvn/version "0.0.19"}
-  fulcrologic/fulcro-inspect   {:mvn/version "2.2.4"}
-  com.wsscode/fuzzy            {:mvn/version "1.0.0"}
-  org.clojure/core.async       {:mvn/version "0.4.474"}}
+ {cljsjs/highlight                  {:mvn/version "9.12.0-2"}
+  cljsjs/react-grid-layout          {:mvn/version "0.16.6-0"}
+  com.fulcrologic/fulcro            {:mvn/version "3.0.0-alpha-13"}
+  com.fulcrologic/fulcro-garden-css {:mvn/version "3.0.3"}
+  fulcrologic/fulcro                {:mvn/version "2.6.16"}
+  fulcrologic/fulcro-incubator      {:mvn/version "0.0.19"}
+  fulcrologic/fulcro-inspect        {:mvn/version "2.2.4"}
+  com.wsscode/fuzzy                 {:mvn/version "1.0.0"}
+  org.clojure/core.async            {:mvn/version "0.4.474"}}
 
  :aliases
  {:provided
