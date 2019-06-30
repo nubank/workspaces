@@ -6,7 +6,7 @@
     [com.fulcrologic.fulcro.algorithms.normalize :refer [tree->db]]
     [com.fulcrologic.fulcro.components :as fc]
     [com.fulcrologic.fulcro.dom :as dom]
-    [fulcro.inspect.client :as fi.client]
+    [com.fulcrologic.fulcro.inspect.inspect-client :as fi.client]
     [goog.functions :as gfun]
     [goog.object :as gobj]
     [nubank.workspaces.card-types.util :as ct.util]
@@ -96,7 +96,7 @@
 
 (defn dispose-app [{::keys [persistence-key] :as app}]
   (if persistence-key (swap! persistent-apps* dissoc persistence-key))
-  (when-let [app-uuid (some-> app ::fapp/id)]
+  (when-let [app-uuid (fi.client/app-uuid app)]
     (fi.client/dispose-app app-uuid)))
 
 (defn refresh-css! []
@@ -129,9 +129,9 @@
 
    :componentWillUnmount
    (fn [this]
-     (let [app* (gobj/get this "app")]
-       (dispose-app @app*)
-       (reset! app* nil)
+     (let [app (gobj/get this "app")]
+       (dispose-app app)
+       (reset! app nil)
        (js/ReactDOM.unmountComponentAtNode (dom/node this))))
 
    :shouldComponentUpdate
@@ -165,8 +165,8 @@
 ; region card definition
 
 (defn inspector-set-app [card-id]
-  (let [{::keys [app*]} (data/active-card card-id)
-        app-uuid (::fapp/id @app*)]
+  (let [{::keys [app]} (data/active-card card-id)
+        app-uuid (::fapp/id app)]
     (if app-uuid
       (fi.client/set-active-app app-uuid))))
 
@@ -191,7 +191,7 @@
 
        ::wsm/render
        (fn [node]
-         (swap! data/active-cards* assoc-in [card-id ::app*] app)
+         (swap! data/active-cards* assoc-in [card-id ::app] app)
          (mount-at app config node))
 
        ::wsm/render-toolbar
@@ -202,7 +202,7 @@
            (uc/button {:onClick #(ui/restart-card card-id)}
              "Restart")))
 
-       ::app*
+       ::app
        app})))
 
 (defn fulcro-card [config]
