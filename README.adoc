@@ -269,6 +269,12 @@ have the extension active on Chrome, it will select the application of
 the card for inspection.
 * `Restart`: this will do a full refresh on app, unmount and mount again
 
+=== Fulcro 3
+
+Fulcro 3 is a rewrite and require new wrappers, for Fulcro 3 we got the portal and the card
+type in the namespace `nubank.workspaces.card-types.fulcro3`. The settings are the same
+as for Fulcro 2, all keywords should be namespaced with the `fulcro3` card type namespace.
+
 === Test cards
 
 Workspaces has default integration with `cljs.test`, but you have to
