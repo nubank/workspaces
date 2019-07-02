@@ -1,4 +1,3 @@
-= Workspaces
 :lang: en
 :encoding: UTF-8
 :doctype: book
@@ -24,6 +23,7 @@ ifdef::env-github[]
 toc::[]
 endif::[]
 
+= Workspaces
 
 image:https://img.shields.io/clojars/v/nubank/workspaces.svg[link=https://clojars.org/nubank/workspaces]
 image:https://cljdoc.xyz/badge/nubank/workspaces[link=https://cljdoc.xyz/d/nubank/workspaces/CURRENT]
@@ -616,7 +616,7 @@ resources from that card.
           ; doesn't make a real difference for resource cleaning, just a dummy example
           ; so you can replace the code
           (gdom/setTextContent node ""))
-        
+
         ::wsm/refresh
         (fn [node]
           (gdom/setTextContent node (str "Card updated, count: " (swap! counter inc) "!")))

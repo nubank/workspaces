@@ -2,19 +2,20 @@
   (:require
     [cljs.spec.alpha :as s]
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
-    [com.fulcrologic.fulcro.application :as fapp]
+    [com.fulcrologic.fulcro.algorithms.merge :as f.merge]
     [com.fulcrologic.fulcro.algorithms.normalize :refer [tree->db]]
+    [com.fulcrologic.fulcro.application :as fapp]
     [com.fulcrologic.fulcro.components :as fc]
     [com.fulcrologic.fulcro.dom :as dom]
     [com.fulcrologic.fulcro.inspect.inspect-client :as fi.client]
+    [ghostwheel.core :refer [>defn >fdef => | <- ?]]
     [goog.functions :as gfun]
     [goog.object :as gobj]
     [nubank.workspaces.card-types.util :as ct.util]
     [nubank.workspaces.data :as data]
     [nubank.workspaces.model :as wsm]
     [nubank.workspaces.ui :as ui]
-    [nubank.workspaces.ui.core :as uc]
-    [ghostwheel.core :refer [>defn >fdef => | <- ?]]))
+    [nubank.workspaces.ui.core :as uc]))
 
 ; region portal
 
@@ -63,17 +64,17 @@
 
 (defn fulcro-initial-state [{::keys [initial-state wrap-root? root root-state]
                              :or    {wrap-root? true initial-state {}}}]
-  (let [state (if (fn? initial-state)
-                (initial-state (safe-initial-state root nil))
-                (safe-initial-state root initial-state))]
-    (tree->db
-      root
-      (merge
-        (if wrap-root?
-          {:ui/root state}
-          state)
-        root-state)
-      true)))
+  (let [state-tree (if (fn? initial-state)
+                     (initial-state (safe-initial-state root nil))
+                     (safe-initial-state root initial-state))
+        wrapped    (merge
+                     (if wrap-root?
+                       {:ui/root state-tree}
+                       state-tree)
+                     root-state)
+        Root       (if wrap-root? (make-root root) root)
+        db         (tree->db Root wrapped true (f.merge/pre-merge-transform {}))]
+    db))
 
 (defn upsert-app [{::keys                    [app persistence-key computed]
                    :fulcro.inspect.core/keys [app-id]
@@ -109,7 +110,7 @@
 (defn mount-at [app {::keys [root wrap-root? persistence-key] :or {wrap-root? true}} node]
   (add-component-css! root)
   (let [instance (if wrap-root? (make-root root) root)
-        new-app  (fapp/mount! app instance node)]
+        new-app  (fapp/mount! app instance node {:initialize-state? false})]
     (if persistence-key
       (swap! persistent-apps* assoc persistence-key new-app))
     new-app))
