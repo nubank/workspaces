@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.9]
+- Add support for Fulcro 3
+- Prevent update errors when workspaces is not initialized
+
 ## [1.0.8]
 - Add disable state style to workspaces ui button
 - Accept ::f.portal/root-node-props on Fulcro portal
