@@ -1,4 +1,3 @@
-= Workspaces
 :lang: en
 :encoding: UTF-8
 :doctype: book
@@ -24,6 +23,7 @@ ifdef::env-github[]
 toc::[]
 endif::[]
 
+= Workspaces
 
 image:https://img.shields.io/clojars/v/nubank/workspaces.svg[link=https://clojars.org/nubank/workspaces]
 image:https://cljdoc.xyz/badge/nubank/workspaces[link=https://cljdoc.xyz/d/nubank/workspaces/CURRENT]
@@ -268,6 +268,12 @@ https://github.com/fulcrologic/fulcro-inspect[Fulcro Inspect], if you
 have the extension active on Chrome, it will select the application of
 the card for inspection.
 * `Restart`: this will do a full refresh on app, unmount and mount again
+
+=== Fulcro 3
+
+Fulcro 3 is a rewrite and require new wrappers, for Fulcro 3 we got the portal and the card
+type in the namespace `nubank.workspaces.card-types.fulcro3`. The settings are the same
+as for Fulcro 2, all keywords should be namespaced with the `fulcro3` card type namespace.
 
 === Test cards
 
@@ -616,7 +622,7 @@ resources from that card.
           ; doesn't make a real difference for resource cleaning, just a dummy example
           ; so you can replace the code
           (gdom/setTextContent node ""))
-        
+
         ::wsm/refresh
         (fn [node]
           (gdom/setTextContent node (str "Card updated, count: " (swap! counter inc) "!")))

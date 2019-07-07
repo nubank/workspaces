@@ -102,7 +102,7 @@
    (reset! components-with-error #{})))
 
 (defn active-workspace-cards [reconciler]
-  (let [state (-> reconciler fp/app-state deref)]
+  (if-let [state (some-> reconciler fp/app-state deref)]
     (if-let [ref (get-in state [::workspace-tabs "singleton" ::active-workspace])]
       (let [card-ids (workspace-card-ids (get-in state ref))]
         (select-keys @data/active-cards* card-ids)))))
