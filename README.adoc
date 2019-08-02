@@ -31,9 +31,6 @@ image:https://cljdoc.xyz/badge/nubank/workspaces[link=https://cljdoc.xyz/d/nuban
 Workspaces is a component development environment for ClojureScript,
 inspired by https://github.com/bhauman/devcards[devcards].
 
-If you just want to see an example of Workspaces in action, check
-https://fulcrologic.github.io/fulcro-incubator/[Fulcro Incubator public
-workspace].
 
 image:workspaces-main.gif[Workspaces Main]
 
