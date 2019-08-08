@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.10]
+- Improved styling 
+
 ## [1.0.9]
 - Add support for Fulcro 3
 - Prevent update errors when workspaces is not initialized
