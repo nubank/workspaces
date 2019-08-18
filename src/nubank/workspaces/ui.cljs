@@ -754,12 +754,16 @@
                     [:p {:margin "12px 0"}]]
                    [:.workspace-title
                     uc/font-os12sb
-                    {:flex          "1"
-                     :background    "transparent"
+                    {:background    "transparent"
                      :border        "1px solid transparent"
                      :box-shadow    "0 0 2px 0 transparent"
                      :cursor        "pointer"
-                     :text-overflow "ellipsis"}
+                     :direction     "rtl"
+                     :flex          "1"
+                     :max-width     "150px"
+                     :overflow      "hidden"
+                     :text-overflow "ellipsis"
+                     :white-space   "nowrap"}
                     [:&:focus {:background "#fff"
                                :border     "1px solid #0079bf"
                                :box-shadow "0 0 2px 0 #0284c6"
@@ -790,7 +794,7 @@
                                        (fm/set-value! this ::active-workspace ws-ident)
                                        (local-storage/set! ::active-workspace ws-ident)))}
             (if (or workspace-static? card-id (not current?))
-              (dom/div :.workspace-title (str (or workspace-title card-id)))
+              (dom/div :.workspace-title {:title (str (or workspace-title card-id))} (str (or workspace-title card-id)))
               (dom/input :.workspace-title {:value     (str workspace-title)
                                             :onChange  (fn [_])
                                             :onClick   #(.select (.-target %))
