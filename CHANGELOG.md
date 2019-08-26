@@ -1,7 +1,10 @@
 # Change Log
 
+## [1.0.11]
+- Fix Fulcro 3 card refresh
+
 ## [1.0.10]
-- Improved styling 
+- Improved tab styling 
 
 ## [1.0.9]
 - Add support for Fulcro 3
