@@ -48,8 +48,7 @@
     params))
 
 (defn make-root [Root]
-  (let [factory        (fc/factory Root)
-        generated-name (gensym)
+  (let [generated-name (gensym)
         component-key  (keyword "nubank.workspaces.card-types.fulcro3" (name generated-name))]
     (fc/configure-component! (fn *dyn-root* [])
       component-key
@@ -58,6 +57,8 @@
        :query         (fn [_] [:fulcro.inspect.core/app-id {:ui/root (fc/get-query Root)}])
        :render        (fn [this]
                         (let [{:ui/keys [root]} (fc/props this)
+                              Root     (-> Root fc/class->registry-key fc/registry-key->class)
+                              factory  (fc/factory Root)
                               computed (fc/shared this ::computed)]
                           (if (seq root)
                             (factory (cond-> root computed (fc/computed computed))))))})))
