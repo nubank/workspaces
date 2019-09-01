@@ -1,10 +1,10 @@
 (ns myapp.workspaces.fulcro-demo-cards
-  (:require [fulcro.client.primitives :as fp]
-            [fulcro.client.localized-dom :as dom]
+  (:require [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
             [nubank.workspaces.core :as ws]
             [nubank.workspaces.card-types.fulcro :as ct.fulcro]
             [nubank.workspaces.lib.fulcro-portal :as f.portal]
-            [fulcro.client.mutations :as fm]))
+            [com.fulcrologic.fulcro.mutations :as fm]))
 
 (fp/defsc FulcroDemo
   [this {:keys [counter]}]

@@ -3,7 +3,7 @@
             [nubank.workspaces.model :as wsm]
             [nubank.workspaces.card-types.react :as ct.react]
             [cljs.test :refer [is]]
-            [fulcro.client.dom :as dom]))
+            [com.fulcrologic.fulcro.dom :as dom]))
 
 ; simple function to create react elemnents
 (defn element [name props & children]

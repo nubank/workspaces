@@ -1,7 +1,6 @@
 /target
 /classes
 /checkouts
-pom.xml
 pom.xml.asc
 *.jar
 *.class
@@ -19,3 +18,4 @@ node_modules
 /examples/workspaces-shadow-example/resources/target
 .idea
 *.iml
+public/workspaces/js

@@ -2,10 +2,10 @@
   (:require [clojure.set :as set]
             [cljs.pprint]
             [cognitect.transit :as t]
-            [fulcro-css.css-injection :as cssi]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.mutations :as fm]
-            [fulcro.client.primitives :as fp]
+            [com.fulcrologic.fulcro-css.css-injection :as cssi]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.mutations :as fm]
+            [com.fulcrologic.fulcro.components :as comp]
             [goog.object :as gobj]
             [nubank.workspaces.data :as data]
             [nubank.workspaces.lib.local-storage :as local-storage]
@@ -15,7 +15,10 @@
             [nubank.workspaces.ui.grid-layout :as grid]
             [nubank.workspaces.ui.spotlight :as spotlight]
             [nubank.workspaces.ui.modal :as modal]
-            [nubank.workspaces.ui.highlight :as highlight]))
+            [nubank.workspaces.ui.highlight :as highlight]
+            [com.fulcrologic.fulcro.application :as app]
+            [com.fulcrologic.fulcro.algorithms.merge :as merge]
+            [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]))
 
 (defonce components-with-error (atom #{}))
 
@@ -52,7 +55,7 @@
 
                           ::wsm/set-card-header-style
                           (fn [style]
-                            (fp/transact! reconciler [::wsm/card-id card-id]
+                            (comp/transact! reconciler [::wsm/card-id card-id]
                               [`(fm/set-props {::wsm/card-header-style ~style})]))}))]
         (swap! data/active-cards* assoc card-id card)
         card)
@@ -64,7 +67,7 @@
     (swap! data/active-cards* dissoc card-id)))
 
 (defn render-card [{::wsm/keys [card-id component node]}]
-  (let [{::wsm/keys [render]} (use-card card-id node (fp/get-reconciler component))]
+  (let [{::wsm/keys [render]} (use-card card-id node (comp/any->app component))]
     (swap! data/active-cards* update card-id assoc
       ::wsm/node node
       ::wsm/component component)
@@ -97,12 +100,12 @@
          (js/console.error "Error refreshing card" card-id e))))
 
    (doseq [comp @components-with-error]
-     (fp/set-state! comp {::error-catch? false}))
+     (comp/set-state! comp {::error-catch? false}))
 
    (reset! components-with-error #{})))
 
-(defn active-workspace-cards [reconciler]
-  (if-let [state (some-> reconciler fp/app-state deref)]
+(defn active-workspace-cards [app]
+  (if-let [state (app/current-state app)]
     (if-let [ref (get-in state [::workspace-tabs "singleton" ::active-workspace])]
       (let [card-ids (workspace-card-ids (get-in state ref))]
         (select-keys @data/active-cards* card-ids)))))
@@ -123,9 +126,9 @@
 (defn normalize-ws-cards [state ws]
   (update ws ::cards #(mapv (partial lookup-ref state) %)))
 
-(defn create-workspace* [{:keys [reconciler state]} ws & args]
-  (let [ws (fp/get-initial-state Workspace ws)]
-    (apply fp/merge-component! reconciler Workspace (normalize-ws-cards @state ws)
+(defn create-workspace* [{:keys [app state]} ws & args]
+  (let [ws (comp/get-initial-state Workspace ws)]
+    (apply merge/merge-component! app Workspace (normalize-ws-cards @state ws)
       :append [::workspace-root "singleton" ::workspaces]
       args)
     ws))
@@ -163,15 +166,15 @@
 
 (defn remove-workspace-card [workspace card-id]
   (-> workspace
-      (update ::cards
-        (fn [cards]
-          (filterv #(not= (second %) card-id) cards)))
-      (update ::layouts
-        (fn [breakpoints]
-          (map-values
-            (fn [layouts]
-              (filterv #(not= (get % "i") card-id) layouts))
-            breakpoints)))))
+    (update ::cards
+      (fn [cards]
+        (filterv #(not= (second %) card-id) cards)))
+    (update ::layouts
+      (fn [breakpoints]
+        (map-values
+          (fn [layouts]
+            (filterv #(not= (get % "i") card-id) layouts))
+          breakpoints)))))
 ;endregion
 
 (fm/defmutation remove-card-from-active-ns [{::wsm/keys [card-id]}]
@@ -183,7 +186,7 @@
         (disposed-unreferenced-cards @state #{card-id}))))
   (refresh [_] [::cards]))
 
-(fp/defsc WorkspaceSoloCard
+(comp/defsc WorkspaceSoloCard
   [this {::wsm/keys [card-id]}]
   {:initial-state     (fn [data] data)
    :ident             [::wsm/card-id ::wsm/card-id]
@@ -217,8 +220,8 @@
                          :overflow        "auto"
                          :padding         "10px"}]]
 
-   :componentDidMount (fn []
-                        (let [{::wsm/keys [card-id]} (fp/props this)
+   :componentDidMount (fn [this]
+                        (let [{::wsm/keys [card-id]} (comp/props this)
                               node (gobj/get this "cardNode")]
                           (try
                             (render-card {::wsm/card-id   card-id
@@ -228,22 +231,22 @@
                             (catch :default e
                               (swap! components-with-error conj this)
                               (js/console.error "Error mounting card" card-id e)
-                              (fp/set-state! this {::error-catch? true})))))}
+                              (comp/set-state! this {::error-catch? true})))))}
 
   (let [{::wsm/keys [render-toolbar]} (data/active-card card-id)]
     (dom/div :.container
       (if render-toolbar
         (dom/div :.toolbar (render-toolbar))
         (dom/div))
-      (if (fp/get-state this ::error-catch?)
+      (if (comp/get-state this ::error-catch?)
         (dom/div :.error "Error rendering card, check console for details."))
       (dom/div :.card (merge-with merge
                         (::wsm/node-props (data/card-definition card-id))
                         {:ref #(gobj/set this "cardNode" %)})))))
 
-(def workspace-solo-card (fp/factory WorkspaceSoloCard {:keyfn ::wsm/card-id}))
+(def workspace-solo-card (comp/factory WorkspaceSoloCard {:keyfn ::wsm/card-id}))
 
-(fp/defsc WorkspaceCard
+(comp/defsc WorkspaceCard
   [this
    {::wsm/keys [card-id card-header-style]
     ::keys     [show-source?]
@@ -356,8 +359,8 @@
                          :box-shadow    uc/box-shadow}]]
    :css-include       [highlight/Highlight modal/Modal]
 
-   :componentDidMount (fn []
-                        (let [{::wsm/keys [card-id]} (fp/props this)
+   :componentDidMount (fn [this]
+                        (let [{::wsm/keys [card-id]} (comp/props this)
                               node (gobj/get this "cardNode")]
                           (try
                             (render-card {::wsm/card-id   card-id
@@ -367,7 +370,7 @@
                             (catch :default e
                               (swap! components-with-error conj this)
                               (js/console.error "Error mounting card" card-id e)
-                              (fp/set-state! this {::error-catch? true})))))}
+                              (comp/set-state! this {::error-catch? true})))))}
   (let [{::wsm/keys [render-toolbar]} (data/active-card card-id)
         {::wsm/keys [card-form test?]} (data/card-definition card-id)]
     (dom/div :.container
@@ -389,10 +392,10 @@
                   (if-not test?
                     (uc/button {:onClick export-size} "Size"))
                   (uc/button {:onClick #(restart-card card-id)} "Remount"))))
-            (dom/div :.close {:onClick #(fp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
+            (dom/div :.close {:onClick #(comp/transact! this [`(remove-card-from-active-ns {::wsm/card-id ~card-id})])} "×")))
         (if render-toolbar
           (dom/div :.toolbar (render-toolbar))))
-      (if (fp/get-state this ::error-catch?)
+      (if (comp/get-state this ::error-catch?)
         (dom/div :.error "Error rendering card, check console for details."))
       (dom/div :.card (merge-with merge
                         (::wsm/node-props (data/card-definition card-id))
@@ -405,7 +408,7 @@
                (with-out-str
                  (cljs.pprint/pprint card-form))})))))))
 
-(def workspace-card (fp/factory WorkspaceCard {:keyfn ::wsm/card-id}))
+(def workspace-card (comp/factory WorkspaceCard {:keyfn ::wsm/card-id}))
 
 (defn block [w h x y] {"w" w "h" h "x" x "y" y})
 
@@ -413,9 +416,9 @@
   (reduce
     (fn [grid {:strs [w h x y] :as item}]
       (into grid
-            (for [x' (range w)
-                  y' (range h)]
-              [[(+ x' x) (+ y' y)] item])))
+        (for [x' (range w)
+              y' (range h)]
+          [[(+ x' x) (+ y' y)] item])))
     {}
     items))
 
@@ -439,7 +442,7 @@
             (recur (inc x) y)))))))
 
 (fm/defmutation pick-card-to-namespace [{::wsm/keys [card-id]}]
-  (action [{:keys [state reconciler] :as env}]
+  (action [{:keys [state app] :as env}]
     (let [ws-ref     (active-workspace-ref env)
           current-ws (get-in @state ws-ref)
           card       (data/card-definition card-id)]
@@ -452,7 +455,7 @@
 
         :else
         (when-not (contains? (workspace-card-ids current-ws) card-id)
-          (fp/merge-component! reconciler WorkspaceCard (fp/get-initial-state WorkspaceCard {::wsm/card-id card-id})
+          (merge/merge-component! app WorkspaceCard (comp/get-initial-state WorkspaceCard {::wsm/card-id card-id})
             :append (conj ws-ref ::cards))
           (swap! state update-in ws-ref update ::layouts (fn [layouts]
                                                            (reduce
@@ -471,31 +474,31 @@
                                                              grid/breakpoints))))))))
 
 (defn add-card [this card-id]
-  (fp/transact! this [`(pick-card-to-namespace {::wsm/card-id ~card-id})]))
+  (comp/transact! this [`(pick-card-to-namespace {::wsm/card-id ~card-id})]))
 
 (fm/defmutation open-solo-workspace [{::wsm/keys [card-id]}]
   (action [{:keys [state ref]}]
     (let [ws-ident [::wsm/card-id card-id]]
-      (fp/integrate-ident! state ws-ident
+      (swap! state targeting/integrate-ident* ws-ident
         :append (conj ref ::open-workspaces)
         :replace (conj ref ::active-workspace))
       (local-storage/update! ::open-workspaces (fnil conj #{}) ws-ident)
       (local-storage/set! ::active-workspace ws-ident))))
 
 (defn add-card-solo [this card-id]
-  (fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id card-id})]))
+  (comp/transact! this [::workspace-tabs "singleton"] [`(open-solo-workspace ~{::wsm/card-id card-id})]))
 
 (defn normalize-layout [layout]
   (mapv #(-> (into {} (filter (fn [[_ v]] v)) %)
-             (update "i" symbol))
+           (update "i" symbol))
     layout))
 
 (fm/defmutation normalize-sizes [_]
   (action [{:keys [state ref]}]
     (let [ws    (get-in @state ref)
           items (-> ws ::layouts (get (::breakpoint ws))
-                    (->> (group-by #(get % "i"))
-                         (map-values first)))]
+                  (->> (group-by #(get % "i"))
+                    (map-values first)))]
       (swap! state update-in ref update ::layouts
         (fn [breaks]
           (map-values
@@ -538,7 +541,7 @@
       (swap! state update-in tabs-ref update ::open-workspaces
         #(filterv (fn [x] (not= x ws-ref)) %))
       (if (= (get-in @state (conj tabs-ref ::active-workspace))
-             ws-ref)
+            ws-ref)
         (let [active-ref (-> (get-in @state tabs-ref) ::open-workspaces first)]
           (swap! state update-in tabs-ref assoc ::active-workspace
             (-> (get-in @state tabs-ref) ::open-workspaces first))
@@ -561,7 +564,7 @@
           (-> (create-workspace* env (or ws {})
                 :append (conj ref ::open-workspaces)
                 :replace (conj ref ::active-workspace))
-              (save-local-workspace))]
+            (save-local-workspace))]
       (local-storage/set! ::active-workspace workspace-id))))
 
 (fm/defmutation copy-breakpoint-layout [{::keys [source-breakpoint]}]
@@ -571,13 +574,13 @@
         (get layouts source-breakpoint)))))
 
 (defn export-card-size [this card-id]
-  (let [{::keys [layouts breakpoint]} (fp/props this)
+  (let [{::keys [layouts breakpoint]} (comp/props this)
         {:strs [w h]} (->> (get layouts breakpoint)
-                           (filter #(= card-id (get % "i")))
-                           first)]
+                        (filter #(= card-id (get % "i")))
+                        first)]
     (js/console.log (str "{::wsm/card-width " w " ::wsm/card-height " h "}"))))
 
-(fp/defsc Workspace
+(comp/defsc Workspace
   [this
    {::keys     [workspace-id cards layouts breakpoint workspace-title]
     ::wsm/keys [workspace-static?]}
@@ -585,17 +588,17 @@
   {:initial-state     (fn [{::keys [layouts workspace-title workspace-id] :as ws}]
                         (let [layouts (or layouts {})]
                           (merge ws
-                                 {::workspace-id    (or workspace-id (random-uuid))
-                                  ::workspace-title (or workspace-title "new workspace")
-                                  ::cards           (or (some->> layouts first val
-                                                          (mapv #(vector ::wsm/card-id (get % "i"))))
-                                                        [])
-                                  ::layouts         layouts
-                                  ::breakpoint      ""})))
+                            {::workspace-id    (or workspace-id (random-uuid))
+                             ::workspace-title (or workspace-title "new workspace")
+                             ::cards           (or (some->> layouts first val
+                                                     (mapv #(vector ::wsm/card-id (get % "i"))))
+                                                 [])
+                             ::layouts         layouts
+                             ::breakpoint      ""})))
    :ident             [::workspace-id ::workspace-id]
    :query             [::workspace-id ::layouts ::breakpoint
                        ::workspace-title ::wsm/workspace-static?
-                       {::cards (fp/get-query WorkspaceCard)}]
+                       {::cards (comp/get-query WorkspaceCard)}]
    :css               [[:.container {:display        "flex"
                                      :flex           "1"
                                      :flex-direction "column"}]
@@ -610,14 +613,14 @@
                         [:button {:margin-left "5px"}]]
                        [:.breakpoint {:flex "1"}]]
 
-   :componentDidCatch (fn [error info]
+   :componentDidCatch (fn [this error info]
                         (swap! components-with-error conj this)
-                        (fp/set-state! this {::error-catch? true}))
+                        (comp/set-state! this {::error-catch? true}))
 
    :css-include       [grid/GridLayout]
-   :componentDidMount (fn [] (js/requestAnimationFrame #(fp/set-state! this {:render? true})))}
+   :componentDidMount (fn [this] (js/requestAnimationFrame #(comp/set-state! this {:render? true})))}
 
-  (if (fp/get-state this ::error-catch?)
+  (if (comp/get-state this ::error-catch?)
     (dom/div "Some error leaked to workspace level (ugh...), please report this and check console for details.")
     (dom/div :.container$workspaces-workspace-container
       (dom/div :.tools
@@ -625,27 +628,27 @@
         (if-not workspace-static?
           (dom/select {:value    "-"
                        :onChange (fn [e]
-                                   (fp/transact! this [`(copy-breakpoint-layout ~{::source-breakpoint (.. e -target -value)})])
+                                   (comp/transact! this [`(copy-breakpoint-layout ~{::source-breakpoint (.. e -target -value)})])
                                    (gobj/set (.-target e) "selectedIndex" 0))}
             (dom/option {:value "-"} "Copy layout")
             (for [{:keys [id]} grid/breakpoints]
               (dom/option {:key id :value id} id))))
-        (uc/button {:onClick #(refresh-cards (active-workspace-cards (fp/get-reconciler this)) false)} "Refresh cards")
-        (uc/button {:onClick #(fp/transact! (fp/get-reconciler this) [::workspace-tabs "singleton"]
+        (uc/button {:onClick #(refresh-cards (active-workspace-cards (comp/any->app this)) false)} "Refresh cards")
+        (uc/button {:onClick #(comp/transact! (comp/any->app this) [::workspace-tabs "singleton"]
                                 [`(create-workspace ~{::workspace-title (str workspace-title " copy")
                                                       ::layouts         layouts})])} "Duplicate")
         (if-not workspace-static?
-          (uc/button {:onClick #(fp/transact! this [`(normalize-sizes {})])} "Unify layouts"))
+          (uc/button {:onClick #(comp/transact! this [`(normalize-sizes {})])} "Unify layouts"))
         (if-not workspace-static?
           (uc/button {:onClick #(js/console.log (let [writer (t/writer :json)]
                                                   (pr-str (t/write writer layouts))))} "Export"))
         (if-not workspace-static?
           (uc/button {:onClick #(when (js/confirm "Delete workspace?")
-                                  (fp/transact! this [`(close-workspace {::workspace-id ~workspace-id})])
-                                  (fp/transact! this [`(remove-workspace {::workspace-id ~workspace-id})]))} "Delete")))
+                                  (comp/transact! this [`(close-workspace {::workspace-id ~workspace-id})])
+                                  (comp/transact! this [`(remove-workspace {::workspace-id ~workspace-id})]))} "Delete")))
 
       (dom/div :.grid
-        (if (fp/get-state this :render?)
+        (if (comp/get-state this :render?)
           (grid/grid-layout
             (cond->
               {:className          (str "layout " (if workspace-static? "cljs-workflow-static-workflow"))
@@ -658,9 +661,9 @@
                                      (fm/set-value! this ::breakpoint bp))
                :onLayoutChange     (fn [_ layouts]
                                      (let [layouts' (->> (js->clj layouts)
-                                                         (into {} (map (fn [[k v]] [k (normalize-layout v)]))))]
-                                       (fp/transact! this [`(update-workspace ~{::workspace-id workspace-id
-                                                                                ::layouts      layouts'})])))}
+                                                      (into {} (map (fn [[k v]] [k (normalize-layout v)]))))]
+                                       (comp/transact! this [`(update-workspace ~{::workspace-id workspace-id
+                                                                                  ::layouts      layouts'})])))}
 
               workspace-static?
               (assoc :isDraggable false :isResizable false
@@ -668,49 +671,49 @@
             (for [{::wsm/keys [card-id] :as card} cards
                   :when card-id]
               (dom/div {:key (str card-id)}
-                (workspace-card (fp/computed card {::export-size    #(export-card-size this card-id)
-                                                   ::open-solo-card open-solo-card}))))))))))
+                (workspace-card (comp/computed card {::export-size    #(export-card-size this card-id)
+                                                     ::open-solo-card open-solo-card}))))))))))
 
-(def workspace (fp/factory Workspace {:keyfn ::workspace-id}))
+(def workspace (comp/factory Workspace {:keyfn ::workspace-id}))
 
-(fp/defsc WorkspaceContainer
+(comp/defsc WorkspaceContainer
   [this props {::keys [open-solo-card]}]
-  {:ident       (fn [] (workspace-ident props))
-   :query       (fn []
-                  {::workspace-id (fp/get-query Workspace)
-                   ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
-   :css         [[:$workspaces-workspace-container {:background "#9fa2ab"
-                                                    :flex       "1"}]
-                 [:.error {:color       "#ef0000"
-                           :font-weight "bold"
-                           :padding     "10px"}]]
+  {:ident             (fn [] (workspace-ident props))
+   :query             (fn []
+                        {::workspace-id (comp/get-query Workspace)
+                         ::wsm/card-id  (comp/get-query WorkspaceSoloCard)})
+   :css               [[:$workspaces-workspace-container {:background "#9fa2ab"
+                                                          :flex       "1"}]
+                       [:.error {:color       "#ef0000"
+                                 :font-weight "bold"
+                                 :padding     "10px"}]]
 
-   :componentDidCatch (fn [error info]
+   :componentDidCatch (fn [this error info]
                         (swap! components-with-error conj this)
-                        (fp/set-state! this {::error-catch? true}))}
+                        (comp/set-state! this {::error-catch? true}))}
 
-  (if (fp/get-state this ::error-catch?)
+  (if (comp/get-state this ::error-catch?)
     (dom/div :.error "Error rendering workspace, check console for details.")
-    (case (first (fp/get-ident this))
-      ::workspace-id (workspace (fp/computed props {::open-solo-card open-solo-card}))
+    (case (first (comp/get-ident this))
+      ::workspace-id (workspace (comp/computed props {::open-solo-card open-solo-card}))
       ::wsm/card-id (workspace-solo-card props))))
 
-(def workspace-container (fp/factory WorkspaceContainer {:keyfn #(or (::workspace-id %) (::wsm/card-id %))}))
+(def workspace-container (comp/factory WorkspaceContainer {:keyfn #(or (::workspace-id %) (::wsm/card-id %))}))
 
-(fp/defsc WorkspaceTabItem [_ props]
+(comp/defsc WorkspaceTabItem [_ props]
   {:ident (fn [] (workspace-ident props))
    :query [::workspace-id ::workspace-title ::wsm/workspace-static? ::wsm/card-id]})
 
-(fp/defsc WorkspaceTabs
+(comp/defsc WorkspaceTabs
   [this {::keys [active-workspace open-workspaces]}]
   {:initial-state (fn [_]
                     {::open-workspaces  (->> (local-storage/get ::open-workspaces [])
-                                             (mapv ws-data->ident-map))
+                                          (mapv ws-data->ident-map))
                      ::active-workspace (if-let [active (local-storage/get ::active-workspace)]
                                           (ws-data->ident-map active))})
    :ident         (fn [] [::workspace-tabs "singleton"])
-   :query         [{::open-workspaces (fp/get-query WorkspaceTabItem)}
-                   {::active-workspace (fp/get-query WorkspaceContainer)}]
+   :query         [{::open-workspaces (comp/get-query WorkspaceTabItem)}
+                   {::active-workspace (comp/get-query WorkspaceContainer)}]
    :css           [[:.container {:display        "flex"
                                  :flex           "1"
                                  :flex-direction "column"
@@ -775,13 +778,13 @@
                     {:margin-left "10px"}]]}
   (let [update-title
         (fn [new-title workspace-id]
-          (fp/transact! this [`(update-workspace ~{::workspace-id    workspace-id
-                                                   ::workspace-title new-title})]))]
+          (comp/transact! this [`(update-workspace ~{::workspace-id    workspace-id
+                                                     ::workspace-title new-title})]))]
     (dom/div :.container
       (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-close-workspace)
-                            ::events/action    #(fp/transact! this [`(close-workspace ~active-workspace)])})
+                            ::events/action    #(comp/transact! this [`(close-workspace ~active-workspace)])})
       (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-new-workspace)
-                            ::events/action    #(fp/transact! this [`(create-workspace {})])})
+                            ::events/action    #(comp/transact! this [`(create-workspace {})])})
       (dom/div :.tabs
         (for [{::keys     [workspace-id workspace-title]
                ::wsm/keys [workspace-static? card-id]
@@ -801,13 +804,13 @@
                                             :onBlur    #(update-title (.. % -target -value) workspace-id)
                                             :onKeyDown #(if (contains? #{(get events/KEYS "escape") (get events/KEYS "return")} (.-keyCode %))
                                                           (.blur (.-target %)))}))
-            (dom/div :.workspace-close {:onClick (fn [e] (.stopPropagation e) (fp/transact! this [`(close-workspace ~tab-ws)]))}
+            (dom/div :.workspace-close {:onClick (fn [e] (.stopPropagation e) (comp/transact! this [`(close-workspace ~tab-ws)]))}
               "×")))
-        (dom/div :.tab.new-tab {:onClick #(fp/transact! this [`(create-workspace {})])}
+        (dom/div :.tab.new-tab {:onClick #(comp/transact! this [`(create-workspace {})])}
           "+"))
       (dom/div :.active
         (if active-workspace
-          (workspace-container (fp/computed active-workspace {::open-solo-card #(fp/transact! this [`(open-solo-workspace ~%)])}))
+          (workspace-container (comp/computed active-workspace {::open-solo-card #(comp/transact! this [`(open-solo-workspace ~%)])}))
           (dom/div :.welcome
             (dom/div :.welcome-content
               (dom/p "Welcome to workspaces!")
@@ -816,9 +819,9 @@
                 (dom/a {:href "https://github.com/nubank/workspaces#using-workspaces" :target "_blank"}
                   "workspaces usage guide") "."))))))))
 
-(def workspace-tabs (fp/factory WorkspaceTabs))
+(def workspace-tabs (comp/factory WorkspaceTabs))
 
-(fp/defsc CardIndexListing
+(comp/defsc CardIndexListing
   [this {::wsm/keys [card-id]}]
   {:initial-state (fn [card]
                     (select-keys card [::wsm/card-id ::wsm/test? ::wsm/card-unlisted?]))
@@ -831,31 +834,31 @@
                           (add-card this card-id))}
       (name card-id))))
 
-(def card-index-listing (fp/factory CardIndexListing {:keyfn ::wsm/card-id}))
+(def card-index-listing (comp/factory CardIndexListing {:keyfn ::wsm/card-id}))
 
-(fp/defsc WorkspaceIndexListing [_ _]
+(comp/defsc WorkspaceIndexListing [_ _]
   {:ident [::workspace-id ::workspace-id]
    :query [::workspace-id ::workspace-title ::wsm/workspace-static?]})
 
-(def workspace-index-listing (fp/factory WorkspaceIndexListing {:keyfn ::workspace-id}))
+(def workspace-index-listing (comp/factory WorkspaceIndexListing {:keyfn ::workspace-id}))
 
 (fm/defmutation load-card [card]
   (action [{:keys [reconciler]}]
-    (fp/merge-component! reconciler CardIndexListing (fp/get-initial-state CardIndexListing card)
+    (merge/merge-component! reconciler CardIndexListing (comp/get-initial-state CardIndexListing card)
       :append [::workspace-root "singleton" ::cards])))
 
 (defn initialize-static-workspaces []
-  (mapv #(fp/get-initial-state Workspace %) (vals @data/workspace-definitions*)))
+  (mapv #(comp/get-initial-state Workspace %) (vals @data/workspace-definitions*)))
 
 (fm/defmutation load-workspace [workspace]
   (action [{:keys [reconciler state]}]
-    (fp/merge-component! reconciler Workspace (normalize-ws-cards @state (fp/get-initial-state Workspace workspace))
+    (merge/merge-component! reconciler Workspace (normalize-ws-cards @state (comp/get-initial-state Workspace workspace))
       :append [::workspace-root "singleton" ::workspaces])))
 
 (fm/defmutation select-workspace [{::keys [workspace-id]}]
   (action [{:keys [state]}]
     (let [open-workspaces (->> (get-in @state [::workspace-tabs "singleton" ::open-workspaces])
-                               (into #{} (map second)))
+                            (into #{} (map second)))
           ws-ref          [::workspace-id workspace-id]]
       (if-not (contains? open-workspaces workspace-id)
         (swap! state update-in [::workspace-tabs "singleton" ::open-workspaces] conj ws-ref))
@@ -877,23 +880,23 @@
       (js/setTimeout #(events/trigger-event js/window {::events/event "resize"}) 100))))
 
 (defn open-spotlight [this]
-  (let [{::keys [spotlight]} (fp/props this)
-        state   (-> (fp/get-reconciler this) fp/app-state deref)
+  (let [{::keys [spotlight]} (comp/props this)
+        state   (comp/component->state-map this)
         options (-> []
-                    (into (map (fn [[_ {::wsm/keys [card-id test?]}]]
-                                 {::spotlight/type (if test? ::spotlight/test ::spotlight/card)
-                                  ::spotlight/id   card-id}))
-                          (::wsm/card-id state))
-                    (into (map (fn [[_ {::keys [workspace-id workspace-title]}]]
-                                 {::spotlight/type  ::spotlight/workspace
-                                  ::spotlight/id    workspace-id
-                                  ::spotlight/label workspace-title}))
-                          (::workspace-id state)))]
-    (fp/transact! (fp/get-reconciler this) (fp/get-ident spotlight/Spotlight spotlight)
+                  (into (map (fn [[_ {::wsm/keys [card-id test?]}]]
+                               {::spotlight/type (if test? ::spotlight/test ::spotlight/card)
+                                ::spotlight/id   card-id}))
+                    (::wsm/card-id state))
+                  (into (map (fn [[_ {::keys [workspace-id workspace-title]}]]
+                               {::spotlight/type  ::spotlight/workspace
+                                ::spotlight/id    workspace-id
+                                ::spotlight/label workspace-title}))
+                    (::workspace-id state)))]
+    (comp/transact! (comp/any->app this) (comp/get-ident spotlight/Spotlight spotlight)
       `[(spotlight/reset {::spotlight/options ~options})])
     (fm/set-value! this ::show-spotlight? true)))
 
-(fp/defsc HelpDialog
+(comp/defsc HelpDialog
   [this {::keys []}]
   {:css [[:.container
           {:background    "rgba(0, 0, 0, 0.8)"
@@ -917,32 +920,32 @@
     (dom/div (dom/strong (get-keybinding ::keybinding-close-workspace)) ": Close current workspace")
     (dom/div (dom/strong "alt-shift-?") ": Toggle shorcuts modal")))
 
-(def help-dialog (fp/factory HelpDialog))
+(def help-dialog (comp/factory HelpDialog))
 
-(fp/defsc WorkspacesRoot
+(comp/defsc WorkspacesRoot
   [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?
                  show-help-modal?]}]
   {:initial-state  (fn [card-definitions]
-                     {::cards            (mapv #(fp/get-initial-state CardIndexListing %)
-                                          (vals card-definitions))
+                     {::cards            (mapv #(comp/get-initial-state CardIndexListing %)
+                                           (vals card-definitions))
                       ::workspaces       (->> (local-storage/get ::local-workspaces [])
-                                              (mapv #(fp/get-initial-state Workspace
-                                                      (local-storage/tget [::workspace-id %])))
-                                              (into (initialize-static-workspaces)))
+                                           (mapv #(comp/get-initial-state Workspace
+                                                    (local-storage/tget [::workspace-id %])))
+                                           (into (initialize-static-workspaces)))
 
                       ::expanded         (local-storage/get ::expanded {})
-                      ::ws-tabs          (fp/get-initial-state WorkspaceTabs {})
+                      ::ws-tabs          (comp/get-initial-state WorkspaceTabs {})
 
-                      ::spotlight        (fp/get-initial-state spotlight/Spotlight [])
+                      ::spotlight        (comp/get-initial-state spotlight/Spotlight [])
                       ::show-spotlight?  false
                       ::show-help-modal? false
                       ::settings         {::show-index? (local-storage/get ::show-index? true)}})
    :ident          (fn [] [::workspace-root "singleton"])
    :query          [::settings ::expanded ::show-spotlight? ::show-help-modal?
-                    {::cards (fp/get-query CardIndexListing)}
-                    {::workspaces (fp/get-query WorkspaceIndexListing)}
-                    {::ws-tabs (fp/get-query WorkspaceTabs)}
-                    {::spotlight (fp/get-query spotlight/Spotlight)}]
+                    {::cards (comp/get-query CardIndexListing)}
+                    {::workspaces (comp/get-query WorkspaceIndexListing)}
+                    {::ws-tabs (comp/get-query WorkspaceTabs)}
+                    {::spotlight (comp/get-query spotlight/Spotlight)}]
    :css            [[:body {:margin     0
                             :background "#f7f7f7"
                             :overflow   "hidden"}]
@@ -996,30 +999,30 @@
                                      :cursor       "pointer"
                                      :font-size    "14px"}]]
    :css-include    [uc/CSS HelpDialog]
-   :initLocalState (fn [] {:spotlight-select
-                           (fn [{::spotlight/keys [id type]} solo?]
-                             (if id
-                               (cond
-                                 (= type ::spotlight/workspace)
-                                 (fp/transact! this [`(select-workspace {::workspace-id ~id})])
+   :initLocalState (fn [this] {:spotlight-select
+                               (fn [{::spotlight/keys [id type]} solo?]
+                                 (if id
+                                   (cond
+                                     (= type ::spotlight/workspace)
+                                     (comp/transact! this [`(select-workspace {::workspace-id ~id})])
 
-                                 solo?
-                                 (add-card-solo this id)
+                                     solo?
+                                     (add-card-solo this id)
 
-                                 :else
-                                 (add-card this id)))
+                                     :else
+                                     (add-card this id)))
 
-                             (fm/set-value! this ::show-spotlight? false))})}
+                                 (fm/set-value! this ::show-spotlight? false))})}
   (dom/div :.container
     (cssi/style-element {:component WorkspacesRoot})
     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-index)
-                          ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
+                          ::events/action    #(comp/transact! this [`(toggle-index-view {})])})
     (events/dom-listener {::events/keystroke "alt-shift-/"
                           ::events/action    #(fm/toggle! this ::show-help-modal?)})
     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-fix-sizes)
                           ::events/action    #(events/trigger-event js/window {::events/event "resize"})})
     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-card-headers)
-                          ::events/action    #(fm/set-value! this ::settings (update (::settings (fp/props this)) ::hide-card-header? not))})
+                          ::events/action    #(fm/set-value! this ::settings (update (::settings (comp/props this)) ::hide-card-header? not))})
     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-spotlight)
                           ::events/action    (events/pd #(open-spotlight this))})
     (events/dom-listener {::events/event  "keydown"
@@ -1036,8 +1039,8 @@
     (if show-spotlight?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
         (spotlight/spotlight
-          (fp/computed spotlight
-            {::spotlight/on-select (fp/get-state this :spotlight-select)}))))
+          (comp/computed spotlight
+            {::spotlight/on-select (comp/get-state this :spotlight-select)}))))
 
     (if (::show-index? settings)
       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
@@ -1049,7 +1052,7 @@
               "\uD83D\uDD0D")
             (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
               "?")
-            (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+            (dom/button :.index-action-button {:onClick #(comp/transact! this [`(toggle-index-view {})])}
               "«"))
           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
             (dom/div
@@ -1058,29 +1061,29 @@
                 (dom/div :.nest-group-small
                   (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title locals)]
                     (dom/div :.workspace {:key     (str workspace-id)
-                                          :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
+                                          :onClick #(comp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
                       (str workspace-title)))))
 
               (dom/br)
 
               (for [[ns workspaces] (->> (group-by (comp namespace ::workspace-id) statics)
-                                         (sort-by first))]
+                                      (sort-by first))]
                 (dom/div {:key (str ns)}
                   (str ns)
                   (dom/div :.nest-group-small
                     (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title workspaces)]
                       (dom/div :.workspace {:key     (str workspace-id)
-                                            :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
+                                            :onClick #(comp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
                         (name (symbol workspace-title)))))))))
 
           (dom/br)
 
           (dom/div :.header "Cards")
           (for [[ns cards] (->> (group-by (comp namespace ::wsm/card-id) uis)
-                                (sort-by first))]
+                             (sort-by first))]
             (dom/div {:key (str ns)}
               (dom/div :.ns-header
-                (dom/div :.expand-arrow {:onClick #(fp/transact! this [`(toggle-ns-expansion {::expand-path ~[:card-ns ns]})])}
+                (dom/div :.expand-arrow {:onClick #(comp/transact! this [`(toggle-ns-expansion {::expand-path ~[:card-ns ns]})])}
                   (if (get-in expanded [:card-ns ns])
                     uc/arrow-down
                     uc/arrow-right))
@@ -1094,12 +1097,12 @@
           (dom/div :.pointer.header {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
             "Tests")
           (for [[ns cards] (->> tests
-                                (remove ::wsm/card-unlisted?)
-                                (group-by (comp namespace ::wsm/card-id))
-                                (sort-by first))]
+                             (remove ::wsm/card-unlisted?)
+                             (group-by (comp namespace ::wsm/card-id))
+                             (sort-by first))]
             (dom/div {:key (str ns)}
               (dom/div :.ns-header
-                (dom/div :.expand-arrow {:onClick #(fp/transact! this [`(toggle-ns-expansion {::expand-path ~[:test-ns ns]})])}
+                (dom/div :.expand-arrow {:onClick #(comp/transact! this [`(toggle-ns-expansion {::expand-path ~[:test-ns ns]})])}
                   (if (get-in expanded [:test-ns ns])
                     uc/arrow-down
                     uc/arrow-right))
@@ -1109,9 +1112,9 @@
                 (dom/div :.nest-group
                   (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
       (dom/div :.menu-show
-        (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+        (dom/button :.index-action-button {:onClick #(comp/transact! this [`(toggle-index-view {})])}
           "»")))
     (dom/div :.workspaces
       (workspace-tabs ws-tabs))))
 
-(def workspaces-root (fp/factory WorkspacesRoot))
+(def workspaces-root (comp/factory WorkspacesRoot))

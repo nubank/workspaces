@@ -1,7 +1,7 @@
 (ns nubank.workspaces.ui.core
   (:require [nubank.workspaces.model :as wsm]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.primitives :as fp]))
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.components :as fp]))
 
 (def color-white "#fff")
 (def color-light-grey "#b1b1b1")

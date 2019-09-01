@@ -1,15 +1,14 @@
 (ns nubank.workspaces.workspaces.cards
   (:require [nubank.workspaces.core :as ws]
             [nubank.workspaces.model :as wsm]
-            [nubank.workspaces.card-types.fulcro :as ct.fulcro]
-            [nubank.workspaces.lib.fulcro-portal :as f.portal]
+            [nubank.workspaces.card-types.fulcro3 :as ct.fulcro]
             [nubank.workspaces.ui.spotlight :as spotlight]
             [nubank.workspaces.ui.highlight :as highlight]
             [cljs.test :refer [is testing]]
-            [fulcro.client.primitives :as fp]
+            [com.fulcrologic.fulcro.components :as comp]
             [nubank.workspaces.ui :as ui]
             [nubank.workspaces.card-types.react :as ct.react]
-            [fulcro.client.localized-dom :as dom]))
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]))
 
 (def options
   '[{::spotlight/type ::spotlight/test
@@ -277,13 +276,13 @@
   (ct.react/react-card
     (dom/div "Hello World" :fail)))
 
-(fp/defsc SpotlightContainer
+(comp/defsc SpotlightContainer
   [this {:keys [spot]}]
   {:initial-state (fn [_]
-                    {:spot (fp/get-initial-state spotlight/Spotlight options)})
+                    {:spot (comp/get-initial-state spotlight/Spotlight options)})
    :ident         [::id ::id]
    :query         [::id
-                   {:spot (fp/get-query spotlight/Spotlight)}]
+                   {:spot (comp/get-query spotlight/Spotlight)}]
    :css           []
    :css-include   [spotlight/Spotlight]}
   (spotlight/spotlight spot))
@@ -293,7 +292,7 @@
    ::wsm/card-width  4
    ::wsm/card-height 17}
   (ct.fulcro/fulcro-card
-    {::f.portal/root SpotlightContainer}))
+    {::ct.fulcro/root SpotlightContainer}))
 
 (ws/defcard highlight-card
   {::wsm/align      {:flex "1"}
@@ -305,12 +304,12 @@
 (defn child-component [props]
   (dom/div "Inside changed"))
 
-(fp/defsc MyComponent [this _]
+(comp/defsc MyComponent [this _]
   {}
   (dom/div {} "Hello World Now it goes"
     (dom/create-element child-component)))
 
-(def my-component (fp/factory MyComponent))
+(def my-component (comp/factory MyComponent))
 
 (ws/defcard my-component-card
   {::wsm/align      {:flex "1"}
@@ -320,19 +319,19 @@
 
 (ws/deftest test-build-grid
   (is (= (ui/build-grid [(ui/block 2 2 0 0)])
-         {[0 0] (ui/block 2 2 0 0)
-          [0 1] (ui/block 2 2 0 0)
-          [1 0] (ui/block 2 2 0 0)
-          [1 1] (ui/block 2 2 0 0)})))
+        {[0 0] (ui/block 2 2 0 0)
+         [0 1] (ui/block 2 2 0 0)
+         [1 0] (ui/block 2 2 0 0)
+         [1 1] (ui/block 2 2 0 0)})))
 
 (ws/defworkspace spotlight-card "[\"^ \",\"c10\",[[\"^ \",\"i\",\"~$nubank.workspaces.workspaces.cards/spotlight-card\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"minH\",2]],\"c8\",[[\"^ \",\"w\",4,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",17]],\"c16\",[[\"^ \",\"i\",\"^0\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]],\"c14\",[[\"^ \",\"i\",\"^0\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]],\"c2\",[[\"^ \",\"i\",\"^0\",\"w\",2,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]],\"c12\",[[\"^ \",\"i\",\"^0\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]],\"c4\",[[\"^ \",\"w\",4,\"x\",0,\"i\",\"^0\",\"y\",0,\"^1\",2,\"h\",17]],\"c18\",[[\"^ \",\"i\",\"^0\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]],\"c20\",[[\"^ \",\"i\",\"^0\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]],\"c6\",[[\"^ \",\"i\",\"^0\",\"w\",4,\"h\",17,\"x\",0,\"y\",0,\"^1\",2]]]")
 
 (ws/deftest test-smart-item-position
   (is (= (ui/smart-item-position 10 (ui/block 4 4 0 0) [])
-         (ui/block 4 4 0 0)))
+        (ui/block 4 4 0 0)))
 
   (is (= (ui/smart-item-position 10 (ui/block 4 4 0 0) [(ui/block 2 2 0 0)])
-         (ui/block 4 4 2 0)))
+        (ui/block 4 4 2 0)))
 
   (is (= (ui/smart-item-position 8 (ui/block 4 15 0 0) [(ui/block 5 12 0 0)])
-         (ui/block 4 15 0 12))))
+        (ui/block 4 15 0 12))))

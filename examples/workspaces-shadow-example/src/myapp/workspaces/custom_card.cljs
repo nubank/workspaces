@@ -4,7 +4,7 @@
             [nubank.workspaces.card-types.react :as ct.react]
             [nubank.workspaces.card-types.util :as ct.util]
             [goog.dom :as gdom]
-            [fulcro.client.localized-dom :as dom]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
             [nubank.workspaces.ui.core :as uc]))
 
 (ws/defcard custom-card
