@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.awkay</groupId>
   <artifactId>workspaces</artifactId>
-  <version>1.0.12</version>
+  <version>1.0.0-RC1</version>
 
   <name>workspaces</name>
 
