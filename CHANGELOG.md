@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.12]
+- Bump Fulcro 3 deps
+
 ## [1.0.11]
 - Fix Fulcro 3 card refresh
 
