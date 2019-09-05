@@ -1,9 +1,9 @@
 (ns nubank.workspaces.ui.spotlight
   (:require [com.wsscode.fuzzy :as fuzzy]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.mutations :as fm]
-            [fulcro.client.primitives :as fp]
-            [fulcro.incubator.ui-state-machines :as fsm]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.mutations :as fm]
+            [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro.ui-state-machines :as fsm]
             [goog.functions :as gfun]
             [goog.object :as gobj]
             [nubank.workspaces.ui.core :as uc]
@@ -146,12 +146,12 @@
                            {:font-family uc/font-open-sans
                             :margin-top  "10px"}]]
    :css-include          [cursor/VerticalCursor SpotlightEntry]
-   :componentDidMount    (fn []
+   :componentDidMount    (fn [this]
                            (fsm/begin! this spotlight-sm ::spotlight {:spotlight this})
                            (.select (gobj/get this "input")))
-   :componentWillUnmount (fn []
+   :componentWillUnmount (fn [this]
                            (fsm/trigger! this ::spotlight :exit!))
-   :initLocalState       (fn []
+   :initLocalState       (fn [this]
                            (let [on-change #(fm/set-value! this ::value %)
                                  lookup    (fn []
                                              (fsm/trigger! this ::spotlight :lookup!))]

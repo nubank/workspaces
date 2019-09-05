@@ -1,6 +1,6 @@
 (ns nubank.workspaces.ui.grid-layout
-  (:require [fulcro.client.primitives :as fp]
-            [fulcro.client.localized-dom :as dom]
+  (:require [com.fulcrologic.fulcro.components :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
             [garden.selectors :as gs]
             [goog.object :as gobj]
             [cljsjs.react-grid-layout]
@@ -98,7 +98,7 @@
                        (grid-item-css {:background    "#fff"
                                        :border-radius uc/card-border-radius
                                        :display       "flex"})]
-   :componentDidMount (fn []
+   :componentDidMount (fn [this]
                         (let [{:keys [onBreakpointChange]} (fp/props this)
                               width (-> (gobj/getValueByKeys this "grid")
                                         (dom/node)

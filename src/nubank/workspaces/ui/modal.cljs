@@ -2,8 +2,8 @@
   (:require [goog.dom :as gdom]
             [goog.object :as gobj]
             [goog.style :as style]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.primitives :as fp]
+            [com.fulcrologic.fulcro-css.localized-dom :as dom]
+            [com.fulcrologic.fulcro.components :as fp]
             [nubank.workspaces.ui.events :as events]))
 
 (defn render-subtree-into-container [parent c node]
@@ -24,25 +24,25 @@
 
 (fp/defsc Portal [this _]
   {:componentDidMount
-   (fn []
+   (fn [this]
      (let [props (fp/props this)
            node  (create-portal-node props)]
        (gobj/set this "node" node)
        (render-subtree-into-container this (portal-render-children (fp/children this)) node)))
 
    :componentWillUnmount
-   (fn []
+   (fn [this]
      (when-let [node (gobj/get this "node")]
        (js/ReactDOM.unmountComponentAtNode node)
        (gdom/removeNode node)))
 
    :componentWillReceiveProps
-   (fn [_]
+   (fn [this _]
      (let [node (gobj/get this "node")]
        (render-subtree-into-container this (portal-render-children (fp/children this)) node)))
 
    :componentDidUpdate
-   (fn [_ _]
+   (fn [this _ _]
      (let [node (gobj/get this "node")]
        (render-subtree-into-container this (portal-render-children (fp/children this)) node)))}
 

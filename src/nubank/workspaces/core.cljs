@@ -1,7 +1,7 @@
 (ns nubank.workspaces.core
   (:require-macros nubank.workspaces.core)
-  (:require [fulcro.client :as fulcro]
-            [fulcro.client.primitives :as fp]
+  (:require [com.fulcrologic.fulcro.application :as app]
+            [com.fulcrologic.fulcro.components :as fp]
             [nubank.workspaces.card-types.test :as ct.test]
             [nubank.workspaces.ui :as ui]
             [nubank.workspaces.data :as data]
@@ -10,8 +10,8 @@
 
 (defn init-card [card-id card]
   (let [card (assoc card ::wsm/card-id card-id)]
-    (if (and (:mounted? @data/app*) (not (contains? @data/card-definitions* card-id)))
-      (fp/transact! (:reconciler @data/app*) [`(ui/load-card ~card)]))
+    (if (and (:mounted? data/app*) (not (contains? @data/card-definitions* card-id)))
+      (fp/transact! data/app* [`(ui/load-card ~card)]))
     (swap! data/card-definitions* assoc card-id card)))
 
 (defn init-workspace [workspace-id {::wsm/keys [workspace-layouts] :as workspace}]
@@ -21,10 +21,10 @@
                     ::ui/workspace-id workspace-id
                     ::ui/layouts (local-storage/read-transit workspace-layouts))]
 
-    (if (:mounted? @data/app*)
+    (if (app/mounted? data/app*)
       (if (not (contains? @data/workspace-definitions* workspace-id))
-        (fp/transact! (:reconciler @data/app*) [`(ui/load-workspace ~workspace)])
-        (fp/transact! (:reconciler @data/app*) [`(ui/update-workspace ~workspace)])))
+        (fp/transact! data/app* [`(ui/load-workspace ~workspace)])
+        (fp/transact! data/app* [`(ui/update-workspace ~workspace)])))
 
     (swap! data/workspace-definitions* assoc workspace-id
       workspace)))
@@ -51,7 +51,7 @@
   Use the selector string to pass a querySelector string to pick the mount node."
   ([] (mount "#app"))
   ([selector]
-   (swap! data/app* fulcro/mount Root (js/document.querySelector selector))))
+   (app/mount! data/app* Root (js/document.querySelector selector)) ))
 
 (defn before-load
   {:dev/before-load true}
@@ -61,5 +61,5 @@
 (defn after-load
   {:dev/after-load true}
   []
-  (ui/refresh-active-workspace-cards (:reconciler @data/app*))
+  (ui/refresh-active-workspace-cards data/app*)
   (reset! data/card-definitions-snap* @data/card-definitions*))
