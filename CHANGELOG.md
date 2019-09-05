@@ -1,5 +1,8 @@
 # Change Log
 
+## [3.0.0]
+- Ported workspaces to Fulcro 3, F2 not supported anymore
+
 ## [1.0.12]
 - Bump Fulcro 3 deps
 
