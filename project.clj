@@ -1,10 +1,17 @@
-(defproject nubank/workspaces "1.0.12"
+(defproject nubank/workspaces "1.0.13"
   :description "Work environments for development of web apps."
   :url "https://github.com/nubank/workspaces"
   :license {:name "Apache License 2.0"
             :url  "https://github.com/nubank/workspaces/blob/master/LICENSE"}
-  :plugins [[lein-tools-deps "0.4.1"]]
-  :middleware [lein-tools-deps.plugin/resolve-dependencies-with-deps-edn]
+  :dependencies [[cljsjs/highlight "9.12.0-2"]
+                 [cljsjs/react-grid-layout "0.16.6-0"]
+                 [com.fulcrologic/fulcro "3.0.5"]
+                 [com.fulcrologic/fulcro-garden-css "3.0.6"]
+                 [fulcrologic/fulcro "2.6.16"]
+                 [fulcrologic/fulcro-incubator "0.0.19"]
+                 [fulcrologic/fulcro-inspect "2.2.4"]
+                 [com.wsscode/fuzzy "1.0.0"]
+                 [org.clojure/core.async "0.4.474"]]
   :lein-tools-deps/config {:config-files [:install :user :project]}
   :jar-exclusions [#"^workspaces/.*" #"^nubank/workspaces/workspaces/.*" #"\.DS_Store" #"^examples/"]
   :deploy-repositories [["releases" :clojars]]
