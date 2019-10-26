@@ -74,7 +74,7 @@
     :reporter ::reporter
     ::test test))
 
-(def single-test-timeout 500)
+(def default-single-test-timeout 500)
 
 (defn run-test-blocks* [{::keys [test blocks]}]
   (let [out      (async/promise-chan)
@@ -92,7 +92,7 @@
 (defn run-test-blocks [input]
   (go
     (let [start    (now)
-          timer    (async/timeout single-test-timeout)
+          timer    (async/timeout (::timeout input default-single-test-timeout))
           [result ch] (async/alts! [(run-test-blocks* input) timer])
           duration (- (now) start)]
       (if (not= ch timer)
@@ -174,11 +174,13 @@
       (ui/refresh-card-container test-ns)
       (<! (async/timeout 1))
 
-      (doseq [{::wsm/keys [card-id]
+      (doseq [{::wsm/keys [card-id card-form]
                ::keys     [test-forms]} ns-tests]
         (if-not (::disabled? (app-test-block (:reconciler app) card-id))
-          (let [res (<! (run-test-blocks {::test   card-id
-                                          ::blocks test-forms}))]
+          (let [conf (apply merge (filter map? card-form))
+                res (<! (run-test-blocks {::test   card-id
+                                          ::blocks test-forms
+                                          ::timeout (::timeout conf)}))]
             (fp/transact! (:reconciler app) [::test-var card-id]
               [`(fm/set-props {:test-results ~res ::duration ~(::duration res)})]))))
 
