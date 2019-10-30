@@ -8,7 +8,6 @@
     [com.fulcrologic.fulcro.components :as fc]
     [com.fulcrologic.fulcro.dom :as dom]
     [com.fulcrologic.fulcro.inspect.inspect-client :as fi.client]
-    [ghostwheel.core :refer [>defn >fdef => | <- ?]]
     [goog.functions :as gfun]
     [goog.object :as gobj]
     [nubank.workspaces.card-types.util :as ct.util]
