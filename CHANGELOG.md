@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.14]
+- Remove accidental usage of ghostwheel
+
+## [1.0.13]
+- Fix deps
+
 ## [1.0.12]
 - Bump Fulcro 3 deps
 
