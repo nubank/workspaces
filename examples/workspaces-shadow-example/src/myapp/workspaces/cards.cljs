@@ -2,7 +2,8 @@
   (:require [nubank.workspaces.core :as ws]
             [nubank.workspaces.model :as wsm]
             [nubank.workspaces.card-types.react :as ct.react]
-            [cljs.test :refer [is]]
+            [nubank.workspaces.card-types.test :as ct.test]
+            [cljs.test :refer [is async]]
             [fulcro.client.dom :as dom]))
 
 ; simple function to create react elemnents
@@ -23,6 +24,12 @@
 
 (ws/deftest sample-test
   (is (= 1 1)))
+
+(ws/deftest longrunning-test
+  {::ct.test/timeout 2000}
+  (async done (js/setTimeout (fn [] (is (= 1 1))
+                                    (done))
+                             1000)))
 
 (ws/defcard styles-card
   {::wsm/node-props {:style {:background "red" :color "white"}}}
