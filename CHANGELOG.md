@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.15]
+- Fix shadow cljs target (manually add back fn removed from Shadow)
+
 ## [1.0.14]
 - Remove accidental usage of ghostwheel
 
