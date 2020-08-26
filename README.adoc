@@ -133,7 +133,7 @@ like this:
 (defonce init (ws/mount))
 ----
 
-So you can call the hook forom there, as:
+So you can call the hook from there, as:
 
 [source,clojure]
 ----
@@ -317,7 +317,7 @@ have, to do that you can add maps to the card definition:
     (dom/div "Foo")))
 ----
 
-The measuremnt is in grid tiles. A recommended way to define a card size
+The measurement is in grid tiles. A recommended way to define a card size
 is to add it in default size to workspace, resize it to the appropriated
 size, then use the `Size` button accessible from the more icon in the
 card header, the card current size will be logged to the browser
