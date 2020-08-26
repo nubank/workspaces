@@ -237,7 +237,7 @@ a Fulcro component with the entire app, here is an example:
     {::f.portal/root FulcroDemo}))
 ----
 
-By default the Fulcro card will wrap your component will a thin root, by
+By default the Fulcro card will wrap your component with a thin root, by
 having always having components with idents you can leverage generic
 mutations, this is recommended over making a special Root. But if you
 want to send your own root, you can set the
