@@ -976,11 +976,8 @@
                              :font-family   uc/font-open-sans
                              :flex-shrink   "0"
                              :overflow      "auto"
-                             :min-width     "300px"}]
-                    [:.settings-container {:background (uc/color ::uc/settings-bg)
-                                           :color      (uc/color ::uc/settings-text)
-                                           :padding    "12px"
-                                           :width      "300px"}]
+                             :min-width     "300px"}
+                     [:select {:margin-right "10px"}]]
                     [:.workspaces {:display    "flex"
                                    :flex       "1"
                                    :max-height "100vh"
@@ -1083,8 +1080,16 @@
           (dom/div :.row.header
             (dom/div "Workspaces")
             (dom/div :.flex)
-            (dom/button :.index-action-button {:onClick #(fm/set-value! this ::show-settings-modal? true)}
-              "\u2699")
+            (dom/select {:value    (::uc/theme settings)
+                         :onChange (fn [e]
+                                     (let [v     (gobj/getValueByKeys e "target" "value")
+                                           theme (some->> v (keyword "theme"))]
+                                       (local-storage/set! ::uc/theme theme)
+                                       (when (js/confirm "Reload page to apply new theme?")
+                                         (js/location.reload))))}
+              (dom/option {:value "auto"} "Auto")
+              (dom/option {:value "light"} "Light")
+              (dom/option {:value "dark"} "Dark"))
             (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
               "\uD83D\uDD0D")
             (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
