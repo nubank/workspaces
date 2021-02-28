@@ -23,11 +23,14 @@
 (def color-iron "#e7e8e9")
 
 (def classical-colors
-  {::bg                        color-white
+  {::color-scheme              "light"
+
+   ::bg                        color-white
    ::primary-text-color        "#000"
    ::error-text-color          "#ef0000"
 
    ::button-bg                 color-fiord
+   ::button-active-bg          color-fiord
    ::button-color              color-white
    ::button-disabled-bg        "#8c95a0"
    ::button-disabled-color     "#ccc"
@@ -48,51 +51,56 @@
    ::workspace-tools-bg        color-white
    ::workspace-tools-color     color-limed-spruce
 
+   ::card-default-color-scheme "light"
    ::card-bg                   color-white
+   ::card-default-text         "#000"
+   ::card-toolbar-bg           color-geyser
+   ::card-toolbar-default-text color-limed-spruce
    ::card-header-bg            color-mystic
    ::card-header-text          color-limed-spruce
    ::card-ellipsis-menu-bg     color-mystic
-   ::card-toolbar-bg           color-geyser
-   ::card-toolbar-default-text color-limed-spruce
-   ::card-default-text         "#000"
 
    ::welcome-msg-bg            color-dark-grey
 
    ::help-dialog-bg            "rgba(0, 0, 0, 0.8)"})
 
 (def dark-colors
-  {::bg                        "#212121"
+  {::color-scheme              "dark"
+
+   ::bg                        "#202124"
    ::primary-text-color        "#fafafa"
-   ::error-text-color          "#EF5350"
+   ::error-text-color          "#CF6679"
 
    ::button-bg                 "#546E7A"
+   ::button-active-bg          "#455A64"
    ::button-color              color-white
    ::button-disabled-bg        "#8c95a0"
    ::button-disabled-color     "#ccc"
 
-   ::menu-bg                   "#212121"
-   ::menu-header-bg            "#616161"
+   ::menu-bg                   "#202124"
+   ::menu-header-bg            "#3f4043"
    ::menu-header-color         color-white
-   ::menu-arrow-bg             "#616161"
+   ::menu-arrow-bg             "#3f4043"
 
-   ::tab-active-bg             "#424242"
-   ::tab-bg                    "#212121"
+   ::tab-active-bg             "#3f4043"
+   ::tab-bg                    "#202124"
    ::tab-text                  "#fafafa"
-   ::tab-border                "#424242"
+   ::tab-border                "#3f4043"
    ::tab-text-field-bg         "transparent"
    ::tab-text-field-focus-bg   "#616161"
 
-   ::workspace-bg              "#212121"
-   ::workspace-tools-bg        "#424242"
+   ::workspace-bg              "#202124"
+   ::workspace-tools-bg        "#3f4043"
    ::workspace-tools-color     "#fafafa"
 
+   ::card-default-color-scheme "light"
    ::card-bg                   color-white
-   ::card-header-bg            "#424242"
-   ::card-header-text          "#fafafa"
-   ::card-ellipsis-menu-bg     "#424242"
+   ::card-default-text         "#000"
    ::card-toolbar-bg           color-geyser
    ::card-toolbar-default-text "#000"
-   ::card-default-text         "#000"
+   ::card-header-bg            "#3f4043"
+   ::card-header-text          "#fafafa"
+   ::card-ellipsis-menu-bg     "#3f4043"
 
    ::welcome-msg-bg            color-dark-grey
 
@@ -153,6 +161,8 @@
            :vertical-align   "middle"
            :user-select      "none"
            :outline          "none"}
+          [:&:active
+           {:background (color ::button-active-bg)}]
           [:&:disabled
            {:background (color ::button-disabled-bg)
             :color      (color ::button-disabled-color)

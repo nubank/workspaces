@@ -253,8 +253,9 @@
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id ::wsm/card-header-style ::show-source?
                        {[::workspace-root "singleton"] [::settings]}]
-   :css               [[:.container {:background     (uc/color ::uc/card-bg)
-                                     :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
+   :css               [[:.container {:color-scheme   (uc/color ::uc/card-default-color-scheme)
+                                     :background     (uc/color ::uc/card-bg)
+                                     :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.08)"
                                      :border-radius  uc/card-border-radius
                                      :display        "flex"
                                      :flex-direction "column"
@@ -945,10 +946,11 @@
                     {::workspaces (fp/get-query WorkspaceIndexListing)}
                     {::ws-tabs (fp/get-query WorkspaceTabs)}
                     {::spotlight (fp/get-query spotlight/Spotlight)}]
-   :css            [[:body {:margin     0
-                            :overflow   "hidden"
-                            :background (uc/color ::uc/bg)
-                            :color      (uc/color ::uc/primary-text-color)}]
+   :css            [[:body {:margin       0
+                            :overflow     "hidden"
+                            :color-scheme (uc/color ::uc/color-scheme)
+                            :background   (uc/color ::uc/bg)
+                            :color        (uc/color ::uc/primary-text-color)}]
                     [:.container {:box-sizing "border-box"
                                   :display    "flex"
                                   :width      "100vw"
