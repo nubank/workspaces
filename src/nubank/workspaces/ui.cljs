@@ -719,7 +719,8 @@
                                  :max-width      "100%"}]
                    [:.tabs {:display    "flex"
                             :flex-wrap  "nowrap"
-                            :overflow-x "auto"}]
+                            :overflow-x "auto"
+                            :overflow-y "hidden"}]
                    [:.tab
                     uc/font-os12sb
                     {:background    (uc/color ::uc/tab-bg)
