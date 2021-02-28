@@ -602,7 +602,7 @@
                                      :flex           "1"
                                      :flex-direction "column"}]
                        [:.grid {:flex       "1"
-                                :overflow-y "scroll"
+                                :overflow-y "auto"
                                 :overflow-x "hidden"}]
                        [:.tools {:background  (uc/color ::uc/workspace-tools-bg)
                                  :color       (uc/color ::uc/workspace-tools-color)
@@ -736,9 +736,8 @@
                      :overflow      "hidden"
                      :padding       "7px 12px 9px"
                      :z-index       "1"}
-                    [:&.active-tab {:background    (uc/color ::uc/tab-active-bg)
-                                    :border-bottom (str "1px solid " uc/color-white)}]]
-                   [:.active {:border     (str "1px solid " uc/color-geyser)
+                    [:&.active-tab {:background (uc/color ::uc/tab-active-bg)}]]
+                   [:.active {:border     (str "1px solid " (uc/color ::uc/tab-border))
                               :display    "flex"
                               :flex       "1"
                               :min-height "0"}]

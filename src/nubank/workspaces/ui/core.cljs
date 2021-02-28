@@ -75,10 +75,10 @@
    ::menu-header-color         color-white
    ::menu-arrow-bg             "#616161"
 
-   ::tab-active-bg             "#212121"
+   ::tab-active-bg             "#424242"
    ::tab-bg                    "#212121"
    ::tab-text                  "#fafafa"
-   ::tab-border                "#616161"
+   ::tab-border                "#424242"
    ::tab-text-field-bg         "transparent"
    ::tab-text-field-focus-bg   "#616161"
 
