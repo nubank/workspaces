@@ -324,6 +324,7 @@
                        [:.toolbar
                         {:align-items     "center"
                          :background      (uc/color ::uc/card-toolbar-bg)
+                         :color           (uc/color ::uc/card-toolbar-default-text)
                          :display         "flex"
                          :justify-content "flex-end"
                          :padding         "6px"}
