@@ -936,7 +936,7 @@
 
 (fp/defsc WorkspacesRoot
   [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?
-                 show-help-modal? show-settings-modal?]}]
+                 show-help-modal?]}]
   {:initial-state  (fn [card-definitions]
                      {::cards                (mapv #(fp/get-initial-state CardIndexListing %)
                                                (vals card-definitions))
@@ -951,11 +951,10 @@
                       ::spotlight            (fp/get-initial-state spotlight/Spotlight [])
                       ::show-spotlight?      false
                       ::show-help-modal?     false
-                      ::show-settings-modal? false
                       ::settings             {::show-index? (local-storage/get ::show-index? true)
                                               ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
    :ident          (fn [] [::workspace-root "singleton"])
-   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal? ::show-settings-modal?
+   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal?
                     {::cards (fp/get-query CardIndexListing)}
                     {::workspaces (fp/get-query WorkspaceIndexListing)}
                     {::ws-tabs (fp/get-query WorkspaceTabs)}
@@ -1053,20 +1052,6 @@
     (if show-help-modal?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-help-modal? false)}
         (help-dialog {})))
-
-    (if show-settings-modal?
-      (modal/modal {::modal/on-close #(fm/set-value! this ::show-settings-modal? false)}
-        (dom/div :.settings-container
-          (dom/h2 "Theme")
-          (dom/select {:value    (::uc/theme settings)
-                       :onChange (fn [e]
-                                   (let [v     (gobj/getValueByKeys e "target" "value")
-                                         theme (some->> v (keyword "theme"))]
-                                     (fm/set-value! this ::settings (merge settings {::uc/theme theme}))
-                                     (local-storage/set! ::uc/theme theme)))}
-            (dom/option {:value "auto"} "Auto")
-            (dom/option {:value "light"} "Light")
-            (dom/option {:value "dark"} "Dark")))))
 
     (if show-spotlight?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
