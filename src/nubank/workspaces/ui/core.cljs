@@ -146,9 +146,9 @@
   (local-storage/get ::theme :theme/light))
 
 (defn color [color-name]
-  (let [theme (if (= user-defined-theme :theme/auto)
-                (if (gobj/get (js/matchMedia "(prefers-color-scheme: dark)") "matches") :theme/dark :theme/light)
-                user-defined-theme)
+  (let [theme      (if (= user-defined-theme :theme/auto)
+                     (if (gobj/get (js/matchMedia "(prefers-color-scheme: dark)") "matches") :theme/dark :theme/light)
+                     user-defined-theme)
         colors-map (get theme-name->colors-map theme)]
     (get colors-map color-name)))
 
