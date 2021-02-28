@@ -136,6 +136,8 @@
 
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
+(def default-theme :theme/light)
+
 (def theme-name->colors-map
   {:theme/light classical-colors
    :theme/dark  dark-colors})

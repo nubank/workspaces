@@ -951,7 +951,8 @@
                       ::spotlight        (fp/get-initial-state spotlight/Spotlight [])
                       ::show-spotlight?  false
                       ::show-help-modal? false
-                      ::settings         {::show-index? (local-storage/get ::show-index? true)}})
+                      ::settings         {::show-index? (local-storage/get ::show-index? true)
+                                          ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
    :ident          (fn [] [::workspace-root "singleton"])
    :query          [::settings ::expanded ::show-spotlight? ::show-help-modal?
                     {::cards (fp/get-query CardIndexListing)}
@@ -988,12 +989,11 @@
                                             :margin-top  "-4px"
                                             :outline     "none"
                                             :padding     "0"}
+                     ["&:not(:first-child)" {:margin    "-2px 10px 0 0"}]
                      [:&.spotlight {:color       "transparent"
                                     :text-shadow "0 0 #ffffff"
-                                    :font-size   "14px"
-                                    :margin      "-2px 10px 0 0"}]
-                     [:&.help {:font-size "17px"
-                               :margin    "-2px 10px 0 0"}]]
+                                    :font-size   "14px"}]
+                     [:&.help {:font-size "17px"}]]
                     [:.header {:background    (uc/color ::uc/menu-header-bg)
                                :border-radius "4px"
                                :color         "#fff"
@@ -1064,6 +1064,8 @@
           (dom/div :.row.header
             (dom/div "Workspaces")
             (dom/div :.flex)
+            (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+              "\u2699")
             (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
               "\uD83D\uDD0D")
             (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
