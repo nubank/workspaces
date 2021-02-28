@@ -785,7 +785,6 @@
                                :border     "1px solid #0079bf"
                                :box-shadow "0 0 2px 0 #0284c6"
                                :outline    "0"
-                               :color      "#000 !important"
                                :cursor     "text"}]]
                    [:.workspace-close
                     uc/close-icon-css
