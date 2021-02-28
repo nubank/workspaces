@@ -74,7 +74,9 @@
    ::spotlight-option-selected-bg    "#582074"
    ::spotlight-option-selected-text  color-white
 
-   ::welcome-msg-bg                  color-dark-grey
+   ::welcome-msg-bg                  color-white
+   ::welcome-msg-text                "#000"
+   ::welcome-container-bg            color-dark-grey
 
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
@@ -128,7 +130,9 @@
    ::spotlight-option-selected-bg    "#546E7A"
    ::spotlight-option-selected-text  "#fafafa"
 
-   ::welcome-msg-bg                  color-dark-grey
+   ::welcome-msg-bg                  "#3f4043"
+   ::welcome-msg-text                "#fafafa"
+   ::welcome-container-bg            "#202124"
 
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
@@ -137,7 +141,7 @@
    :theme/dark  dark-colors})
 
 (def user-defined-theme
-  (local-storage/get ::theme :theme/auto))
+  (local-storage/get ::theme :theme/light))
 
 (defn color [color-name]
   (let [theme (if (= user-defined-theme :theme/auto)

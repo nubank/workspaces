@@ -758,14 +758,13 @@
                    [:.new-tab {:font-size   "23px"
                                :line-height "1em"
                                :padding     "8px 12px"}]
-                   [:.welcome {:background      (uc/color ::uc/welcome-msg-bg)
-                               :color           "#fff"
+                   [:.welcome {:background      (uc/color ::uc/welcome-container-bg)
                                :flex            "1"
                                :display         "flex"
                                :align-items     "center"
                                :justify-content "center"}]
-                   [:.welcome-content {:background  "#fff"
-                                       :color       "#000"
+                   [:.welcome-content {:background  (uc/color ::uc/welcome-msg-bg)
+                                       :color       (uc/color ::uc/welcome-msg-text)
                                        :font-family uc/font-open-sans
                                        :padding     "0 12px"}
                     [:p {:margin "12px 0"}]]
