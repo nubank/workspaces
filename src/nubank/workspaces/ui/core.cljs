@@ -39,6 +39,7 @@
    ::menu-header-bg                  color-dark-grey
    ::menu-header-color               color-white
    ::menu-arrow-bg                   color-dark-grey
+   ::menu-text                       "#000"
 
    ::tab-active-bg                   color-white
    ::tab-bg                          color-iron
@@ -83,14 +84,15 @@
 
    ::button-bg                       "#546E7A"
    ::button-active-bg                "#455A64"
-   ::button-color                    color-white
+   ::button-color                    "#fafafa"
    ::button-disabled-bg              "#8c95a0"
    ::button-disabled-color           "#ccc"
 
    ::menu-bg                         "#202124"
    ::menu-header-bg                  "#3f4043"
-   ::menu-header-color               color-white
+   ::menu-header-color               "#fafafa"
    ::menu-arrow-bg                   "#3f4043"
+   ::menu-text                       "#fafafa"
 
    ::tab-active-bg                   "#3f4043"
    ::tab-bg                          "#202124"

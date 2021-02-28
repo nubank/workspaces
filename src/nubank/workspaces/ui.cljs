@@ -588,13 +588,13 @@
   {:initial-state     (fn [{::keys [layouts workspace-title workspace-id] :as ws}]
                         (let [layouts (or layouts {})]
                           (merge ws
-                                 {::workspace-id    (or workspace-id (random-uuid))
-                                  ::workspace-title (or workspace-title "new workspace")
-                                  ::cards           (or (some->> layouts first val
-                                                          (mapv #(vector ::wsm/card-id (get % "i"))))
-                                                        [])
-                                  ::layouts         layouts
-                                  ::breakpoint      ""})))
+                            {::workspace-id    (or workspace-id (random-uuid))
+                             ::workspace-title (or workspace-title "new workspace")
+                             ::cards           (or (some->> layouts first val
+                                                            (mapv #(vector ::wsm/card-id (get % "i"))))
+                                                   [])
+                             ::layouts         layouts
+                             ::breakpoint      ""})))
    :ident             [::workspace-id ::workspace-id]
    :query             [::workspace-id ::layouts ::breakpoint
                        ::workspace-title ::wsm/workspace-static?
@@ -946,17 +946,18 @@
                     {::workspaces (fp/get-query WorkspaceIndexListing)}
                     {::ws-tabs (fp/get-query WorkspaceTabs)}
                     {::spotlight (fp/get-query spotlight/Spotlight)}]
-   :css            [[:body {:margin       0
-                            :overflow     "hidden"
-                            :color-scheme (uc/color ::uc/color-scheme)
-                            :background   (uc/color ::uc/bg)
-                            :color        (uc/color ::uc/primary-text-color)}]
-                    [:.container {:box-sizing "border-box"
-                                  :display    "flex"
-                                  :width      "100vw"
-                                  :height     "100vh"
-                                  :padding    "10px"}]
+   :css            [[:body {:margin     0
+                            :overflow   "hidden"
+                            :background (uc/color ::uc/bg)}]
+                    [:.container {:color-scheme (uc/color ::uc/color-scheme)
+                                  :color        (uc/color ::uc/primary-text-color)
+                                  :box-sizing   "border-box"
+                                  :display      "flex"
+                                  :width        "100vw"
+                                  :height       "100vh"
+                                  :padding      "10px"}]
                     [:.menu {:background    (uc/color ::uc/menu-bg)
+                             :color         (uc/color ::uc/menu-text)
                              :padding-right "10px"
                              :font-family   uc/font-open-sans
                              :flex-shrink   "0"
