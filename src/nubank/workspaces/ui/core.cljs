@@ -143,7 +143,7 @@
    :theme/dark  dark-colors})
 
 (def user-defined-theme
-  (local-storage/get ::theme :theme/light))
+  (local-storage/get ::theme default-theme))
 
 (defn color [color-name]
   (let [theme      (if (= user-defined-theme :theme/auto)
