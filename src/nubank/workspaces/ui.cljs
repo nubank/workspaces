@@ -188,7 +188,8 @@
   {:initial-state     (fn [data] data)
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id]
-   :css               [[:.container {:background     (uc/color ::uc/card-bg)
+   :css               [[:.container {:color-scheme   (uc/color ::uc/card-default-color-scheme)
+                                     :background     (uc/color ::uc/card-bg)
                                      :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
                                      :border-radius  uc/card-border-radius
                                      :display        "flex"
@@ -198,11 +199,12 @@
 
                        [:.toolbar
                         uc/font-os12sb
-                        {:align-items     "center"
-                         :background      (uc/color ::uc/card-toolbar-bg)
-                         :display         "flex"
+                        {:display         "flex"
+                         :align-items     "center"
                          :justify-content "flex-end"
-                         :padding         "6px"}
+                         :padding         "6px"
+                         :background      (uc/color ::uc/card-toolbar-bg)
+                         :color           (uc/color ::uc/card-toolbar-default-text)}
                         [:button {:margin-left "5px"}]]
 
                        [:.error {:color       (uc/color ::uc/error-text-color)
@@ -210,13 +212,14 @@
                                  :padding     "10px"}]
 
                        [:.card
-                        {:background      (uc/color ::uc/card-default-bg)
-                         :display         "flex"
+                        {:display         "flex"
                          :flex            "1"
                          :align-items     "center"
                          :justify-content "center"
                          :overflow        "auto"
-                         :padding         "10px"}]]
+                         :padding         "10px"
+                         :background      (uc/color ::uc/card-default-bg)
+                         :color           (uc/color ::uc/card-default-text)}]]
 
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)
@@ -324,12 +327,12 @@
                          :grid-gap      "6px"}]
 
                        [:.toolbar
-                        {:align-items     "center"
-                         :background      (uc/color ::uc/card-toolbar-bg)
-                         :color           (uc/color ::uc/card-toolbar-default-text)
-                         :display         "flex"
+                        {:display         "flex"
+                         :align-items     "center"
                          :justify-content "flex-end"
-                         :padding         "6px"}
+                         :background      (uc/color ::uc/card-toolbar-bg)
+                         :padding         "6px"
+                         :color           (uc/color ::uc/card-toolbar-default-text)}
                         [:button {:margin-left "5px"}]]
 
                        [:$react-draggable-dragging
@@ -348,6 +351,7 @@
                          :justify-content "center"
                          :overflow        "auto"
                          :padding         "10px"
+                         :background      (uc/color ::uc/card-default-bg)
                          :color           (uc/color ::uc/card-default-text)}]
 
                        [:.source
