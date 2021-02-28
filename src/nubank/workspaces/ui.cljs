@@ -272,7 +272,7 @@
                         uc/font-os12sb
                         {:background    (uc/color ::uc/card-header-bg)
                          :border-radius (str uc/card-border-radius " " uc/card-border-radius " 0 0")
-                         :color         uc/color-limed-spruce
+                         :color         (uc/color ::uc/card-header-text)
                          :cursor        "grab"}
                         {:cursor "-webkit-grab"}
                         {:cursor "-moz-grab"}]
@@ -344,7 +344,8 @@
                          :align-items     "center"
                          :justify-content "center"
                          :overflow        "auto"
-                         :padding         "10px"}]
+                         :padding         "10px"
+                         :color           (uc/color ::uc/card-default-text)}]
 
                        [:.source
                         {:background    "#fff"
@@ -675,15 +676,15 @@
 
 (fp/defsc WorkspaceContainer
   [this props {::keys [open-solo-card]}]
-  {:ident       (fn [] (workspace-ident props))
-   :query       (fn []
-                  {::workspace-id (fp/get-query Workspace)
-                   ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
-   :css         [[:$workspaces-workspace-container {:background "#9fa2ab"
-                                                    :flex       "1"}]
-                 [:.error {:color       (uc/color ::uc/error-text-color)
-                           :font-weight "bold"
-                           :padding     "10px"}]]
+  {:ident             (fn [] (workspace-ident props))
+   :query             (fn []
+                        {::workspace-id (fp/get-query Workspace)
+                         ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
+   :css               [[:$workspaces-workspace-container {:background (uc/color ::uc/workspace-bg)
+                                                          :flex       "1"}]
+                       [:.error {:color       (uc/color ::uc/error-text-color)
+                                 :font-weight "bold"
+                                 :padding     "10px"}]]
 
    :componentDidCatch (fn [error info]
                         (swap! components-with-error conj this)
@@ -721,9 +722,9 @@
                    [:.tab
                     uc/font-os12sb
                     {:background    (uc/color ::uc/tab-bg)
-                     :border        (str "1px solid " uc/color-geyser)
+                     :border        (str "1px solid " (uc/color ::uc/tab-border))
                      :border-radius "6px 6px 0 0"
-                     :color         uc/color-limed-spruce
+                     :color         (uc/color ::uc/tab-text)
                      :cursor        "pointer"
                      :display       "flex"
                      :flex          "0 0 auto"
@@ -755,6 +756,7 @@
                    [:.workspace-title
                     uc/font-os12sb
                     {:background    (uc/color ::uc/tab-text-field-bg)
+                     :color         (uc/color ::uc/tab-text)
                      :border        "1px solid transparent"
                      :box-shadow    "0 0 2px 0 transparent"
                      :cursor        "pointer"

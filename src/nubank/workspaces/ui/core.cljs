@@ -39,6 +39,8 @@
 
    ::tab-active-bg           color-white
    ::tab-bg                  color-iron
+   ::tab-text                color-limed-spruce
+   ::tab-border              color-geyser
    ::tab-text-field-bg       "transparent"
    ::tab-text-field-focus-bg color-white
 
@@ -48,15 +50,54 @@
 
    ::card-bg                 color-white
    ::card-header-bg          color-mystic
+   ::card-header-text        color-limed-spruce
    ::card-ellipsis-menu-bg   color-mystic
    ::card-toolbar-bg         color-geyser
+   ::card-default-text       "#000"
+
+   ::welcome-msg-bg          color-dark-grey
+
+   ::help-dialog-bg          "rgba(0, 0, 0, 0.8)"})
+
+(def dark-colors
+  {::bg                      "#212121"
+   ::primary-text-color      "#fafafa"
+   ::error-text-color        "#EF5350"
+
+   ::button-bg               "rgb(138, 5, 190)"
+   ::button-color            color-white
+   ::button-disabled-bg      "#8c95a0"
+   ::button-disabled-color   "#ccc"
+
+   ::menu-bg                 "#212121"
+   ::menu-header-bg          "#616161"
+   ::menu-header-color       color-white
+   ::menu-arrow-bg           "#616161"
+
+   ::tab-active-bg           "#212121"
+   ::tab-bg                  "#212121"
+   ::tab-text                "#fafafa"
+   ::tab-border              "#616161"
+   ::tab-text-field-bg       "transparent"
+   ::tab-text-field-focus-bg "#616161"
+
+   ::workspace-bg            "#212121"
+   ::workspace-tools-bg      "#424242"
+   ::workspace-tools-color   "#fafafa"
+
+   ::card-bg                 color-white
+   ::card-header-bg          "#424242"
+   ::card-header-text        "#fafafa"
+   ::card-ellipsis-menu-bg   "#424242"
+   ::card-toolbar-bg         color-geyser
+   ::card-default-text       "#000"
 
    ::welcome-msg-bg          color-dark-grey
 
    ::help-dialog-bg          "rgba(0, 0, 0, 0.8)"})
 
 (defn color [color-name]
-  (get classical-colors color-name))
+  (get dark-colors color-name))
 
 (def card-border-radius "6px")
 
