@@ -1,7 +1,9 @@
 (ns nubank.workspaces.ui.core
-  (:require [nubank.workspaces.model :as wsm]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.primitives :as fp]))
+  (:require [fulcro.client.localized-dom :as dom]
+            [fulcro.client.primitives :as fp]
+            [goog.object :as gobj]
+            [nubank.workspaces.lib.local-storage :as local-storage]
+            [nubank.workspaces.model :as wsm]))
 
 (def color-white "#fff")
 (def color-light-grey "#b1b1b1")
@@ -130,8 +132,19 @@
 
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
+(def theme-name->colors-map
+  {:theme/light classical-colors
+   :theme/dark  dark-colors})
+
+(def user-defined-theme
+  (local-storage/get ::theme :theme/auto))
+
 (defn color [color-name]
-  (get classical-colors color-name))
+  (let [theme (if (= user-defined-theme :theme/auto)
+                (if (gobj/get (js/matchMedia "(prefers-color-scheme: dark)") "matches") :theme/dark :theme/light)
+                user-defined-theme)
+        colors-map (get theme-name->colors-map theme)]
+    (get colors-map color-name)))
 
 (def card-border-radius "4px")
 
