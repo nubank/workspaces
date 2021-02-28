@@ -936,25 +936,26 @@
 
 (fp/defsc WorkspacesRoot
   [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?
-                 show-help-modal?]}]
+                 show-help-modal? show-settings-modal?]}]
   {:initial-state  (fn [card-definitions]
-                     {::cards            (mapv #(fp/get-initial-state CardIndexListing %)
-                                           (vals card-definitions))
-                      ::workspaces       (->> (local-storage/get ::local-workspaces [])
-                                              (mapv #(fp/get-initial-state Workspace
-                                                       (local-storage/tget [::workspace-id %])))
-                                              (into (initialize-static-workspaces)))
+                     {::cards                (mapv #(fp/get-initial-state CardIndexListing %)
+                                               (vals card-definitions))
+                      ::workspaces           (->> (local-storage/get ::local-workspaces [])
+                                                  (mapv #(fp/get-initial-state Workspace
+                                                           (local-storage/tget [::workspace-id %])))
+                                                  (into (initialize-static-workspaces)))
 
-                      ::expanded         (local-storage/get ::expanded {})
-                      ::ws-tabs          (fp/get-initial-state WorkspaceTabs {})
+                      ::expanded             (local-storage/get ::expanded {})
+                      ::ws-tabs              (fp/get-initial-state WorkspaceTabs {})
 
-                      ::spotlight        (fp/get-initial-state spotlight/Spotlight [])
-                      ::show-spotlight?  false
-                      ::show-help-modal? false
-                      ::settings         {::show-index? (local-storage/get ::show-index? true)
-                                          ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
+                      ::spotlight            (fp/get-initial-state spotlight/Spotlight [])
+                      ::show-spotlight?      false
+                      ::show-help-modal?     false
+                      ::show-settings-modal? false
+                      ::settings             {::show-index? (local-storage/get ::show-index? true)
+                                              ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
    :ident          (fn [] [::workspace-root "singleton"])
-   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal?
+   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal? ::show-settings-modal?
                     {::cards (fp/get-query CardIndexListing)}
                     {::workspaces (fp/get-query WorkspaceIndexListing)}
                     {::ws-tabs (fp/get-query WorkspaceTabs)}
@@ -989,7 +990,7 @@
                                             :margin-top  "-4px"
                                             :outline     "none"
                                             :padding     "0"}
-                     ["&:not(:first-child)" {:margin    "-2px 10px 0 0"}]
+                     ["&:not(:first-child)" {:margin "-2px 10px 0 0"}]
                      [:&.spotlight {:color       "transparent"
                                     :text-shadow "0 0 #ffffff"
                                     :font-size   "14px"}]
@@ -1052,6 +1053,10 @@
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-help-modal? false)}
         (help-dialog {})))
 
+    (if show-settings-modal?
+      (modal/modal {::modal/on-close #(fm/set-value! this ::show-settings-modal? false)}
+        (help-dialog {})))
+
     (if show-spotlight?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
         (spotlight/spotlight
@@ -1064,7 +1069,7 @@
           (dom/div :.row.header
             (dom/div "Workspaces")
             (dom/div :.flex)
-            (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+            (dom/button :.index-action-button {:onClick #(fm/set-value! this ::show-settings-modal? true)}
               "\u2699")
             (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
               "\uD83D\uDD0D")
