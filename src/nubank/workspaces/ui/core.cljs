@@ -56,6 +56,7 @@
    ::card-default-text         "#000"
    ::card-toolbar-bg           color-geyser
    ::card-toolbar-default-text color-limed-spruce
+   ::card-toolbar-more-actions "#000"
    ::card-header-bg            color-mystic
    ::card-header-text          color-limed-spruce
    ::card-ellipsis-menu-bg     color-mystic
@@ -98,6 +99,7 @@
    ::card-default-text         "#000"
    ::card-toolbar-bg           color-geyser
    ::card-toolbar-default-text "#000"
+   ::card-toolbar-more-actions "#fafafa"
    ::card-header-bg            "#3f4043"
    ::card-header-text          "#fafafa"
    ::card-ellipsis-menu-bg     "#3f4043"
@@ -141,7 +143,8 @@
 
 (defn more-icon [props]
   (dom/svg (merge {:width 20 :height 19 :viewBox "0 0 40 40"} props)
-    (dom/g {:fill "#000"} (dom/path {:d "m20 26.6c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-10c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-3.2c-1.8 0-3.4-1.6-3.4-3.4s1.6-3.4 3.4-3.4 3.4 1.6 3.4 3.4-1.6 3.4-3.4 3.4z"}))))
+    (dom/g {:fill (color ::card-toolbar-more-actions)}
+      (dom/path {:d "m20 26.6c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-10c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-3.2c-1.8 0-3.4-1.6-3.4-3.4s1.6-3.4 3.4-3.4 3.4 1.6 3.4 3.4-1.6 3.4-3.4 3.4z"}))))
 
 (fp/defsc Button
   [this props]
