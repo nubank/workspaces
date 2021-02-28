@@ -7,8 +7,8 @@
             [nubank.workspaces.ui.core :as uc]))
 
 (def column-size 120)
-(def max-columns 18)
-(def columns-step 1)
+(def max-columns 20)
+(def columns-step 2)
 
 (def breakpoints
   (vec
@@ -101,12 +101,12 @@
    :componentDidMount (fn []
                         (let [{:keys [onBreakpointChange]} (fp/props this)
                               width (-> (gobj/getValueByKeys this "grid")
-                                        (dom/node)
-                                        (gobj/get "offsetWidth"))
+                                      (dom/node)
+                                      (gobj/get "offsetWidth"))
                               bp    (->> (rseq breakpoints)
-                                         (filter #(>= width (:breakpoint %)))
-                                         first
-                                         :id)]
+                                      (filter #(>= width (:breakpoint %)))
+                                      first
+                                      :id)]
                           (onBreakpointChange bp)))}
   (dom/create-element GridWithWidth (clj->js (assoc props :ref #(gobj/set this "grid" %)))
     (fp/children this)))
