@@ -981,15 +981,15 @@
                                    :flex       "1"
                                    :max-height "100vh"
                                    :overflow   "hidden"}]
-                    [:.index-action-button {:background   "transparent"
-                                            :border       "none"
-                                            :cursor       "pointer"
-                                            :font-size    "23px"
-                                            :font-weight  "bold"
-                                            :margin-right "5px"
-                                            :margin-top   "-4px"
-                                            :outline      "none"
-                                            :padding      "0"}
+                    [:.index-action-button {:background  "transparent"
+                                            :border      "none"
+                                            :cursor      "pointer"
+                                            :font-size   "23px"
+                                            :font-weight "bold"
+                                            :width       "20px"
+                                            :margin-top  "-4px"
+                                            :outline     "none"
+                                            :padding     "0"}
                      [:&.spotlight {:color       "transparent"
                                     :text-shadow "0 0 #ffffff"
                                     :font-size   "14px"
@@ -1129,7 +1129,7 @@
               (if (get-in expanded [:test-ns ns])
                 (dom/div :.nest-group
                   (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
-      (dom/div :.menu-show
+      (dom/div
         (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
           "»")))
     (dom/div :.workspaces

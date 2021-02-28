@@ -131,7 +131,7 @@
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
 (defn color [color-name]
-  (get dark-colors color-name))
+  (get classical-colors color-name))
 
 (def card-border-radius "4px")
 
