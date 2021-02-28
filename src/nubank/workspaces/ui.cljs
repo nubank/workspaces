@@ -931,7 +931,7 @@
     (dom/div (dom/strong (get-keybinding ::keybinding-toggle-card-headers)) ": Toggle card headers")
     (dom/div (dom/strong (get-keybinding ::keybinding-new-workspace)) ": Create new local workspace")
     (dom/div (dom/strong (get-keybinding ::keybinding-close-workspace)) ": Close current workspace")
-    (dom/div (dom/strong "alt-shift-?") ": Toggle shorcuts modal")))
+    (dom/div (dom/strong "alt-shift-?") ": Toggle shortcuts modal")))
 
 (def help-dialog (fp/factory HelpDialog))
 
