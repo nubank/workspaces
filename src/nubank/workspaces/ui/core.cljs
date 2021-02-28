@@ -65,7 +65,7 @@
    ::primary-text-color        "#fafafa"
    ::error-text-color          "#EF5350"
 
-   ::button-bg                 "rgb(138, 5, 190)"
+   ::button-bg                 "#546E7A"
    ::button-color              color-white
    ::button-disabled-bg        "#8c95a0"
    ::button-disabled-color     "#ccc"
