@@ -78,6 +78,9 @@
    ::welcome-msg-text                "#000"
    ::welcome-container-bg            color-dark-grey
 
+   ::settings-bg                     "#3f4043"
+   ::settings-text                   "#fafafa"
+
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
 (def dark-colors
@@ -133,6 +136,9 @@
    ::welcome-msg-bg                  "#3f4043"
    ::welcome-msg-text                "#fafafa"
    ::welcome-container-bg            "#202124"
+
+   ::settings-bg                     "#3f4043"
+   ::settings-text                   "#fafafa"
 
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 

@@ -977,6 +977,10 @@
                              :flex-shrink   "0"
                              :overflow      "auto"
                              :min-width     "300px"}]
+                    [:.settings-container {:background (uc/color ::uc/settings-bg)
+                                           :color      (uc/color ::uc/settings-text)
+                                           :padding    "12px"
+                                           :width      "300px"}]
                     [:.workspaces {:display    "flex"
                                    :flex       "1"
                                    :max-height "100vh"
@@ -1055,7 +1059,17 @@
 
     (if show-settings-modal?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-settings-modal? false)}
-        (help-dialog {})))
+        (dom/div :.settings-container
+          (dom/h2 "Theme")
+          (dom/select {:value    (::uc/theme settings)
+                       :onChange (fn [e]
+                                   (let [v     (gobj/getValueByKeys e "target" "value")
+                                         theme (some->> v (keyword "theme"))]
+                                     (fm/set-value! this ::settings (merge settings {::uc/theme theme}))
+                                     (local-storage/set! ::uc/theme theme)))}
+            (dom/option {:value "auto"} "Auto")
+            (dom/option {:value "light"} "Light")
+            (dom/option {:value "dark"} "Dark")))))
 
     (if show-spotlight?
       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
