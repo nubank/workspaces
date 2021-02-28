@@ -54,6 +54,7 @@
 
    ::card-default-color-scheme       "light"
    ::card-bg                         color-white
+   ::card-default-bg                 color-white
    ::card-default-text               "#000"
    ::card-toolbar-bg                 color-geyser
    ::card-toolbar-default-text       color-limed-spruce
@@ -106,7 +107,8 @@
    ::workspace-tools-color           "#fafafa"
 
    ::card-default-color-scheme       "light"
-   ::card-bg                         color-white
+   ::card-bg                         "#202124"
+   ::card-default-bg                 color-white
    ::card-default-text               "#000"
    ::card-toolbar-bg                 color-geyser
    ::card-toolbar-default-text       "#000"

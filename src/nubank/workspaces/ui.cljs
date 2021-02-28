@@ -210,7 +210,8 @@
                                  :padding     "10px"}]
 
                        [:.card
-                        {:display         "flex"
+                        {:background      (uc/color ::uc/card-default-bg)
+                         :display         "flex"
                          :flex            "1"
                          :align-items     "center"
                          :justify-content "center"
