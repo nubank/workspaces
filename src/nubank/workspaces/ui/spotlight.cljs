@@ -68,7 +68,7 @@
 (fp/defsc SpotlightEntry
   [this {::keys [opt value on-change on-select]}]
   {:css [[:.option
-          {:color         "#1d1d1d"
+          {:color         (uc/color ::uc/spotlight-option-text)
            :cursor        "pointer"
            :font-size     "16px"
            :padding       "2px 3px"
@@ -77,16 +77,16 @@
            :text-overflow "ellipsis"}
 
           [:b
-           {:background "#e2d610"
-            :color      "#000"}]]
+           {:background (uc/color ::uc/spotlight-option-highlight-bg)
+            :color      (uc/color ::uc/spotlight-option-highlight-text)}]]
 
          [:.option-type
           {:font-size  "11px"
            :font-style "italic"}]
 
          [:.option-selected
-          {:background "#582074"
-           :color      "#fff"}]
+          {:background (uc/color ::uc/spotlight-option-selected-bg)
+           :color      (uc/color ::uc/spotlight-option-selected-text)}]
 
          [:.solo-hint
           {:display "none"}]
@@ -126,16 +126,16 @@
                            {:height "600px"}]
 
                           [:.container
-                           {:background    "#e2e2e2"
+                           {:background    (uc/color ::uc/spotlight-bg)
                             :border-radius "3px"
                             :box-shadow    "0 6px 6px rgba(0, 0, 0, 0.26), 0 10px 20px rgba(0, 0, 0, 0.19), 0 0 2px rgba(0,0,0,0.3)"
                             :padding       "10px"}]
 
                           [:.search
-                           {:background  "#cccbcd"
+                           {:background  (uc/color ::uc/spotlight-search-field-bg)
                             :border      "0"
                             :box-sizing  "border-box"
-                            :color       "#000"
+                            :color       (uc/color ::uc/spotlight-search-text)
                             :font-family uc/font-helvetica
                             :font-size   "32px"
                             :outline     "0"
