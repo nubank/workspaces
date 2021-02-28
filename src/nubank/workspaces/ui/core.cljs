@@ -131,9 +131,9 @@
    ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
 
 (defn color [color-name]
-  (get classical-colors color-name))
+  (get dark-colors color-name))
 
-(def card-border-radius "6px")
+(def card-border-radius "4px")
 
 (def font-helvetica "Helvetica Neue,Arial,Helvetica,sans-serif")
 (def font-open-sans "'Open Sans', sans-serif")
@@ -174,7 +174,7 @@
           font-os12sb
           {:background-color (color ::button-bg)
            :border           "none"
-           :border-radius    "3px"
+           :border-radius    "2px"
            :color            (color ::button-color)
            :cursor           "pointer"
            :display          "inline-block"

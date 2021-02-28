@@ -606,16 +606,23 @@
                        {::cards (fp/get-query WorkspaceCard)}]
    :css               [[:.container {:display        "flex"
                                      :flex           "1"
-                                     :flex-direction "column"}]
+                                     :flex-direction "column"
+                                     :font-size      "12px"}]
                        [:.grid {:flex       "1"
                                 :overflow-y "auto"
                                 :overflow-x "hidden"}]
                        [:.tools {:background  (uc/color ::uc/workspace-tools-bg)
                                  :color       (uc/color ::uc/workspace-tools-color)
-                                 :padding     "5px 9px"
+                                 :padding     "8px 10px"
                                  :display     "flex"
                                  :align-items "center"}
-                        [:button {:margin-left "5px"}]]
+                        [:select {:height      "24px"
+                                  :font-size   "12px"
+                                  :font-weight "600"}]
+                        [:button {:font-size   "12px"
+                                  :line-height "2"
+                                  :margin-left "10px"
+                                  :padding     "0 8px"}]]
                        [:.breakpoint {:flex "1"}]]
 
    :css-include       [grid/GridLayout]
@@ -730,17 +737,18 @@
                    [:.tab
                     uc/font-os12sb
                     {:background    (uc/color ::uc/tab-bg)
-                     :border        (str "1px solid " (uc/color ::uc/tab-border))
-                     :border-radius "6px 6px 0 0"
+                     :border-top    (str "1px solid " (uc/color ::uc/tab-border))
+                     :border-right  (str "1px solid " (uc/color ::uc/tab-border))
+                     :border-left   (str "1px solid " (uc/color ::uc/tab-border))
+                     :border-radius "4px 4px 0 0"
                      :color         (uc/color ::uc/tab-text)
                      :cursor        "pointer"
                      :display       "flex"
                      :flex          "0 0 auto"
                      :align-items   "center"
                      :margin-right  "1px"
-                     :margin-bottom "-1px"
                      :overflow      "hidden"
-                     :padding       "7px 12px 9px"
+                     :padding       "8px 12px 8px 10px"
                      :z-index       "1"}
                     [:&.active-tab {:background (uc/color ::uc/tab-active-bg)}]]
                    [:.active {:border     (str "1px solid " (uc/color ::uc/tab-border))
@@ -748,7 +756,8 @@
                               :flex       "1"
                               :min-height "0"}]
                    [:.new-tab {:font-size   "23px"
-                               :line-height "1em"}]
+                               :line-height "1em"
+                               :padding     "8px 12px"}]
                    [:.welcome {:background      (uc/color ::uc/welcome-msg-bg)
                                :color           "#fff"
                                :flex            "1"
@@ -768,7 +777,7 @@
                      :box-shadow    "0 0 2px 0 transparent"
                      :cursor        "pointer"
                      :flex          "1"
-                     :max-width     "150px"
+                     :max-width     "152px"
                      :overflow      "hidden"
                      :text-overflow "ellipsis"
                      :white-space   "nowrap"}

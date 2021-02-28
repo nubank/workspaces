@@ -7,8 +7,8 @@
             [nubank.workspaces.ui.core :as uc]))
 
 (def column-size 120)
-(def max-columns 20)
-(def columns-step 2)
+(def max-columns 18)
+(def columns-step 1)
 
 (def breakpoints
   (vec
