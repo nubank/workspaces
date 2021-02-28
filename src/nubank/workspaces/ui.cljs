@@ -188,7 +188,7 @@
   {:initial-state     (fn [data] data)
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id]
-   :css               [[:.container {:background     uc/color-white
+   :css               [[:.container {:background     (uc/color ::uc/card-bg)
                                      :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
                                      :border-radius  uc/card-border-radius
                                      :display        "flex"
@@ -199,13 +199,13 @@
                        [:.toolbar
                         uc/font-os12sb
                         {:align-items     "center"
-                         :background      uc/color-geyser
+                         :background      (uc/color ::uc/card-toolbar-bg)
                          :display         "flex"
                          :justify-content "flex-end"
                          :padding         "6px"}
                         [:button {:margin-left "5px"}]]
 
-                       [:.error {:color       "#ef0000"
+                       [:.error {:color       (uc/color ::uc/error-text-color)
                                  :font-weight "bold"
                                  :padding     "10px"}]
 
@@ -253,7 +253,7 @@
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id ::wsm/card-header-style ::show-source?
                        {[::workspace-root "singleton"] [::settings]}]
-   :css               [[:.container {:background     uc/color-white
+   :css               [[:.container {:background     (uc/color ::uc/card-bg)
                                      :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
                                      :border-radius  uc/card-border-radius
                                      :display        "flex"
@@ -264,13 +264,13 @@
                        [:$cljs-workflow-static-workflow
                         [:.header {:cursor "default"}]]
 
-                       [:.error {:color       "#ef0000"
+                       [:.error {:color       (uc/color ::uc/error-text-color)
                                  :font-weight "bold"
                                  :padding     "10px"}]
 
                        [:.header
                         uc/font-os12sb
-                        {:background    uc/color-mystic
+                        {:background    (uc/color ::uc/card-header-bg)
                          :border-radius (str uc/card-border-radius " " uc/card-border-radius " 0 0")
                          :color         uc/color-limed-spruce
                          :cursor        "grab"}
@@ -316,14 +316,14 @@
 
                        [:.more-actions
                         {:display       "grid"
-                         :background    uc/color-mystic
+                         :background    (uc/color ::uc/card-ellipsis-menu-bg)
                          :border-radius "0 0 6px 6px"
                          :padding       "5px 10px 10px"
                          :grid-gap      "6px"}]
 
                        [:.toolbar
                         {:align-items     "center"
-                         :background      uc/color-geyser
+                         :background      (uc/color ::uc/card-toolbar-bg)
                          :display         "flex"
                          :justify-content "flex-end"
                          :padding         "6px"}
@@ -602,19 +602,19 @@
                        [:.grid {:flex       "1"
                                 :overflow-y "scroll"
                                 :overflow-x "hidden"}]
-                       [:.tools {:background  uc/color-white
-                                 :color       uc/color-limed-spruce
+                       [:.tools {:background  (uc/color ::uc/workspace-tools-bg)
+                                 :color       (uc/color ::uc/workspace-tools-color)
                                  :padding     "5px 9px"
                                  :display     "flex"
                                  :align-items "center"}
                         [:button {:margin-left "5px"}]]
                        [:.breakpoint {:flex "1"}]]
 
+   :css-include       [grid/GridLayout]
+
    :componentDidCatch (fn [error info]
                         (swap! components-with-error conj this)
                         (fp/set-state! this {::error-catch? true}))
-
-   :css-include       [grid/GridLayout]
    :componentDidMount (fn [] (js/requestAnimationFrame #(fp/set-state! this {:render? true})))}
 
   (if (fp/get-state this ::error-catch?)
@@ -681,7 +681,7 @@
                    ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
    :css         [[:$workspaces-workspace-container {:background "#9fa2ab"
                                                     :flex       "1"}]
-                 [:.error {:color       "#ef0000"
+                 [:.error {:color       (uc/color ::uc/error-text-color)
                            :font-weight "bold"
                            :padding     "10px"}]]
 
@@ -720,7 +720,7 @@
                             :overflow-x "auto"}]
                    [:.tab
                     uc/font-os12sb
-                    {:background    uc/color-iron
+                    {:background    (uc/color ::uc/tab-bg)
                      :border        (str "1px solid " uc/color-geyser)
                      :border-radius "6px 6px 0 0"
                      :color         uc/color-limed-spruce
@@ -733,7 +733,7 @@
                      :overflow      "hidden"
                      :padding       "7px 12px 9px"
                      :z-index       "1"}
-                    [:&.active-tab {:background    uc/color-white
+                    [:&.active-tab {:background    (uc/color ::uc/tab-active-bg)
                                     :border-bottom (str "1px solid " uc/color-white)}]]
                    [:.active {:border     (str "1px solid " uc/color-geyser)
                               :display    "flex"
@@ -741,7 +741,7 @@
                               :min-height "0"}]
                    [:.new-tab {:font-size   "23px"
                                :line-height "1em"}]
-                   [:.welcome {:background      uc/color-dark-grey
+                   [:.welcome {:background      (uc/color ::uc/welcome-msg-bg)
                                :color           "#fff"
                                :flex            "1"
                                :display         "flex"
@@ -754,17 +754,16 @@
                     [:p {:margin "12px 0"}]]
                    [:.workspace-title
                     uc/font-os12sb
-                    {:background    "transparent"
+                    {:background    (uc/color ::uc/tab-text-field-bg)
                      :border        "1px solid transparent"
                      :box-shadow    "0 0 2px 0 transparent"
                      :cursor        "pointer"
-                     :direction     "rtl"
                      :flex          "1"
                      :max-width     "150px"
                      :overflow      "hidden"
                      :text-overflow "ellipsis"
                      :white-space   "nowrap"}
-                    [:&:focus {:background "#fff"
+                    [:&:focus {:background (uc/color ::uc/tab-text-field-focus-bg)
                                :border     "1px solid #0079bf"
                                :box-shadow "0 0 2px 0 #0284c6"
                                :outline    "0"
@@ -896,7 +895,7 @@
 (fp/defsc HelpDialog
   [this {::keys []}]
   {:css [[:.container
-          {:background    "rgba(0, 0, 0, 0.8)"
+          {:background    (uc/color ::uc/help-dialog-bg)
            :border-radius "4px"
            :color         "#fff"
            :font-family   uc/font-monospace
@@ -924,10 +923,10 @@
                  show-help-modal?]}]
   {:initial-state  (fn [card-definitions]
                      {::cards            (mapv #(fp/get-initial-state CardIndexListing %)
-                                          (vals card-definitions))
+                                           (vals card-definitions))
                       ::workspaces       (->> (local-storage/get ::local-workspaces [])
                                               (mapv #(fp/get-initial-state Workspace
-                                                      (local-storage/tget [::workspace-id %])))
+                                                       (local-storage/tget [::workspace-id %])))
                                               (into (initialize-static-workspaces)))
 
                       ::expanded         (local-storage/get ::expanded {})
@@ -944,14 +943,16 @@
                     {::ws-tabs (fp/get-query WorkspaceTabs)}
                     {::spotlight (fp/get-query spotlight/Spotlight)}]
    :css            [[:body {:margin     0
-                            :background "#f7f7f7"
-                            :overflow   "hidden"}]
+                            :overflow   "hidden"
+                            :background (uc/color ::uc/bg)
+                            :color      (uc/color ::uc/primary-text-color)}]
                     [:.container {:box-sizing "border-box"
                                   :display    "flex"
                                   :width      "100vw"
                                   :height     "100vh"
                                   :padding    "10px"}]
-                    [:.menu {:padding-right "10px"
+                    [:.menu {:background    (uc/color ::uc/menu-bg)
+                             :padding-right "10px"
                              :font-family   uc/font-open-sans
                              :flex-shrink   "0"
                              :overflow      "auto"
@@ -975,7 +976,7 @@
                                     :margin      "-2px 10px 0 0"}]
                      [:&.help {:font-size "17px"
                                :margin    "-2px 10px 0 0"}]]
-                    [:.header {:background    "#404040"
+                    [:.header {:background    (uc/color ::uc/menu-header-bg)
                                :border-radius "4px"
                                :color         "#fff"
                                :font-weight   "bold"

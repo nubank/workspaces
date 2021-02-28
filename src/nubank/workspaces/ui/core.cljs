@@ -6,18 +6,57 @@
 (def color-white "#fff")
 (def color-light-grey "#b1b1b1")
 (def color-dark-grey "#404040")
+
+(def color-red-dark "#ca2c29")
+(def color-red-light "#f37976")
+
+(def color-green-dark "#187d11")
+(def color-mint-green "#8efd86")
+(def color-green-light "#61d658")
+
+(def color-yellow "#dea54e")
+
 (def color-mystic "#d9e2e9")
 (def color-limed-spruce "#323c47")
 (def color-geyser "#cdd7e0")
 (def color-fiord "#4b5b6d")
 (def color-iron "#e7e8e9")
 
-(def color-red-dark "#ca2c29")
-(def color-red-light "#f37976")
-(def color-green-dark "#187d11")
-(def color-mint-green "#8efd86")
-(def color-green-light "#61d658")
-(def color-yellow "#dea54e")
+(def classical-colors
+  {::bg                      color-white
+   ::primary-text-color      "#000"
+   ::error-text-color        "#ef0000"
+
+   ::button-bg               color-fiord
+   ::button-color            color-white
+   ::button-disabled-bg      "#8c95a0"
+   ::button-disabled-color   "#ccc"
+
+   ::menu-bg                 color-white
+   ::menu-header-bg          color-dark-grey
+   ::menu-header-color       color-white
+   ::menu-arrow-bg           color-dark-grey
+
+   ::tab-active-bg           color-white
+   ::tab-bg                  color-iron
+   ::tab-text-field-bg       "transparent"
+   ::tab-text-field-focus-bg color-white
+
+   ::workspace-bg            "#9fa2ab"
+   ::workspace-tools-bg      color-white
+   ::workspace-tools-color   color-limed-spruce
+
+   ::card-bg                 color-white
+   ::card-header-bg          color-mystic
+   ::card-ellipsis-menu-bg   color-mystic
+   ::card-toolbar-bg         color-geyser
+
+   ::welcome-msg-bg          color-dark-grey
+
+   ::help-dialog-bg          "rgba(0, 0, 0, 0.8)"})
+
+(defn color [color-name]
+  (get classical-colors color-name))
 
 (def card-border-radius "6px")
 
@@ -57,10 +96,10 @@
   [this props]
   {:css [[:.button
           font-os12sb
-          {:background-color color-fiord
+          {:background-color (color ::button-bg)
            :border           "none"
            :border-radius    "3px"
-           :color            color-white
+           :color            (color ::button-color)
            :cursor           "pointer"
            :display          "inline-block"
            :padding          "2px 8px"
@@ -72,8 +111,8 @@
            :user-select      "none"
            :outline          "none"}
           [:&:disabled
-           {:background "#8c95a0"
-            :color      "#ccc"
+           {:background (color ::button-disabled-bg)
+            :color      (color ::button-disabled-color)
             :cursor     "not-allowed"}]]]}
   (apply dom/button :.button props (fp/children this)))
 
