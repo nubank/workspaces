@@ -83,7 +83,8 @@
    ::test-header-waiting-bg          color-yellow
    ::test-header-running-bg          color-yellow
    ::test-header-success-bg          color-mint-green
-   ::test-header-error-bg            color-red-dark})
+   ::test-header-error-bg            color-red-dark
+   ::test-header-disabled-bg         color-light-grey})
 
 (def dark-colors
   {::color-scheme                    "dark"
@@ -144,7 +145,8 @@
    ::test-header-waiting-bg          "#3f4043"
    ::test-header-running-bg          "#3f4043"
    ::test-header-success-bg          "#388E3C"
-   ::test-header-error-bg            "#BF360C"})
+   ::test-header-error-bg            "#BF360C"
+   ::test-header-disabled-bg         "#333333"})
 
 (def default-theme :theme/light)
 

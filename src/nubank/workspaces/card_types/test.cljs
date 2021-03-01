@@ -521,16 +521,16 @@
 (defn runnable-status-color [{::keys [disabled? done? running? enqueued? success?]}]
   (cond
     disabled?
-    uc/color-light-grey
+    (uc/color ::uc/test-header-disabled-bg)
 
     done?
-    (if success? uc/color-mint-green uc/color-red-dark)
+    (if success? (uc/color ::uc/test-header-success-bg) (uc/color ::uc/test-header-error-bg))
 
     running?
-    uc/color-yellow
+    (uc/color ::uc/test-header-running-bg)
 
     enqueued?
-    uc/color-yellow))
+    (uc/color ::uc/test-header-waiting-bg)))
 
 (fp/defsc NSTestGroup
   [this {::keys [test-vars] :as props}]
