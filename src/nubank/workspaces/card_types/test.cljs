@@ -613,13 +613,13 @@
     (dom/div :.test-ns
       (cond
         done?
-        (header-color (if success? uc/color-mint-green uc/color-red-dark))
+        (header-color (if success? (uc/color ::uc/test-header-success-bg) (uc/color ::uc/test-header-error-bg)))
 
         running?
-        (header-color uc/color-yellow)
+        (header-color (uc/color ::uc/test-header-running-bg))
 
         enqueued?
-        (header-color uc/color-yellow))
+        (header-color (uc/color ::uc/test-header-waiting-bg)))
 
       (mapv all-test-ns-test-group test-namespaces))))
 
