@@ -78,7 +78,12 @@
    ::welcome-msg-text                "#000"
    ::welcome-container-bg            color-dark-grey
 
-   ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
+   ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"
+
+   ::test-header-waiting-bg          color-yellow
+   ::test-header-running-bg          color-yellow
+   ::test-header-success-bg          color-mint-green
+   ::test-header-error-bg            color-red-dark})
 
 (def dark-colors
   {::color-scheme                    "dark"
@@ -134,7 +139,12 @@
    ::welcome-msg-text                "#fafafa"
    ::welcome-container-bg            "#202124"
 
-   ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"})
+   ::help-dialog-bg                  "#3f4043"
+
+   ::test-header-waiting-bg          "#3f4043"
+   ::test-header-running-bg          "#3f4043"
+   ::test-header-success-bg          "#388E3C"
+   ::test-header-error-bg            "#BF360C"})
 
 (def default-theme :theme/light)
 

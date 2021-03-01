@@ -412,22 +412,22 @@
       (cond
         enqueued?
         (do
-          (header-color uc/color-yellow)
+          (header-color (uc/color ::uc/test-header-waiting-bg))
           "Waiting to run...")
 
         running?
         (do
-          (header-color uc/color-yellow)
+          (header-color ::uc/test-header-running-bg)
           "Running...")
 
         (test-success? test-results)
         (do
-          (header-color uc/color-mint-green)
+          (header-color (uc/color ::uc/test-header-success-bg))
           (mapv test-result summary))
 
         :else
         (do
-          (header-color uc/color-red-dark)
+          (header-color (uc/color ::uc/test-header-error-bg))
           (mapv test-result summary))))))
 
 (defn test-card-init [card test]
