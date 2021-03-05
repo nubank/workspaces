@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.16]
+- Fix shadow cljs target. Use shadow-cljs helper to find test namespaces
+
 ## [1.0.15]
 - Fix shadow cljs target (manually add back fn removed from Shadow)
 
