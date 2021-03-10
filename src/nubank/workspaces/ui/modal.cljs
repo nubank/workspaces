@@ -70,7 +70,7 @@
                                 :align-items     "center"
                                 :justify-content "center"
                                 :z-index         "100"
-                                :overflow-y      "scroll"}]
+                                :overflow-y      "auto"}]
                  [:.container {:display        "flex"
                                :flex-direction "column"
                                :max-width      "90vw"
