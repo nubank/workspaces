@@ -10,10 +10,6 @@
   "dependencies": {
     "clipboard": "^1.6.1",
     "highlight.js": "^9.12.0",
-    "karma": "^2.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-cljs-test": "^0.1.0",
-    "karma-firefox-launcher": "^0.1.7",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-grid-layout": "^0.16.6",
@@ -22,8 +18,11 @@
     "reakit": "^0.11.2",
     "shadow-cljs": "^2.7.6"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-cljs-test": "^0.1.0",
+    "karma-firefox-launcher": "^0.1.7"
   },
   "repository": {
     "type": "git",
