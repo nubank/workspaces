@@ -10,8 +10,4 @@
                                           :http-root          "public/workspaces"
                                           :http-port          3689
                                           :http-resource-root "."}
-                       :modules          {:main {:entries [nubank.workspaces.workspaces.main]}}}
-
-          :ci         {:target    :karma
-                       :ns-regexp "-ws$"
-                       :output-to "target/ci.js"}}}
+                       :modules          {:main {:entries [nubank.workspaces.workspaces.main]}}}}}
