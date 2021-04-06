@@ -1,6 +1,6 @@
 {
   "name": "workspaces",
-  "version": "1.0.0",
+  "version": "1.0.16",
   "description": "Work environments for development of web apps.",
   "main": "index.js",
   "directories": {
