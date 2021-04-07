@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.17]
+- Fix npm packages security vulnerabilities.
+
 ## [1.0.16]
 - Fix shadow cljs target. Use shadow-cljs helper to find test namespaces
 
