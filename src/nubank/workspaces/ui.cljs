@@ -938,91 +938,91 @@
 (fp/defsc WorkspacesRoot
   [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?
                  show-help-modal? ready?]}]
-  {:initial-state  (fn [card-definitions]
-                     {::cards                (mapv #(fp/get-initial-state CardIndexListing %)
-                                               (vals card-definitions))
-                      ::workspaces           (->> (local-storage/get ::local-workspaces [])
-                                                  (mapv #(fp/get-initial-state Workspace
-                                                           (local-storage/tget [::workspace-id %])))
-                                                  (into (initialize-static-workspaces)))
+  {:initial-state     (fn [card-definitions]
+                        {::cards            (mapv #(fp/get-initial-state CardIndexListing %)
+                                              (vals card-definitions))
+                         ::workspaces       (->> (local-storage/get ::local-workspaces [])
+                                                 (mapv #(fp/get-initial-state Workspace
+                                                          (local-storage/tget [::workspace-id %])))
+                                                 (into (initialize-static-workspaces)))
 
-                      ::expanded             (local-storage/get ::expanded {})
-                      ::ws-tabs              (fp/get-initial-state WorkspaceTabs {})
+                         ::expanded         (local-storage/get ::expanded {})
+                         ::ws-tabs          (fp/get-initial-state WorkspaceTabs {})
 
-                      ::spotlight            (fp/get-initial-state spotlight/Spotlight [])
-                      ::show-spotlight?      false
-                      ::show-help-modal?     false
-                      ::settings             {::show-index? (local-storage/get ::show-index? true)
-                                              ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
-   :ident          (fn [] [::workspace-root "singleton"])
-   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal? ::ready?
-                    {::cards (fp/get-query CardIndexListing)}
-                    {::workspaces (fp/get-query WorkspaceIndexListing)}
-                    {::ws-tabs (fp/get-query WorkspaceTabs)}
-                    {::spotlight (fp/get-query spotlight/Spotlight)}]
-   :css            [[:body {:margin     0
-                            :overflow   "hidden"
-                            :background (uc/color ::uc/bg)}]
-                    [:.container {:color-scheme (uc/color ::uc/color-scheme)
-                                  :color        (uc/color ::uc/primary-text-color)
-                                  :box-sizing   "border-box"
-                                  :display      "flex"
-                                  :width        "100vw"
-                                  :height       "100vh"
-                                  :padding      "10px"}]
-                    [:.menu {:background    (uc/color ::uc/menu-bg)
-                             :color         (uc/color ::uc/menu-text)
-                             :padding-right "10px"
-                             :font-family   uc/font-open-sans
-                             :flex-shrink   "0"
-                             :overflow      "auto"
-                             :min-width     "300px"}
-                     [:select {:margin-right "10px"}]]
-                    [:.workspaces {:display    "flex"
-                                   :flex       "1"
-                                   :max-height "100vh"
-                                   :overflow   "hidden"}]
-                    [:.index-action-button {:background  "transparent"
-                                            :border      "none"
-                                            :cursor      "pointer"
-                                            :font-size   "23px"
-                                            :font-weight "bold"
-                                            :width       "20px"
-                                            :margin-top  "-4px"
-                                            :outline     "none"
-                                            :padding     "0"}
-                     ["&:not(:first-child)" {:margin "-2px 10px 0 0"}]
-                     [:&.spotlight {:color       "transparent"
-                                    :text-shadow "0 0 #ffffff"
-                                    :font-size   "14px"}]
-                     [:&.help {:font-size "17px"}]]
-                    [:.header {:background    (uc/color ::uc/menu-header-bg)
-                               :border-radius "4px"
-                               :color         "#fff"
-                               :font-weight   "bold"
-                               :padding       "3px 7px"
-                               :box-shadow    "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
-                               :margin        "1px 1px 6px"
-                               :max-width     "100%"}
-                     [:button {:color "#fff"}]]
-                    [:.row {:display "flex"}]
-                    [:.pointer {:cursor "pointer"}]
-                    [:.flex {:flex "1"}]
-                    [:.workspaces-solo {:max-width "100%"}]
-                    [:.workspace {:cursor "pointer"}]
-                    [:.nest-group {:margin-left "32px"}]
-                    [:.nest-group-small {:margin-left "18px"}]
-                    [:.ns-header {:display "flex" :align-items "center"}]
-                    [:.expand-arrow {:margin-right "5px"
-                                     :cursor       "pointer"
-                                     :font-size    "14px"}]]
-   :css-include    [uc/CSS HelpDialog]
-   :initLocalState (fn [] {:spotlight-select
-                           (fn [{::spotlight/keys [id type]} solo?]
-                             (if id
-                               (cond
-                                 (= type ::spotlight/workspace)
-                                 (fp/transact! this [`(select-workspace {::workspace-id ~id})])
+                         ::spotlight        (fp/get-initial-state spotlight/Spotlight [])
+                         ::show-spotlight?  false
+                         ::show-help-modal? false
+                         ::settings         {::show-index? (local-storage/get ::show-index? true)
+                                             ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
+   :ident             (fn [] [::workspace-root "singleton"])
+   :query             [::settings ::expanded ::show-spotlight? ::show-help-modal? ::ready?
+                       {::cards (fp/get-query CardIndexListing)}
+                       {::workspaces (fp/get-query WorkspaceIndexListing)}
+                       {::ws-tabs (fp/get-query WorkspaceTabs)}
+                       {::spotlight (fp/get-query spotlight/Spotlight)}]
+   :css               [[:body {:margin     0
+                               :overflow   "hidden"
+                               :background (uc/color ::uc/bg)}]
+                       [:.container {:color-scheme (uc/color ::uc/color-scheme)
+                                     :color        (uc/color ::uc/primary-text-color)
+                                     :box-sizing   "border-box"
+                                     :display      "flex"
+                                     :width        "100vw"
+                                     :height       "100vh"
+                                     :padding      "10px"}]
+                       [:.menu {:background    (uc/color ::uc/menu-bg)
+                                :color         (uc/color ::uc/menu-text)
+                                :padding-right "10px"
+                                :font-family   uc/font-open-sans
+                                :flex-shrink   "0"
+                                :overflow      "auto"
+                                :min-width     "300px"}
+                        [:select {:margin-right "10px"}]]
+                       [:.workspaces {:display    "flex"
+                                      :flex       "1"
+                                      :max-height "100vh"
+                                      :overflow   "hidden"}]
+                       [:.index-action-button {:background  "transparent"
+                                               :border      "none"
+                                               :cursor      "pointer"
+                                               :font-size   "23px"
+                                               :font-weight "bold"
+                                               :width       "20px"
+                                               :margin-top  "-4px"
+                                               :outline     "none"
+                                               :padding     "0"}
+                        ["&:not(:first-child)" {:margin "-2px 10px 0 0"}]
+                        [:&.spotlight {:color       "transparent"
+                                       :text-shadow "0 0 #ffffff"
+                                       :font-size   "14px"}]
+                        [:&.help {:font-size "17px"}]]
+                       [:.header {:background    (uc/color ::uc/menu-header-bg)
+                                  :border-radius "4px"
+                                  :color         "#fff"
+                                  :font-weight   "bold"
+                                  :padding       "3px 7px"
+                                  :box-shadow    "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
+                                  :margin        "1px 1px 6px"
+                                  :max-width     "100%"}
+                        [:button {:color "#fff"}]]
+                       [:.row {:display "flex"}]
+                       [:.pointer {:cursor "pointer"}]
+                       [:.flex {:flex "1"}]
+                       [:.workspaces-solo {:max-width "100%"}]
+                       [:.workspace {:cursor "pointer"}]
+                       [:.nest-group {:margin-left "32px"}]
+                       [:.nest-group-small {:margin-left "18px"}]
+                       [:.ns-header {:display "flex" :align-items "center"}]
+                       [:.expand-arrow {:margin-right "5px"
+                                        :cursor       "pointer"
+                                        :font-size    "14px"}]]
+   :css-include       [uc/CSS HelpDialog]
+   :initLocalState    (fn [] {:spotlight-select
+                              (fn [{::spotlight/keys [id type]} solo?]
+                                (if id
+                                  (cond
+                                    (= type ::spotlight/workspace)
+                                    (fp/transact! this [`(select-workspace {::workspace-id ~id})])
 
                                     solo?
                                     (add-card-solo this id)
@@ -1039,117 +1039,117 @@
                             (fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})]))))}
   (when ready?
     (dom/div :.container
-     (cssi/style-element {:component WorkspacesRoot})
-     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-index)
-                           ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
-     (events/dom-listener {::events/keystroke "alt-shift-/"
-                           ::events/action    #(fm/toggle! this ::show-help-modal?)})
-     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-fix-sizes)
-                           ::events/action    #(events/trigger-event js/window {::events/event "resize"})})
-     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-card-headers)
-                           ::events/action    #(fm/set-value! this ::settings (update (::settings (fp/props this)) ::hide-card-header? not))})
-     (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-spotlight)
-                           ::events/action    (events/pd #(open-spotlight this))})
-     (events/dom-listener {::events/event  "keydown"
-                           ::events/action #(if (= (.-keyCode %) 18)
-                                              (js/document.body.classList.add "cljs-workspaces-extended-views"))})
-     (events/dom-listener {::events/event  "keyup"
-                           ::events/action #(if (= (.-keyCode %) 18)
-                                              (js/document.body.classList.remove "cljs-workspaces-extended-views"))})
+      (cssi/style-element {:component WorkspacesRoot})
+      (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-index)
+                            ::events/action    #(fp/transact! this [`(toggle-index-view {})])})
+      (events/dom-listener {::events/keystroke "alt-shift-/"
+                            ::events/action    #(fm/toggle! this ::show-help-modal?)})
+      (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-fix-sizes)
+                            ::events/action    #(events/trigger-event js/window {::events/event "resize"})})
+      (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-toggle-card-headers)
+                            ::events/action    #(fm/set-value! this ::settings (update (::settings (fp/props this)) ::hide-card-header? not))})
+      (events/dom-listener {::events/keystroke (get-keybinding ::keybinding-spotlight)
+                            ::events/action    (events/pd #(open-spotlight this))})
+      (events/dom-listener {::events/event  "keydown"
+                            ::events/action #(if (= (.-keyCode %) 18)
+                                               (js/document.body.classList.add "cljs-workspaces-extended-views"))})
+      (events/dom-listener {::events/event  "keyup"
+                            ::events/action #(if (= (.-keyCode %) 18)
+                                               (js/document.body.classList.remove "cljs-workspaces-extended-views"))})
 
-     (if show-help-modal?
-       (modal/modal {::modal/on-close #(fm/set-value! this ::show-help-modal? false)}
-         (help-dialog {})))
+      (if show-help-modal?
+        (modal/modal {::modal/on-close #(fm/set-value! this ::show-help-modal? false)}
+          (help-dialog {})))
 
-     (if show-spotlight?
-       (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
-         (spotlight/spotlight
-           (fp/computed spotlight
-             {::spotlight/on-select (fp/get-state this :spotlight-select)}))))
+      (if show-spotlight?
+        (modal/modal {::modal/on-close #(fm/set-value! this ::show-spotlight? false)}
+          (spotlight/spotlight
+            (fp/computed spotlight
+              {::spotlight/on-select (fp/get-state this :spotlight-select)}))))
 
-    (if (::show-index? settings)
-      (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
-        (dom/div :.menu
-          (dom/div :.row.header
-            (dom/div "Workspaces")
-            (dom/div :.flex)
-            (dom/select {:value    (::uc/theme settings)
-                         :onChange (fn [e]
-                                     (let [v     (gobj/getValueByKeys e "target" "value")
-                                           theme (some->> v (keyword "theme"))]
-                                       (local-storage/set! ::uc/theme theme)
-                                       (when (js/confirm "Reload page to apply new theme?")
-                                         (js/location.reload))))}
-              (dom/option {:value "auto"} "Auto")
-              (dom/option {:value "light"} "Light")
-              (dom/option {:value "dark"} "Dark"))
-            (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
-              "\uD83D\uDD0D")
-            (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
-              "?")
-            (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
-              "«"))
-          (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
-            (dom/div
+      (if (::show-index? settings)
+        (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
+          (dom/div :.menu
+            (dom/div :.row.header
+              (dom/div "Workspaces")
+              (dom/div :.flex)
+              (dom/select {:value    (::uc/theme settings)
+                           :onChange (fn [e]
+                                       (let [v     (gobj/getValueByKeys e "target" "value")
+                                             theme (some->> v (keyword "theme"))]
+                                         (local-storage/set! ::uc/theme theme)
+                                         (when (js/confirm "Reload page to apply new theme?")
+                                           (js/location.reload))))}
+                (dom/option {:value "auto"} "Auto")
+                (dom/option {:value "light"} "Light")
+                (dom/option {:value "dark"} "Dark"))
+              (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
+                "\uD83D\uDD0D")
+              (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
+                "?")
+              (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+                "«"))
+            (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
               (dom/div
-                "Local workspaces"
-                (dom/div :.nest-group-small
-                  (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title locals)]
-                    (dom/div :.workspace {:key     (str workspace-id)
-                                          :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
-                      (str workspace-title)))))
+                (dom/div
+                  "Local workspaces"
+                  (dom/div :.nest-group-small
+                    (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title locals)]
+                      (dom/div :.workspace {:key     (str workspace-id)
+                                            :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
+                        (str workspace-title)))))
 
-               (dom/br)
+                (dom/br)
 
-               (for [[ns workspaces] (->> (group-by (comp namespace ::workspace-id) statics)
-                                          (sort-by first))]
-                 (dom/div {:key (str ns)}
-                   (str ns)
-                   (dom/div :.nest-group-small
-                     (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title workspaces)]
-                       (dom/div :.workspace {:key     (str workspace-id)
-                                             :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
-                         (name (symbol workspace-title)))))))))
+                (for [[ns workspaces] (->> (group-by (comp namespace ::workspace-id) statics)
+                                           (sort-by first))]
+                  (dom/div {:key (str ns)}
+                    (str ns)
+                    (dom/div :.nest-group-small
+                      (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title workspaces)]
+                        (dom/div :.workspace {:key     (str workspace-id)
+                                              :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
+                          (name (symbol workspace-title)))))))))
 
-           (dom/br)
+            (dom/br)
 
-           (dom/div :.header "Cards")
-           (for [[ns cards] (->> (group-by (comp namespace ::wsm/card-id) uis)
-                                 (sort-by first))]
-             (dom/div {:key (str ns)}
-               (dom/div :.ns-header
-                 (dom/div :.expand-arrow {:onClick #(fp/transact! this [`(toggle-ns-expansion {::expand-path ~[:card-ns ns]})])}
-                   (if (get-in expanded [:card-ns ns])
-                     uc/arrow-down
-                     uc/arrow-right))
-                 (str ns))
-               (if (get-in expanded [:card-ns ns])
-                 (dom/div :.nest-group
-                   (mapv card-index-listing (sort-by ::wsm/card-id cards))))))
+            (dom/div :.header "Cards")
+            (for [[ns cards] (->> (group-by (comp namespace ::wsm/card-id) uis)
+                                  (sort-by first))]
+              (dom/div {:key (str ns)}
+                (dom/div :.ns-header
+                  (dom/div :.expand-arrow {:onClick #(fp/transact! this [`(toggle-ns-expansion {::expand-path ~[:card-ns ns]})])}
+                    (if (get-in expanded [:card-ns ns])
+                      uc/arrow-down
+                      uc/arrow-right))
+                  (str ns))
+                (if (get-in expanded [:card-ns ns])
+                  (dom/div :.nest-group
+                    (mapv card-index-listing (sort-by ::wsm/card-id cards))))))
 
-           (dom/br)
+            (dom/br)
 
-           (dom/div :.pointer.header {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
-             "Tests")
-           (for [[ns cards] (->> tests
-                                 (remove ::wsm/card-unlisted?)
-                                 (group-by (comp namespace ::wsm/card-id))
-                                 (sort-by first))]
-             (dom/div {:key (str ns)}
-               (dom/div :.ns-header
-                 (dom/div :.expand-arrow {:onClick #(fp/transact! this [`(toggle-ns-expansion {::expand-path ~[:test-ns ns]})])}
-                   (if (get-in expanded [:test-ns ns])
-                     uc/arrow-down
-                     uc/arrow-right))
-                 (card-index-listing {::wsm/card-id (symbol ns)}))
+            (dom/div :.pointer.header {:onClick #(add-card this 'nubank.workspaces.card-types.test/test-all)}
+              "Tests")
+            (for [[ns cards] (->> tests
+                                  (remove ::wsm/card-unlisted?)
+                                  (group-by (comp namespace ::wsm/card-id))
+                                  (sort-by first))]
+              (dom/div {:key (str ns)}
+                (dom/div :.ns-header
+                  (dom/div :.expand-arrow {:onClick #(fp/transact! this [`(toggle-ns-expansion {::expand-path ~[:test-ns ns]})])}
+                    (if (get-in expanded [:test-ns ns])
+                      uc/arrow-down
+                      uc/arrow-right))
+                  (card-index-listing {::wsm/card-id (symbol ns)}))
 
-              (if (get-in expanded [:test-ns ns])
-                (dom/div :.nest-group
-                  (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
-      (dom/div
-        (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
-          "»")))
-    (dom/div :.workspaces
-      (workspace-tabs ws-tabs))))
+                (if (get-in expanded [:test-ns ns])
+                  (dom/div :.nest-group
+                    (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
+        (dom/div
+          (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+            "»")))
+      (dom/div :.workspaces
+        (workspace-tabs ws-tabs)))))
 
 (def workspaces-root (fp/factory WorkspacesRoot))
