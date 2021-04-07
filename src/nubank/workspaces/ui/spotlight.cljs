@@ -68,7 +68,7 @@
 (fp/defsc SpotlightEntry
   [this {::keys [opt value on-change on-select]}]
   {:css [[:.option
-          {:color         (uc/color ::uc/spotlight-option-text)
+          {:color         "#1d1d1d"
            :cursor        "pointer"
            :font-size     "16px"
            :padding       "2px 3px"
@@ -77,16 +77,16 @@
            :text-overflow "ellipsis"}
 
           [:b
-           {:background (uc/color ::uc/spotlight-option-highlight-bg)
-            :color      (uc/color ::uc/spotlight-option-highlight-text)}]]
+           {:background "#e2d610"
+            :color      "#000"}]]
 
          [:.option-type
           {:font-size  "11px"
            :font-style "italic"}]
 
          [:.option-selected
-          {:background (uc/color ::uc/spotlight-option-selected-bg)
-           :color      (uc/color ::uc/spotlight-option-selected-text)}]
+          {:background "#582074"
+           :color      "#fff"}]
 
          [:.solo-hint
           {:display "none"}]
@@ -126,17 +126,16 @@
                            {:height "600px"}]
 
                           [:.container
-                           {:background    (uc/color ::uc/spotlight-bg)
-                            :color-scheme  (uc/color ::uc/color-scheme)
+                           {:background    "#e2e2e2"
                             :border-radius "3px"
                             :box-shadow    "0 6px 6px rgba(0, 0, 0, 0.26), 0 10px 20px rgba(0, 0, 0, 0.19), 0 0 2px rgba(0,0,0,0.3)"
                             :padding       "10px"}]
 
                           [:.search
-                           {:background  (uc/color ::uc/spotlight-search-field-bg)
+                           {:background  "#cccbcd"
                             :border      "0"
                             :box-sizing  "border-box"
-                            :color       (uc/color ::uc/spotlight-search-text)
+                            :color       "#000"
                             :font-family uc/font-helvetica
                             :font-size   "32px"
                             :outline     "0"

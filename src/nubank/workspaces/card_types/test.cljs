@@ -412,22 +412,22 @@
       (cond
         enqueued?
         (do
-          (header-color (uc/color ::uc/test-header-waiting-bg))
+          (header-color uc/color-yellow)
           "Waiting to run...")
 
         running?
         (do
-          (header-color ::uc/test-header-running-bg)
+          (header-color uc/color-yellow)
           "Running...")
 
         (test-success? test-results)
         (do
-          (header-color (uc/color ::uc/test-header-success-bg))
+          (header-color uc/color-mint-green)
           (mapv test-result summary))
 
         :else
         (do
-          (header-color (uc/color ::uc/test-header-error-bg))
+          (header-color uc/color-red-dark)
           (mapv test-result summary))))))
 
 (defn test-card-init [card test]
@@ -521,16 +521,16 @@
 (defn runnable-status-color [{::keys [disabled? done? running? enqueued? success?]}]
   (cond
     disabled?
-    (uc/color ::uc/test-header-disabled-bg)
+    uc/color-light-grey
 
     done?
-    (if success? (uc/color ::uc/test-header-success-bg) (uc/color ::uc/test-header-error-bg))
+    (if success? uc/color-mint-green uc/color-red-dark)
 
     running?
-    (uc/color ::uc/test-header-running-bg)
+    uc/color-yellow
 
     enqueued?
-    (uc/color ::uc/test-header-waiting-bg)))
+    uc/color-yellow))
 
 (fp/defsc NSTestGroup
   [this {::keys [test-vars] :as props}]
@@ -613,13 +613,13 @@
     (dom/div :.test-ns
       (cond
         done?
-        (header-color (if success? (uc/color ::uc/test-header-success-bg) (uc/color ::uc/test-header-error-bg)))
+        (header-color (if success? uc/color-mint-green uc/color-red-dark))
 
         running?
-        (header-color (uc/color ::uc/test-header-running-bg))
+        (header-color uc/color-yellow)
 
         enqueued?
-        (header-color (uc/color ::uc/test-header-waiting-bg)))
+        (header-color uc/color-yellow))
 
       (mapv all-test-ns-test-group test-namespaces))))
 
