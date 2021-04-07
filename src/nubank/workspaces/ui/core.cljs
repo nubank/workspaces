@@ -1,25 +1,170 @@
 (ns nubank.workspaces.ui.core
-  (:require [nubank.workspaces.model :as wsm]
-            [fulcro.client.localized-dom :as dom]
-            [fulcro.client.primitives :as fp]))
+  (:require [fulcro.client.localized-dom :as dom]
+            [fulcro.client.primitives :as fp]
+            [goog.object :as gobj]
+            [nubank.workspaces.lib.local-storage :as local-storage]
+            [nubank.workspaces.model :as wsm]))
 
 (def color-white "#fff")
 (def color-light-grey "#b1b1b1")
 (def color-dark-grey "#404040")
+
+(def color-red-dark "#ca2c29")
+(def color-red-light "#f37976")
+
+(def color-green-dark "#187d11")
+(def color-mint-green "#8efd86")
+(def color-green-light "#61d658")
+
+(def color-yellow "#dea54e")
+
 (def color-mystic "#d9e2e9")
 (def color-limed-spruce "#323c47")
 (def color-geyser "#cdd7e0")
 (def color-fiord "#4b5b6d")
 (def color-iron "#e7e8e9")
 
-(def color-red-dark "#ca2c29")
-(def color-red-light "#f37976")
-(def color-green-dark "#187d11")
-(def color-mint-green "#8efd86")
-(def color-green-light "#61d658")
-(def color-yellow "#dea54e")
+(def classical-colors
+  {::color-scheme                    "light"
 
-(def card-border-radius "6px")
+   ::bg                              color-white
+   ::primary-text-color              "#000"
+   ::error-text-color                "#ef0000"
+
+   ::button-bg                       color-fiord
+   ::button-active-bg                color-fiord
+   ::button-color                    color-white
+   ::button-disabled-bg              "#8c95a0"
+   ::button-disabled-color           "#ccc"
+
+   ::menu-bg                         color-white
+   ::menu-header-bg                  color-dark-grey
+   ::menu-header-color               color-white
+   ::menu-arrow-bg                   color-dark-grey
+   ::menu-text                       "#000"
+
+   ::tab-active-bg                   color-white
+   ::tab-bg                          color-iron
+   ::tab-text                        color-limed-spruce
+   ::tab-border                      color-geyser
+   ::tab-text-field-bg               "transparent"
+   ::tab-text-field-focus-bg         color-white
+
+   ::workspace-bg                    "#9fa2ab"
+   ::workspace-tools-bg              color-white
+   ::workspace-tools-color           color-limed-spruce
+
+   ::card-default-color-scheme       "light"
+   ::card-bg                         color-white
+   ::card-default-bg                 color-white
+   ::card-default-text               "#000"
+   ::card-toolbar-bg                 color-geyser
+   ::card-toolbar-default-text       color-limed-spruce
+   ::card-toolbar-more-actions       "#000"
+   ::card-header-bg                  color-mystic
+   ::card-header-text                color-limed-spruce
+   ::card-ellipsis-menu-bg           color-mystic
+
+   ::spotlight-bg                    "#e2e2e2"
+   ::spotlight-search-field-bg       "#cccbcd"
+   ::spotlight-search-text           "#000"
+   ::spotlight-option-text           "#1d1d1d"
+   ::spotlight-option-highlight-bg   "#e2d610"
+   ::spotlight-option-highlight-text "#000"
+   ::spotlight-option-selected-bg    "#582074"
+   ::spotlight-option-selected-text  color-white
+
+   ::welcome-msg-bg                  color-white
+   ::welcome-msg-text                "#000"
+   ::welcome-container-bg            color-dark-grey
+
+   ::help-dialog-bg                  "rgba(0, 0, 0, 0.8)"
+
+   ::test-header-waiting-bg          color-yellow
+   ::test-header-running-bg          color-yellow
+   ::test-header-success-bg          color-mint-green
+   ::test-header-error-bg            color-red-dark
+   ::test-header-disabled-bg         color-light-grey})
+
+(def dark-colors
+  {::color-scheme                    "dark"
+
+   ::bg                              "#202124"
+   ::primary-text-color              "#fafafa"
+   ::error-text-color                "#CF6679"
+
+   ::button-bg                       "#546E7A"
+   ::button-active-bg                "#455A64"
+   ::button-color                    "#fafafa"
+   ::button-disabled-bg              "#8c95a0"
+   ::button-disabled-color           "#ccc"
+
+   ::menu-bg                         "#202124"
+   ::menu-header-bg                  "#3f4043"
+   ::menu-header-color               "#fafafa"
+   ::menu-arrow-bg                   "#3f4043"
+   ::menu-text                       "#fafafa"
+
+   ::tab-active-bg                   "#3f4043"
+   ::tab-bg                          "#202124"
+   ::tab-text                        "#fafafa"
+   ::tab-border                      "#3f4043"
+   ::tab-text-field-bg               "transparent"
+   ::tab-text-field-focus-bg         "#616161"
+
+   ::workspace-bg                    "#202124"
+   ::workspace-tools-bg              "#3f4043"
+   ::workspace-tools-color           "#fafafa"
+
+   ::card-default-color-scheme       "light"
+   ::card-bg                         "#202124"
+   ::card-default-bg                 color-white
+   ::card-default-text               "#000"
+   ::card-toolbar-bg                 color-geyser
+   ::card-toolbar-default-text       "#000"
+   ::card-toolbar-more-actions       "#fafafa"
+   ::card-header-bg                  "#3f4043"
+   ::card-header-text                "#fafafa"
+   ::card-ellipsis-menu-bg           "#3f4043"
+
+   ::spotlight-bg                    "#202124"
+   ::spotlight-search-field-bg       "#3f4043"
+   ::spotlight-search-text           "#fafafa"
+   ::spotlight-option-text           "#fafafa"
+   ::spotlight-option-highlight-bg   "#FFF59D"
+   ::spotlight-option-highlight-text "#000"
+   ::spotlight-option-selected-bg    "#546E7A"
+   ::spotlight-option-selected-text  "#fafafa"
+
+   ::welcome-msg-bg                  "#3f4043"
+   ::welcome-msg-text                "#fafafa"
+   ::welcome-container-bg            "#202124"
+
+   ::help-dialog-bg                  "#3f4043"
+
+   ::test-header-waiting-bg          "#3f4043"
+   ::test-header-running-bg          "#3f4043"
+   ::test-header-success-bg          "#388E3C"
+   ::test-header-error-bg            "#BF360C"
+   ::test-header-disabled-bg         "#333333"})
+
+(def default-theme :theme/light)
+
+(def theme-name->colors-map
+  {:theme/light classical-colors
+   :theme/dark  dark-colors})
+
+(def user-defined-theme
+  (local-storage/get ::theme default-theme))
+
+(defn color [color-name]
+  (let [theme      (if (= user-defined-theme :theme/auto)
+                     (if (gobj/get (js/matchMedia "(prefers-color-scheme: dark)") "matches") :theme/dark :theme/light)
+                     user-defined-theme)
+        colors-map (get theme-name->colors-map theme)]
+    (get colors-map color-name)))
+
+(def card-border-radius "4px")
 
 (def font-helvetica "Helvetica Neue,Arial,Helvetica,sans-serif")
 (def font-open-sans "'Open Sans', sans-serif")
@@ -51,16 +196,17 @@
 
 (defn more-icon [props]
   (dom/svg (merge {:width 20 :height 19 :viewBox "0 0 40 40"} props)
-    (dom/g {:fill "#000"} (dom/path {:d "m20 26.6c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-10c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-3.2c-1.8 0-3.4-1.6-3.4-3.4s1.6-3.4 3.4-3.4 3.4 1.6 3.4 3.4-1.6 3.4-3.4 3.4z"}))))
+    (dom/g {:fill (color ::card-toolbar-more-actions)}
+      (dom/path {:d "m20 26.6c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-10c1.8 0 3.4 1.6 3.4 3.4s-1.6 3.4-3.4 3.4-3.4-1.6-3.4-3.4 1.6-3.4 3.4-3.4z m0-3.2c-1.8 0-3.4-1.6-3.4-3.4s1.6-3.4 3.4-3.4 3.4 1.6 3.4 3.4-1.6 3.4-3.4 3.4z"}))))
 
 (fp/defsc Button
   [this props]
   {:css [[:.button
           font-os12sb
-          {:background-color color-fiord
+          {:background-color (color ::button-bg)
            :border           "none"
-           :border-radius    "3px"
-           :color            color-white
+           :border-radius    "2px"
+           :color            (color ::button-color)
            :cursor           "pointer"
            :display          "inline-block"
            :padding          "2px 8px"
@@ -71,9 +217,11 @@
            :vertical-align   "middle"
            :user-select      "none"
            :outline          "none"}
+          [:&:active
+           {:background (color ::button-active-bg)}]
           [:&:disabled
-           {:background "#8c95a0"
-            :color      "#ccc"
+           {:background (color ::button-disabled-bg)
+            :color      (color ::button-disabled-color)
             :cursor     "not-allowed"}]]]}
   (apply dom/button :.button props (fp/children this)))
 

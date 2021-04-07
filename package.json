@@ -1,34 +1,25 @@
 {
   "name": "workspaces",
-  "version": "1.0.0",
-  "description": "Work environments for development of web apps.",
-  "main": "index.js",
-  "directories": {
-    "doc": "doc",
-    "test": "test"
+  "version": "1.0.16",
+  "description": "Workspaces is a component development environment for ClojureScript.",
+  "author": "Nubank",
+  "license": "ISC",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nubank/workspaces.git"
   },
   "dependencies": {
     "clipboard": "^1.6.1",
     "highlight.js": "^9.12.0",
-    "karma": "^2.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-cljs-test": "^0.1.0",
-    "karma-firefox-launcher": "^0.1.7",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
     "react-grid-layout": "^0.16.6",
     "react-icons": "^2.2.7",
     "react-test-renderer": "^16.4.1",
-    "reakit": "^0.11.2",
-    "shadow-cljs": "^2.7.6"
+    "reakit": "^0.11.2"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nubank/shuffle.common.git"
-  },
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {
+    "shadow-cljs": "^2.11.18"
+  }
 }

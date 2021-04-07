@@ -189,7 +189,8 @@
   {:initial-state     (fn [data] data)
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id]
-   :css               [[:.container {:background     uc/color-white
+   :css               [[:.container {:color-scheme   (uc/color ::uc/card-default-color-scheme)
+                                     :background     (uc/color ::uc/card-bg)
                                      :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
                                      :border-radius  uc/card-border-radius
                                      :display        "flex"
@@ -199,14 +200,15 @@
 
                        [:.toolbar
                         uc/font-os12sb
-                        {:align-items     "center"
-                         :background      uc/color-geyser
-                         :display         "flex"
+                        {:display         "flex"
+                         :align-items     "center"
                          :justify-content "flex-end"
-                         :padding         "6px"}
+                         :padding         "6px"
+                         :background      (uc/color ::uc/card-toolbar-bg)
+                         :color           (uc/color ::uc/card-toolbar-default-text)}
                         [:button {:margin-left "5px"}]]
 
-                       [:.error {:color       "#ef0000"
+                       [:.error {:color       (uc/color ::uc/error-text-color)
                                  :font-weight "bold"
                                  :padding     "10px"}]
 
@@ -216,7 +218,9 @@
                          :align-items     "center"
                          :justify-content "center"
                          :overflow        "auto"
-                         :padding         "10px"}]]
+                         :padding         "10px"
+                         :background      (uc/color ::uc/card-default-bg)
+                         :color           (uc/color ::uc/card-default-text)}]]
 
    :componentDidMount (fn []
                         (let [{::wsm/keys [card-id]} (fp/props this)
@@ -254,8 +258,9 @@
    :ident             [::wsm/card-id ::wsm/card-id]
    :query             [::wsm/card-id ::wsm/card-header-style ::show-source?
                        {[::workspace-root "singleton"] [::settings]}]
-   :css               [[:.container {:background     uc/color-white
-                                     :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.02)"
+   :css               [[:.container {:color-scheme   (uc/color ::uc/card-default-color-scheme)
+                                     :background     (uc/color ::uc/card-bg)
+                                     :box-shadow     "0 4px 9px 0 rgba(0,0,0,0.08)"
                                      :border-radius  uc/card-border-radius
                                      :display        "flex"
                                      :flex-direction "column"
@@ -265,15 +270,15 @@
                        [:$cljs-workflow-static-workflow
                         [:.header {:cursor "default"}]]
 
-                       [:.error {:color       "#ef0000"
+                       [:.error {:color       (uc/color ::uc/error-text-color)
                                  :font-weight "bold"
                                  :padding     "10px"}]
 
                        [:.header
                         uc/font-os12sb
-                        {:background    uc/color-mystic
+                        {:background    (uc/color ::uc/card-header-bg)
                          :border-radius (str uc/card-border-radius " " uc/card-border-radius " 0 0")
-                         :color         uc/color-limed-spruce
+                         :color         (uc/color ::uc/card-header-text)
                          :cursor        "grab"}
                         {:cursor "-webkit-grab"}
                         {:cursor "-moz-grab"}]
@@ -317,17 +322,18 @@
 
                        [:.more-actions
                         {:display       "grid"
-                         :background    uc/color-mystic
+                         :background    (uc/color ::uc/card-ellipsis-menu-bg)
                          :border-radius "0 0 6px 6px"
                          :padding       "5px 10px 10px"
                          :grid-gap      "6px"}]
 
                        [:.toolbar
-                        {:align-items     "center"
-                         :background      uc/color-geyser
-                         :display         "flex"
+                        {:display         "flex"
+                         :align-items     "center"
                          :justify-content "flex-end"
-                         :padding         "6px"}
+                         :background      (uc/color ::uc/card-toolbar-bg)
+                         :padding         "6px"
+                         :color           (uc/color ::uc/card-toolbar-default-text)}
                         [:button {:margin-left "5px"}]]
 
                        [:$react-draggable-dragging
@@ -345,7 +351,9 @@
                          :align-items     "center"
                          :justify-content "center"
                          :overflow        "auto"
-                         :padding         "10px"}]
+                         :padding         "10px"
+                         :background      (uc/color ::uc/card-default-bg)
+                         :color           (uc/color ::uc/card-default-text)}]
 
                        [:.source
                         {:background    "#fff"
@@ -586,36 +594,43 @@
   {:initial-state     (fn [{::keys [layouts workspace-title workspace-id] :as ws}]
                         (let [layouts (or layouts {})]
                           (merge ws
-                                 {::workspace-id    (or workspace-id (random-uuid))
-                                  ::workspace-title (or workspace-title "new workspace")
-                                  ::cards           (or (some->> layouts first val
-                                                          (mapv #(vector ::wsm/card-id (get % "i"))))
-                                                        [])
-                                  ::layouts         layouts
-                                  ::breakpoint      ""})))
+                            {::workspace-id    (or workspace-id (random-uuid))
+                             ::workspace-title (or workspace-title "new workspace")
+                             ::cards           (or (some->> layouts first val
+                                                            (mapv #(vector ::wsm/card-id (get % "i"))))
+                                                   [])
+                             ::layouts         layouts
+                             ::breakpoint      ""})))
    :ident             [::workspace-id ::workspace-id]
    :query             [::workspace-id ::layouts ::breakpoint
                        ::workspace-title ::wsm/workspace-static?
                        {::cards (fp/get-query WorkspaceCard)}]
    :css               [[:.container {:display        "flex"
                                      :flex           "1"
-                                     :flex-direction "column"}]
+                                     :flex-direction "column"
+                                     :font-size      "12px"}]
                        [:.grid {:flex       "1"
-                                :overflow-y "scroll"
+                                :overflow-y "auto"
                                 :overflow-x "hidden"}]
-                       [:.tools {:background  uc/color-white
-                                 :color       uc/color-limed-spruce
-                                 :padding     "5px 9px"
+                       [:.tools {:background  (uc/color ::uc/workspace-tools-bg)
+                                 :color       (uc/color ::uc/workspace-tools-color)
+                                 :padding     "8px 10px"
                                  :display     "flex"
                                  :align-items "center"}
-                        [:button {:margin-left "5px"}]]
+                        [:select {:height      "24px"
+                                  :font-size   "12px"
+                                  :font-weight "600"}]
+                        [:button {:font-size   "12px"
+                                  :line-height "2"
+                                  :margin-left "10px"
+                                  :padding     "0 8px"}]]
                        [:.breakpoint {:flex "1"}]]
+
+   :css-include       [grid/GridLayout]
 
    :componentDidCatch (fn [error info]
                         (swap! components-with-error conj this)
                         (fp/set-state! this {::error-catch? true}))
-
-   :css-include       [grid/GridLayout]
    :componentDidMount (fn [] (js/requestAnimationFrame #(fp/set-state! this {:render? true})))}
 
   (if (fp/get-state this ::error-catch?)
@@ -676,15 +691,15 @@
 
 (fp/defsc WorkspaceContainer
   [this props {::keys [open-solo-card]}]
-  {:ident       (fn [] (workspace-ident props))
-   :query       (fn []
-                  {::workspace-id (fp/get-query Workspace)
-                   ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
-   :css         [[:$workspaces-workspace-container {:background "#9fa2ab"
-                                                    :flex       "1"}]
-                 [:.error {:color       "#ef0000"
-                           :font-weight "bold"
-                           :padding     "10px"}]]
+  {:ident             (fn [] (workspace-ident props))
+   :query             (fn []
+                        {::workspace-id (fp/get-query Workspace)
+                         ::wsm/card-id  (fp/get-query WorkspaceSoloCard)})
+   :css               [[:$workspaces-workspace-container {:background (uc/color ::uc/workspace-bg)
+                                                          :flex       "1"}]
+                       [:.error {:color       (uc/color ::uc/error-text-color)
+                                 :font-weight "bold"
+                                 :padding     "10px"}]]
 
    :componentDidCatch (fn [error info]
                         (swap! components-with-error conj this)
@@ -718,58 +733,58 @@
                                  :max-width      "100%"}]
                    [:.tabs {:display    "flex"
                             :flex-wrap  "nowrap"
-                            :overflow-x "auto"}]
+                            :overflow-x "auto"
+                            :overflow-y "hidden"}]
                    [:.tab
                     uc/font-os12sb
-                    {:background    uc/color-iron
-                     :border        (str "1px solid " uc/color-geyser)
-                     :border-radius "6px 6px 0 0"
-                     :color         uc/color-limed-spruce
+                    {:background    (uc/color ::uc/tab-bg)
+                     :border-top    (str "1px solid " (uc/color ::uc/tab-border))
+                     :border-right  (str "1px solid " (uc/color ::uc/tab-border))
+                     :border-left   (str "1px solid " (uc/color ::uc/tab-border))
+                     :border-radius "4px 4px 0 0"
+                     :color         (uc/color ::uc/tab-text)
                      :cursor        "pointer"
                      :display       "flex"
                      :flex          "0 0 auto"
                      :align-items   "center"
                      :margin-right  "1px"
-                     :margin-bottom "-1px"
                      :overflow      "hidden"
-                     :padding       "7px 12px 9px"
+                     :padding       "8px 12px 8px 10px"
                      :z-index       "1"}
-                    [:&.active-tab {:background    uc/color-white
-                                    :border-bottom (str "1px solid " uc/color-white)}]]
-                   [:.active {:border     (str "1px solid " uc/color-geyser)
+                    [:&.active-tab {:background (uc/color ::uc/tab-active-bg)}]]
+                   [:.active {:border     (str "1px solid " (uc/color ::uc/tab-border))
                               :display    "flex"
                               :flex       "1"
                               :min-height "0"}]
                    [:.new-tab {:font-size   "23px"
-                               :line-height "1em"}]
-                   [:.welcome {:background      uc/color-dark-grey
-                               :color           "#fff"
+                               :line-height "1em"
+                               :padding     "8px 12px"}]
+                   [:.welcome {:background      (uc/color ::uc/welcome-container-bg)
                                :flex            "1"
                                :display         "flex"
                                :align-items     "center"
                                :justify-content "center"}]
-                   [:.welcome-content {:background  "#fff"
-                                       :color       "#000"
+                   [:.welcome-content {:background  (uc/color ::uc/welcome-msg-bg)
+                                       :color       (uc/color ::uc/welcome-msg-text)
                                        :font-family uc/font-open-sans
                                        :padding     "0 12px"}
                     [:p {:margin "12px 0"}]]
                    [:.workspace-title
                     uc/font-os12sb
-                    {:background    "transparent"
+                    {:background    (uc/color ::uc/tab-text-field-bg)
+                     :color         (uc/color ::uc/tab-text)
                      :border        "1px solid transparent"
                      :box-shadow    "0 0 2px 0 transparent"
                      :cursor        "pointer"
-                     :direction     "rtl"
                      :flex          "1"
-                     :max-width     "150px"
+                     :max-width     "152px"
                      :overflow      "hidden"
                      :text-overflow "ellipsis"
                      :white-space   "nowrap"}
-                    [:&:focus {:background "#fff"
+                    [:&:focus {:background (uc/color ::uc/tab-text-field-focus-bg)
                                :border     "1px solid #0079bf"
                                :box-shadow "0 0 2px 0 #0284c6"
                                :outline    "0"
-                               :color      "#000 !important"
                                :cursor     "text"}]]
                    [:.workspace-close
                     uc/close-icon-css
@@ -897,7 +912,7 @@
 (fp/defsc HelpDialog
   [this {::keys []}]
   {:css [[:.container
-          {:background    "rgba(0, 0, 0, 0.8)"
+          {:background    (uc/color ::uc/help-dialog-bg)
            :border-radius "4px"
            :color         "#fff"
            :font-family   uc/font-monospace
@@ -916,93 +931,98 @@
     (dom/div (dom/strong (get-keybinding ::keybinding-toggle-card-headers)) ": Toggle card headers")
     (dom/div (dom/strong (get-keybinding ::keybinding-new-workspace)) ": Create new local workspace")
     (dom/div (dom/strong (get-keybinding ::keybinding-close-workspace)) ": Close current workspace")
-    (dom/div (dom/strong "alt-shift-?") ": Toggle shorcuts modal")))
+    (dom/div (dom/strong "alt-shift-?") ": Toggle shortcuts modal")))
 
 (def help-dialog (fp/factory HelpDialog))
 
 (fp/defsc WorkspacesRoot
   [this {::keys [cards ws-tabs workspaces settings expanded spotlight show-spotlight?
                  show-help-modal? ready?]}]
-  {:initial-state     (fn [card-definitions]
-                        {::cards            (mapv #(fp/get-initial-state CardIndexListing %)
-                                              (vals card-definitions))
-                         ::workspaces       (->> (local-storage/get ::local-workspaces [])
-                                                 (mapv #(fp/get-initial-state Workspace
-                                                          (local-storage/tget [::workspace-id %])))
-                                                 (into (initialize-static-workspaces)))
+  {:initial-state  (fn [card-definitions]
+                     {::cards                (mapv #(fp/get-initial-state CardIndexListing %)
+                                               (vals card-definitions))
+                      ::workspaces           (->> (local-storage/get ::local-workspaces [])
+                                                  (mapv #(fp/get-initial-state Workspace
+                                                           (local-storage/tget [::workspace-id %])))
+                                                  (into (initialize-static-workspaces)))
 
-                         ::expanded         (local-storage/get ::expanded {})
-                         ::ws-tabs          (fp/get-initial-state WorkspaceTabs {})
+                      ::expanded             (local-storage/get ::expanded {})
+                      ::ws-tabs              (fp/get-initial-state WorkspaceTabs {})
 
-                         ::spotlight        (fp/get-initial-state spotlight/Spotlight [])
-                         ::show-spotlight?  false
-                         ::show-help-modal? false
-                         ::settings         {::show-index? (local-storage/get ::show-index? true)}})
-   :ident             (fn [] [::workspace-root "singleton"])
-   :query             [::settings ::expanded ::show-spotlight? ::show-help-modal? ::ready?
-                       {::cards (fp/get-query CardIndexListing)}
-                       {::workspaces (fp/get-query WorkspaceIndexListing)}
-                       {::ws-tabs (fp/get-query WorkspaceTabs)}
-                       {::spotlight (fp/get-query spotlight/Spotlight)}]
-   :css               [[:body {:margin     0
-                               :background "#f7f7f7"
-                               :overflow   "hidden"}]
-                       [:.container {:box-sizing "border-box"
-                                     :display    "flex"
-                                     :width      "100vw"
-                                     :height     "100vh"
-                                     :padding    "10px"}]
-                       [:.menu {:padding-right "10px"
-                                :font-family   uc/font-open-sans
-                                :flex-shrink   "0"
-                                :overflow      "auto"
-                                :min-width     "300px"}]
-                       [:.workspaces {:display    "flex"
-                                      :flex       "1"
-                                      :max-height "100vh"
-                                      :overflow   "hidden"}]
-                       [:.index-action-button {:background   "transparent"
-                                               :border       "none"
-                                               :cursor       "pointer"
-                                               :font-size    "23px"
-                                               :font-weight  "bold"
-                                               :margin-right "5px"
-                                               :margin-top   "-4px"
-                                               :outline      "none"
-                                               :padding      "0"}
-                        [:&.spotlight {:color       "transparent"
-                                       :text-shadow "0 0 #ffffff"
-                                       :font-size   "14px"
-                                       :margin      "-2px 10px 0 0"}]
-                        [:&.help {:font-size "17px"
-                                  :margin    "-2px 10px 0 0"}]]
-                       [:.header {:background    "#404040"
-                                  :border-radius "4px"
-                                  :color         "#fff"
-                                  :font-weight   "bold"
-                                  :padding       "3px 7px"
-                                  :box-shadow    "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
-                                  :margin        "1px 1px 6px"
-                                  :max-width     "100%"}
-                        [:button {:color "#fff"}]]
-                       [:.row {:display "flex"}]
-                       [:.pointer {:cursor "pointer"}]
-                       [:.flex {:flex "1"}]
-                       [:.workspaces-solo {:max-width "100%"}]
-                       [:.workspace {:cursor "pointer"}]
-                       [:.nest-group {:margin-left "32px"}]
-                       [:.nest-group-small {:margin-left "18px"}]
-                       [:.ns-header {:display "flex" :align-items "center"}]
-                       [:.expand-arrow {:margin-right "5px"
-                                        :cursor       "pointer"
-                                        :font-size    "14px"}]]
-   :css-include       [uc/CSS HelpDialog]
-   :initLocalState    (fn [] {:spotlight-select
-                              (fn [{::spotlight/keys [id type]} solo?]
-                                (if id
-                                  (cond
-                                    (= type ::spotlight/workspace)
-                                    (fp/transact! this [`(select-workspace {::workspace-id ~id})])
+                      ::spotlight            (fp/get-initial-state spotlight/Spotlight [])
+                      ::show-spotlight?      false
+                      ::show-help-modal?     false
+                      ::settings             {::show-index? (local-storage/get ::show-index? true)
+                                              ::uc/theme    (local-storage/get ::uc/theme uc/default-theme)}})
+   :ident          (fn [] [::workspace-root "singleton"])
+   :query          [::settings ::expanded ::show-spotlight? ::show-help-modal? ::ready?
+                    {::cards (fp/get-query CardIndexListing)}
+                    {::workspaces (fp/get-query WorkspaceIndexListing)}
+                    {::ws-tabs (fp/get-query WorkspaceTabs)}
+                    {::spotlight (fp/get-query spotlight/Spotlight)}]
+   :css            [[:body {:margin     0
+                            :overflow   "hidden"
+                            :background (uc/color ::uc/bg)}]
+                    [:.container {:color-scheme (uc/color ::uc/color-scheme)
+                                  :color        (uc/color ::uc/primary-text-color)
+                                  :box-sizing   "border-box"
+                                  :display      "flex"
+                                  :width        "100vw"
+                                  :height       "100vh"
+                                  :padding      "10px"}]
+                    [:.menu {:background    (uc/color ::uc/menu-bg)
+                             :color         (uc/color ::uc/menu-text)
+                             :padding-right "10px"
+                             :font-family   uc/font-open-sans
+                             :flex-shrink   "0"
+                             :overflow      "auto"
+                             :min-width     "300px"}
+                     [:select {:margin-right "10px"}]]
+                    [:.workspaces {:display    "flex"
+                                   :flex       "1"
+                                   :max-height "100vh"
+                                   :overflow   "hidden"}]
+                    [:.index-action-button {:background  "transparent"
+                                            :border      "none"
+                                            :cursor      "pointer"
+                                            :font-size   "23px"
+                                            :font-weight "bold"
+                                            :width       "20px"
+                                            :margin-top  "-4px"
+                                            :outline     "none"
+                                            :padding     "0"}
+                     ["&:not(:first-child)" {:margin "-2px 10px 0 0"}]
+                     [:&.spotlight {:color       "transparent"
+                                    :text-shadow "0 0 #ffffff"
+                                    :font-size   "14px"}]
+                     [:&.help {:font-size "17px"}]]
+                    [:.header {:background    (uc/color ::uc/menu-header-bg)
+                               :border-radius "4px"
+                               :color         "#fff"
+                               :font-weight   "bold"
+                               :padding       "3px 7px"
+                               :box-shadow    "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)"
+                               :margin        "1px 1px 6px"
+                               :max-width     "100%"}
+                     [:button {:color "#fff"}]]
+                    [:.row {:display "flex"}]
+                    [:.pointer {:cursor "pointer"}]
+                    [:.flex {:flex "1"}]
+                    [:.workspaces-solo {:max-width "100%"}]
+                    [:.workspace {:cursor "pointer"}]
+                    [:.nest-group {:margin-left "32px"}]
+                    [:.nest-group-small {:margin-left "18px"}]
+                    [:.ns-header {:display "flex" :align-items "center"}]
+                    [:.expand-arrow {:margin-right "5px"
+                                     :cursor       "pointer"
+                                     :font-size    "14px"}]]
+   :css-include    [uc/CSS HelpDialog]
+   :initLocalState (fn [] {:spotlight-select
+                           (fn [{::spotlight/keys [id type]} solo?]
+                             (if id
+                               (cond
+                                 (= type ::spotlight/workspace)
+                                 (fp/transact! this [`(select-workspace {::workspace-id ~id})])
 
                                     solo?
                                     (add-card-solo this id)
@@ -1047,27 +1067,37 @@
            (fp/computed spotlight
              {::spotlight/on-select (fp/get-state this :spotlight-select)}))))
 
-     (if (::show-index? settings)
-       (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
-         (dom/div :.menu
-           (dom/div :.row.header
-             (dom/div "Workspaces")
-             (dom/div :.flex)
-             (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
-               "\uD83D\uDD0D")
-             (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
-               "?")
-             (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
-               "«"))
-           (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
-             (dom/div
-               (dom/div
-                 "Local workspaces"
-                 (dom/div :.nest-group-small
-                   (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title locals)]
-                     (dom/div :.workspace {:key     (str workspace-id)
-                                           :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
-                       (str workspace-title)))))
+    (if (::show-index? settings)
+      (let [{uis false tests true} (group-by (comp true? ::wsm/test?) cards)]
+        (dom/div :.menu
+          (dom/div :.row.header
+            (dom/div "Workspaces")
+            (dom/div :.flex)
+            (dom/select {:value    (::uc/theme settings)
+                         :onChange (fn [e]
+                                     (let [v     (gobj/getValueByKeys e "target" "value")
+                                           theme (some->> v (keyword "theme"))]
+                                       (local-storage/set! ::uc/theme theme)
+                                       (when (js/confirm "Reload page to apply new theme?")
+                                         (js/location.reload))))}
+              (dom/option {:value "auto"} "Auto")
+              (dom/option {:value "light"} "Light")
+              (dom/option {:value "dark"} "Dark"))
+            (dom/button :.index-action-button.spotlight {:onClick #(open-spotlight this)}
+              "\uD83D\uDD0D")
+            (dom/button :.index-action-button.help {:onClick #(fm/toggle! this ::show-help-modal?)}
+              "?")
+            (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+              "«"))
+          (let [{statics true locals false} (group-by (comp boolean ::wsm/workspace-static?) workspaces)]
+            (dom/div
+              (dom/div
+                "Local workspaces"
+                (dom/div :.nest-group-small
+                  (for [{::keys [workspace-id workspace-title]} (sort-by ::workspace-title locals)]
+                    (dom/div :.workspace {:key     (str workspace-id)
+                                          :onClick #(fp/transact! this [`(select-workspace {::workspace-id ~workspace-id})])}
+                      (str workspace-title)))))
 
                (dom/br)
 
@@ -1113,13 +1143,13 @@
                      uc/arrow-right))
                  (card-index-listing {::wsm/card-id (symbol ns)}))
 
-               (if (get-in expanded [:test-ns ns])
-                 (dom/div :.nest-group
-                   (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
-       (dom/div :.menu-show
-         (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
-           "»")))
-     (dom/div :.workspaces
-       (workspace-tabs ws-tabs)))))
+              (if (get-in expanded [:test-ns ns])
+                (dom/div :.nest-group
+                  (mapv card-index-listing (sort-by ::wsm/card-id cards))))))))
+      (dom/div
+        (dom/button :.index-action-button {:onClick #(fp/transact! this [`(toggle-index-view {})])}
+          "»")))
+    (dom/div :.workspaces
+      (workspace-tabs ws-tabs))))
 
 (def workspaces-root (fp/factory WorkspacesRoot))
