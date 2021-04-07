@@ -1,6 +1,6 @@
 {
   "name": "workspaces",
-  "version": "1.0.16",
+  "version": "0.0.0",
   "description": "Workspaces is a component development environment for ClojureScript.",
   "author": "Nubank",
   "license": "ISC",

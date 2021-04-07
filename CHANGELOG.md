@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.0]
+- Add query parameter "ws" to allow open a specific workspace.
+- Add theme selector and dark mode.
+
 ## [1.0.17]
 - Fix npm packages security vulnerabilities.
 
