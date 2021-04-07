@@ -1,4 +1,4 @@
-(defproject nubank/workspaces "1.1.0"
+(defproject nubank/workspaces "1.1.1"
   :description "Workspaces is a component development environment for ClojureScript."
   :url "https://github.com/nubank/workspaces"
   :license {:name "Apache License 2.0"
