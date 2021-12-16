@@ -19,3 +19,5 @@ node_modules
 /examples/workspaces-shadow-example/resources/target
 .idea
 *.iml
+.lsp/.cache
+.clj-kondo/.cache

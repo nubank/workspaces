@@ -1,0 +1,4 @@
+{:lint-as {nubank.workspaces.core/defcard clojure.core/def
+           nubank.workspaces.core/defworkspace clojure.core/def
+           nubank.workspaces.core/if-cljs clojure.core/if
+           nubank.workspaces.core/deftest clojure.test/deftest}}
