@@ -1,0 +1,2 @@
+{:config-paths ["com.fulcrologic/fulcro"
+                "../resources/clj-kondo.exports/nubank/workspaces"]}
