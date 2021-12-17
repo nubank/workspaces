@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.1.2]
+- Add clj-kondo configs and export for better linting.
+
 ## [1.1.1]
 - Bump lodash to fix dependabot high severity alert.
 
