@@ -4,7 +4,11 @@
  :builds {:workspaces {:target           :browser
                        :output-dir       "public/workspaces/js"
                        :asset-path       "/js"
-                       :compiler-options {:closure-output-charset "US-ASCII"}
+                       :compiler-options {:closure-output-charset "US-ASCII"
+                                          :global-goog-object&array true}
+                       :js-options {:resolve {"goog.debug.Logger.Level"
+                                              {:target :global
+                                               :global "goog.log.Logger.Level"}}}
                        :devtools         {:preloads           [devtools.preload fulcro.inspect.preload]
                                           :loader-mode        :eval
                                           :http-root          "public/workspaces"
