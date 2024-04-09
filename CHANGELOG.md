@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.2.0]
+- BREAKING: Bump dependencies
+
 ## [1.1.2]
 - Add clj-kondo configs and export for better linting.
 
