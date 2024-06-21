@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "create-react-class": "^15.6.3",
-    "highlight.js": "^9.12.0",
+    "highlight.js": "^11.9.0",
     "preact-render-to-string": "^3.6.3",
     "prum-preact": "^8.2.5",
     "react": "^16.4.1",
