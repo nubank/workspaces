@@ -30,8 +30,20 @@ image:https://img.shields.io/clojars/v/nubank/workspaces.svg[link=https://clojar
 Workspaces is a component development environment for ClojureScript,
 inspired by https://github.com/bhauman/devcards[devcards].
 
-Workspaces allows you to create cards with your interface components so you don't need to render your entire application. It also allows you to create cards for your tests so you don't need to switch to the terminal to see the results. You can create tabs, a.k.a "workspace", and manage your cards size and position within it.
+Workspaces lets you develop and demo UI pieces in isolation: you create
+*cards* (small, focused renderings of components or tests), arrange them
+in tabs called *workspaces*, and resize or reposition them — without
+booting your entire application or switching to a terminal for test output.
 
+=== What is a card?
+
+A *card* is one isolated demo unit. Typical cards render a single UI
+component with sample props, or surface a namespace of `cljs.test` results
+inline. Cards are registered from ClojureScript namespaces and then appear
+in the Workspaces UI so you can browse them like a living styleguide.
+
+TIP: The animated overview below is intentionally fast; pause on frames
+or follow the setup section to try the same interactions locally.
 
 image:workspaces-main.gif[Workspaces Main]
 
